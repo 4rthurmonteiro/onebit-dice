@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>1-BIT DICE — Google Play Listing v2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&family=Press+Start+2P&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    image-rendering: pixelated;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: none;
+    font-smooth: never;
+  }
+
+  body {
+    background: #c5c5c5;
+    font-family: 'VT323', monospace;
+    color: #000;
+    padding: 40px 20px;
+    image-rendering: pixelated;
+  }
+
+  .page {
+    width: 1400px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 3px solid #000;
+    padding: 0;
+  }
+
+  /* ========== MAC WINDOW STYLE ========== */
+  .mac-window {
+    background: #ffffff;
+    border: 2px solid #000;
+    margin-bottom: 40px;
+  }
+
+  .mac-titlebar {
+    background: repeating-linear-gradient(
+      to bottom,
+      #000 0px,
+      #000 2px,
+      #fff 2px,
+      #fff 4px
+    );
+    border-bottom: 2px solid #000;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .mac-titlebar-text {
+    background: #fff;
+    padding: 0 12px;
+    font-family: 'Silkscreen', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  .mac-titlebar-close {
+    position: absolute;
+    left: 6px;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border: 1px solid #000;
+  }
+
+  /* ========== HEADER ========== */
+  .page-header {
+    padding: 32px 40px 24px;
+    border-bottom: 3px solid #000;
+    background: #fff;
+  }
+
+  .page-header h1 {
+    font-family: 'Silkscreen', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .page-header p {
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    color: #000;
+  }
+
+  .page-header .meta {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* ========== SECTION ========== */
+  .section {
+    padding: 32px 40px;
+    border-bottom: 3px solid #000;
+  }
+
+  .section-title {
+    font-family: 'Silkscreen', monospace;
+    font-size: 20px;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+  }
+
+  .section-sub {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    margin-bottom: 24px;
+  }
+
+  .divider-thin {
+    border: none;
+    border-top: 1px solid #000;
+    margin: 16px 0;
+  }
+
+  .divider-thick {
+    border: none;
+    border-top: 2px solid #000;
+    margin: 20px 0;
+  }
+
+  /* ========== FEATURE GRAPHIC 1024x500 ========== */
+  .feature-graphic-wrap {
+    display: flex;
+    justify-content: center;
+  }
+
+  .feature-graphic {
+    width: 1024px;
+    height: 500px;
+    background: #fff;
+    border: 3px solid #000;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fg-titlebar {
+    background: repeating-linear-gradient(
+      to bottom,
+      #000 0px,
+      #000 2px,
+      #fff 2px,
+      #fff 4px
+    );
+    height: 24px;
+    border-bottom: 3px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .fg-titlebar-text {
+    background: #fff;
+    padding: 0 14px;
+    font-family: 'Silkscreen', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+  .fg-titlebar-close {
+    position: absolute;
+    left: 8px;
+    top: 5px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border: 1.5px solid #000;
+  }
+
+  .fg-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 0 48px;
+    gap: 24px;
+  }
+
+  .fg-left {
+    flex: 1;
+  }
+
+  .fg-wordmark {
+    font-family: 'Silkscreen', monospace;
+    font-size: 88px;
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+
+  .fg-tagline {
+    font-family: 'VT323', monospace;
+    font-size: 32px;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+    padding: 6px 0;
+    display: inline-block;
+  }
+
+  .fg-micro {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    margin-top: 12px;
+  }
+
+  .fg-right {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fg-mini-d6 {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+  }
+
+  /* ========== APP ICON 512 ========== */
+  .app-icon-section {
+    text-align: center;
+  }
+
+  .app-icon-wrap {
+    display: inline-block;
+    border: 3px solid #000;
+    padding: 0;
+    background: #fff;
+  }
+
+  .app-icon-tb {
+    height: 18px;
+    background: repeating-linear-gradient(
+      to bottom,
+      #000 0px,
+      #000 2px,
+      #fff 2px,
+      #fff 4px
+    );
+    border-bottom: 2px solid #000;
+  }
+
+  .app-icon {
+    width: 512px;
+    height: 512px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .app-icon-meta {
+    margin-top: 16px;
+    font-family: 'Silkscreen', monospace;
+    font-size: 18px;
+    letter-spacing: 1.5px;
+  }
+  .app-icon-meta .dev {
+    display: block;
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ========== SCREENSHOTS ========== */
+  .screenshots {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+
+  .phone {
+    width: 240px;
+    height: 480px;
+    background: #fff;
+    border: 3px solid #000;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phone-status {
+    height: 14px;
+    background: #000;
+    color: #fff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .phone-overlay {
+    background: #000;
+    color: #fff;
+    padding: 10px 8px 8px;
+    text-align: center;
+    border-bottom: 2px solid #000;
+  }
+
+  .phone-overlay .ov-title {
+    font-family: 'Silkscreen', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 1.2;
+  }
+
+  .phone-overlay .ov-sub {
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .phone-screen {
+    flex: 1;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .phone-appbar {
+    background: #000;
+    color: #fff;
+    font-family: 'Silkscreen', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 5px 0;
+    text-align: center;
+    border-bottom: 1px solid #000;
+  }
+
+  /* Inner pixel UI bits */
+  .px-row {
+    display: flex;
+    border-bottom: 1px solid #000;
+  }
+  .px-cell {
+    flex: 1;
+    text-align: center;
+    font-family: 'Silkscreen', monospace;
+    font-size: 9px;
+    padding: 5px 0;
+    border-right: 1px solid #000;
+  }
+  .px-cell:last-child { border-right: none; }
+  .px-cell.active { background: #000; color: #fff; }
+
+  .px-btn {
+    background: #000;
+    color: #fff;
+    font-family: 'Silkscreen', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 8px 0;
+    border-top: 2px solid #000;
+  }
+
+  .px-label {
+    font-family: 'VT323', monospace;
+    font-size: 13px;
+    padding: 4px 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .px-result {
+    font-family: 'Silkscreen', monospace;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 14px;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+  }
+
+  /* ========== STORE SEARCH MOCK ========== */
+  .search-mock {
+    background: #fff;
+    border: 2px solid #000;
+    padding: 0;
+  }
+
+  .search-bar {
+    background: repeating-linear-gradient(
+      to bottom,
+      #000 0px,
+      #000 2px,
+      #fff 2px,
+      #fff 4px
+    );
+    border-bottom: 2px solid #000;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    padding-left: 30px;
+    position: relative;
+  }
+  .search-bar::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border: 1.5px solid #000;
+  }
+  .search-bar-input {
+    background: #fff;
+    padding: 0 12px;
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    border: 1px solid #000;
+    margin-left: 8px;
+  }
+
+  .search-result {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border-bottom: 2px solid #000;
+  }
+  .search-result:last-child { border-bottom: none; }
+
+  .sr-icon {
+    width: 64px;
+    height: 64px;
+    border: 2px solid #000;
+    flex-shrink: 0;
+    background: #fff;
+  }
+
+  .sr-info { flex: 1; }
+  .sr-name {
+    font-family: 'Silkscreen', monospace;
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+  .sr-dev {
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    margin-top: 2px;
+  }
+  .sr-rating {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  .sr-install {
+    background: #000;
+    color: #fff;
+    font-family: 'Silkscreen', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    padding: 10px 18px;
+    border: 2px solid #000;
+  }
+
+  .sr-tag {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    letter-spacing: 1px;
+    padding: 4px 6px;
+    background: #fff;
+    border: 1px solid #000;
+    margin-top: 6px;
+    display: inline-block;
+  }
+
+  .sr-tag.compare {
+    background: #000;
+    color: #fff;
+  }
+
+  /* ========== DESC ========== */
+  .short-desc {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    padding: 18px;
+    border: 2px solid #000;
+    background: #fff;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  .full-desc {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    line-height: 1.5;
+    background: #fff;
+    border: 2px solid #000;
+    padding: 0;
+  }
+
+  .full-desc-body {
+    padding: 24px 28px;
+  }
+
+  .full-desc p {
+    margin-bottom: 14px;
+  }
+
+  .full-desc ul {
+    list-style: none;
+    margin: 8px 0 14px;
+    padding-left: 0;
+  }
+  .full-desc ul li {
+    padding: 3px 0 3px 18px;
+    position: relative;
+  }
+  .full-desc ul li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    font-family: 'Silkscreen', monospace;
+    font-size: 14px;
+  }
+
+  .full-desc .footer-micro {
+    font-family: 'VT323', monospace;
+    font-size: 13px;
+    color: #555;
+    margin-top: 24px;
+    border-top: 1px dashed #000;
+    padding-top: 12px;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  /* ========== METADATA ========== */
+  .metadata-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 2px solid #000;
+    background: #fff;
+  }
+  .meta-cell {
+    border-right: 2px solid #000;
+    border-bottom: 2px solid #000;
+    padding: 14px 18px;
+  }
+  .meta-cell:nth-child(2n) { border-right: none; }
+  .meta-cell:nth-last-child(-n+2) { border-bottom: none; }
+
+  .meta-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+  }
+  .meta-value {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+  }
+
+  .tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .tag {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    letter-spacing: 0.8px;
+    padding: 5px 7px;
+    border: 1px solid #000;
+    background: #fff;
+  }
+
+  /* ========== FOOTER ========== */
+  .page-footer {
+    padding: 24px 40px;
+    background: #fff;
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+  }
+
+  .palette-key {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 12px;
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+  }
+  .pk-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .pk-swatch {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #000;
+  }
+
+  /* compare row */
+  .compare-row {
+    display: flex;
+    gap: 24px;
+    padding: 16px;
+  }
+  .compare-half {
+    flex: 1;
+    border: 2px solid #000;
+    background: #fff;
+  }
+  .compare-tb {
+    background: repeating-linear-gradient(
+      to bottom,
+      #000 0px,
+      #000 2px,
+      #fff 2px,
+      #fff 4px
+    );
+    border-bottom: 2px solid #000;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .compare-tb-text {
+    background: #fff;
+    padding: 0 10px;
+    font-family: 'Silkscreen', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ============== HEADER ============== -->
+  <div class="page-header">
+    <h1>GOOGLE PLAY LISTING — 1-BIT DICE</h1>
+    <p>store listing v2 · paleta Mac Classic 1-bit · preto sobre branco</p>
+    <div class="meta">AM2 STUDIOS · 2026 · LISTING DOC</div>
+  </div>
+
+  <!-- ============== FEATURE GRAPHIC ============== -->
+  <div class="section">
+    <div class="section-title">01 · FEATURE GRAPHIC</div>
+    <div class="section-sub">1024 x 500 px — banner principal do Google Play</div>
+    <hr class="divider-thin">
+
+    <div class="feature-graphic-wrap">
+      <div class="feature-graphic">
+        <div class="fg-titlebar">
+          <div class="fg-titlebar-close"></div>
+          <div class="fg-titlebar-text">1-BIT-DICE.APP</div>
+        </div>
+        <div class="fg-body">
+          <div class="fg-left">
+            <div class="fg-wordmark">1-BIT<br>DICE</div>
+            <div class="fg-tagline">DICE FOR EVERY GAME</div>
+            <div class="fg-micro">V1.0 · AM2 STUDIOS · 2026</div>
+          </div>
+
+          <div class="fg-right">
+            <!-- mini d6 fan in background -->
+            <svg class="fg-mini-d6" style="top: 0; left: 10px; transform: rotate(-18deg);" viewBox="0 0 80 80" shape-rendering="crispEdges">
+              <rect x="2" y="2" width="76" height="76" fill="#fff" stroke="#000" stroke-width="3"/>
+              <rect x="6" y="6" width="68" height="68" fill="none" stroke="#000" stroke-width="1"/>
+              <rect x="20" y="20" width="8" height="8" fill="#000"/>
+              <rect x="52" y="52" width="8" height="8" fill="#000"/>
+            </svg>
+            <svg class="fg-mini-d6" style="top: 30px; left: 60px; transform: rotate(-8deg);" viewBox="0 0 80 80" shape-rendering="crispEdges">
+              <!-- mac beige -->
+              <rect x="2" y="2" width="76" height="76" fill="#e8d8b0" stroke="#000" stroke-width="3"/>
+              <rect x="6" y="6" width="68" height="68" fill="none" stroke="#000" stroke-width="1"/>
+              <rect x="20" y="20" width="8" height="8" fill="#000"/>
+              <rect x="36" y="36" width="8" height="8" fill="#000"/>
+              <rect x="52" y="52" width="8" height="8" fill="#000"/>
+            </svg>
+            <svg class="fg-mini-d6" style="top: 280px; left: 20px; transform: rotate(15deg);" viewBox="0 0 80 80" shape-rendering="crispEdges">
+              <!-- game boy DMG -->
+              <rect x="2" y="2" width="76" height="76" fill="#9bbc0f" stroke="#0f380f" stroke-width="3"/>
+              <rect x="6" y="6" width="68" height="68" fill="none" stroke="#0f380f" stroke-width="1"/>
+              <rect x="20" y="20" width="8" height="8" fill="#0f380f"/>
+              <rect x="52" y="20" width="8" height="8" fill="#0f380f"/>
+              <rect x="36" y="36" width="8" height="8" fill="#0f380f"/>
+              <rect x="20" y="52" width="8" height="8" fill="#0f380f"/>
+              <rect x="52" y="52" width="8" height="8" fill="#0f380f"/>
+            </svg>
+            <svg class="fg-mini-d6" style="top: 300px; left: 280px; transform: rotate(-12deg);" viewBox="0 0 80 80" shape-rendering="crispEdges">
+              <!-- c64 -->
+              <rect x="2" y="2" width="76" height="76" fill="#6c5eb5" stroke="#352879" stroke-width="3"/>
+              <rect x="6" y="6" width="68" height="68" fill="none" stroke="#352879" stroke-width="1"/>
+              <rect x="20" y="20" width="8" height="8" fill="#352879"/>
+              <rect x="52" y="20" width="8" height="8" fill="#352879"/>
+              <rect x="20" y="52" width="8" height="8" fill="#352879"/>
+              <rect x="52" y="52" width="8" height="8" fill="#352879"/>
+            </svg>
+            <svg class="fg-mini-d6" style="top: 0px; left: 300px; transform: rotate(20deg);" viewBox="0 0 80 80" shape-rendering="crispEdges">
+              <!-- zx spectrum -->
+              <rect x="2" y="2" width="76" height="76" fill="#000" stroke="#000" stroke-width="3"/>
+              <rect x="6" y="6" width="68" height="68" fill="none" stroke="#ff0000" stroke-width="1"/>
+              <rect x="20" y="36" width="8" height="8" fill="#ffff00"/>
+              <rect x="36" y="36" width="8" height="8" fill="#ffff00"/>
+              <rect x="52" y="36" width="8" height="8" fill="#ffff00"/>
+            </svg>
+            <svg class="fg-mini-d6" style="top: 150px; left: 320px; transform: rotate(5deg);" viewBox="0 0 80 80" shape-rendering="crispEdges">
+              <!-- apple II green -->
+              <rect x="2" y="2" width="76" height="76" fill="#000" stroke="#33ff33" stroke-width="3"/>
+              <rect x="6" y="6" width="68" height="68" fill="none" stroke="#33ff33" stroke-width="1"/>
+              <rect x="20" y="20" width="8" height="8" fill="#33ff33"/>
+              <rect x="36" y="36" width="8" height="8" fill="#33ff33"/>
+              <rect x="52" y="52" width="8" height="8" fill="#33ff33"/>
+            </svg>
+
+            <!-- GIANT FRONT d6 - Mac Classic, 6 dots in 2x3 -->
+            <svg width="280" height="280" viewBox="0 0 280 280" shape-rendering="crispEdges" style="position: relative; z-index: 2;">
+              <!-- outer pixel double border -->
+              <rect x="6" y="6" width="268" height="268" fill="#fff" stroke="#000" stroke-width="6"/>
+              <rect x="18" y="18" width="244" height="244" fill="none" stroke="#000" stroke-width="3"/>
+              <!-- 6 dots arranged 2 columns x 3 rows -->
+              <rect x="60" y="60" width="32" height="32" fill="#000"/>
+              <rect x="60" y="124" width="32" height="32" fill="#000"/>
+              <rect x="60" y="188" width="32" height="32" fill="#000"/>
+              <rect x="188" y="60" width="32" height="32" fill="#000"/>
+              <rect x="188" y="124" width="32" height="32" fill="#000"/>
+              <rect x="188" y="188" width="32" height="32" fill="#000"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="palette-key">
+      <div class="pk-item"><span class="pk-swatch" style="background:#fff;"></span>MAC CLASSIC</div>
+      <div class="pk-item"><span class="pk-swatch" style="background:#e8d8b0;"></span>MAC BEIGE</div>
+      <div class="pk-item"><span class="pk-swatch" style="background:#9bbc0f;"></span>GB DMG</div>
+      <div class="pk-item"><span class="pk-swatch" style="background:#6c5eb5;"></span>C64</div>
+      <div class="pk-item"><span class="pk-swatch" style="background:#000;"></span>ZX SPECTRUM</div>
+      <div class="pk-item"><span class="pk-swatch" style="background:#000; border-color:#33ff33;"></span>APPLE II GREEN</div>
+    </div>
+  </div>
+
+  <!-- ============== APP ICON ============== -->
+  <div class="section app-icon-section">
+    <div class="section-title">02 · APP ICON</div>
+    <div class="section-sub">512 x 512 px — ícone oficial do app</div>
+    <hr class="divider-thin">
+
+    <div class="app-icon-wrap">
+      <div class="app-icon-tb"></div>
+      <div class="app-icon">
+        <svg width="440" height="440" viewBox="0 0 440 440" shape-rendering="crispEdges">
+          <!-- double pixel border -->
+          <rect x="12" y="12" width="416" height="416" fill="#fff" stroke="#000" stroke-width="12"/>
+          <rect x="36" y="36" width="368" height="368" fill="none" stroke="#000" stroke-width="4"/>
+          <!-- 6 dots 2x3 -->
+          <rect x="92" y="92" width="48" height="48" fill="#000"/>
+          <rect x="92" y="196" width="48" height="48" fill="#000"/>
+          <rect x="92" y="300" width="48" height="48" fill="#000"/>
+          <rect x="300" y="92" width="48" height="48" fill="#000"/>
+          <rect x="300" y="196" width="48" height="48" fill="#000"/>
+          <rect x="300" y="300" width="48" height="48" fill="#000"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="app-icon-meta">
+      1-BIT DICE
+      <span class="dev">am2 studios</span>
+    </div>
+  </div>
+
+  <!-- ============== SCREENSHOTS ============== -->
+  <div class="section">
+    <div class="section-title">03 · PHONE SCREENSHOTS</div>
+    <div class="section-sub">5 imagens · 1080 x 1920 px (escaladas)</div>
+    <hr class="divider-thin">
+
+    <div class="screenshots">
+
+      <!-- ===== SCREENSHOT 1 — HOME ===== -->
+      <div class="phone">
+        <div class="phone-status"><span>9:41</span><span>BAT 100%</span></div>
+        <div class="phone-overlay">
+          <div class="ov-title">ROLE QUALQUER DADO</div>
+          <div class="ov-sub">até 10 de uma vez</div>
+        </div>
+        <div class="phone-screen">
+          <div class="phone-appbar">1-BIT DICE</div>
+          <div class="px-row">
+            <div class="px-cell">D4</div>
+            <div class="px-cell active">D6</div>
+            <div class="px-cell">D8</div>
+            <div class="px-cell">D10</div>
+          </div>
+          <div class="px-row">
+            <div class="px-cell">D12</div>
+            <div class="px-cell">D20</div>
+            <div class="px-cell">D100</div>
+          </div>
+          <div class="px-label" style="text-align:center; border-bottom:1px solid #000;">QTD: 02</div>
+          <div style="flex:1; display:flex; align-items:center; justify-content:center; gap:10px;">
+            <svg width="72" height="72" viewBox="0 0 72 72" shape-rendering="crispEdges">
+              <rect x="2" y="2" width="68" height="68" fill="#fff" stroke="#000" stroke-width="3"/>
+              <rect x="8" y="8" width="56" height="56" fill="none" stroke="#000" stroke-width="1"/>
+              <rect x="18" y="18" width="8" height="8" fill="#000"/>
+              <rect x="46" y="18" width="8" height="8" fill="#000"/>
+              <rect x="18" y="46" width="8" height="8" fill="#000"/>
+              <rect x="46" y="46" width="8" height="8" fill="#000"/>
+            </svg>
+            <svg width="72" height="72" viewBox="0 0 72 72" shape-rendering="crispEdges">
+              <rect x="2" y="2" width="68" height="68" fill="#fff" stroke="#000" stroke-width="3"/>
+              <rect x="8" y="8" width="56" height="56" fill="none" stroke="#000" stroke-width="1"/>
+              <rect x="18" y="18" width="8" height="8" fill="#000"/>
+              <rect x="46" y="18" width="8" height="8" fill="#000"/>
+              <rect x="18" y="32" width="8" height="8" fill="#000"/>
+              <rect x="46" y="32" width="8" height="8" fill="#000"/>
+              <rect x="18" y="46" width="8" height="8" fill="#000"/>
+              <rect x="46" y="46" width="8" height="8" fill="#000"/>
+            </svg>
+          </div>
+          <div class="px-result">4 + 6 = 10</div>
+          <div class="px-btn">ROLAR</div>
+        </div>
+      </div>
+
+      <!-- ===== SCREENSHOT 2 — PALETAS ===== -->
+      <div class="phone">
+        <div class="phone-status"><span>9:41</span><span>BAT 100%</span></div>
+        <div class="phone-overlay">
+          <div class="ov-title">6 PALETAS RETRÔ</div>
+          <div class="ov-sub">Mac, Game Boy, Apple II...</div>
+        </div>
+        <div class="phone-screen">
+          <div class="phone-appbar">AJUSTES</div>
+          <div class="px-label" style="border-bottom:1px solid #000; font-family:'Silkscreen',monospace; font-size:9px; letter-spacing:1px; padding:6px 8px;">[ - ]  PALETA</div>
+          <div style="padding: 10px 8px; display:grid; grid-template-columns: repeat(3, 1fr); gap:6px;">
+            <div style="border:2px solid #000; padding:4px; text-align:center;">
+              <div style="background:#fff; height:30px; border:1px solid #000;"></div>
+              <div style="font-family:'Press Start 2P',monospace; font-size:5px; margin-top:3px;">MAC</div>
+            </div>
+            <div style="border:2px solid #000; padding:4px; text-align:center;">
+              <div style="background:#e8d8b0; height:30px; border:1px solid #000;"></div>
+              <div style="font-family:'Press Start 2P',monospace; font-size:5px; margin-top:3px;">BEIGE</div>
+            </div>
+            <div style="border:2px solid #000; padding:4px; text-align:center;">
+              <div style="background:#9bbc0f; height:30px; border:1px solid #0f380f;"></div>
+              <div style="font-family:'Press Start 2P',monospace; font-size:5px; margin-top:3px;">GB DMG</div>
+            </div>
+            <div style="border:2px solid #000; padding:4px; text-align:center;">
+              <div style="background:#6c5eb5; height:30px; border:1px solid #000;"></div>
+              <div style="font-family:'Press Start 2P',monospace; font-size:5px; margin-top:3px;">C64</div>
+            </div>
+            <div style="border:2px solid #000; padding:4px; text-align:center;">
+              <div style="background:#000; height:30px; border:1px solid #000;"></div>
+              <div style="font-family:'Press Start 2P',monospace; font-size:5px; margin-top:3px;">ZX</div>
+            </div>
+            <div style="border:2px solid #000; padding:4px; text-align:center; background:#000; color:#33ff33;">
+              <div style="background:#000; height:30px; border:1px solid #33ff33;"></div>
+              <div style="font-family:'Press Start 2P',monospace; font-size:5px; margin-top:3px; color:#33ff33;">APPLE2</div>
+            </div>
+          </div>
+          <div style="border-top:1px solid #000; padding:6px 8px; font-family:'VT323',monospace; font-size:13px;">SOM ............... [X]</div>
+          <div style="border-top:1px solid #000; padding:6px 8px; font-family:'VT323',monospace; font-size:13px;">HAPTIC ........... [X]</div>
+          <div style="border-top:1px solid #000; padding:6px 8px; font-family:'VT323',monospace; font-size:13px;">ANIM. ............ [X]</div>
+          <div style="flex:1;"></div>
+          <div class="px-btn">SALVAR</div>
+        </div>
+      </div>
+
+      <!-- ===== SCREENSHOT 3 — PRESETS ===== -->
+      <div class="phone">
+        <div class="phone-status"><span>9:41</span><span>BAT 100%</span></div>
+        <div class="phone-overlay">
+          <div class="ov-title">PRESETS PROS SEUS JOGOS</div>
+          <div class="ov-sub">Ludo, Banco Imob., RPG...</div>
+        </div>
+        <div class="phone-screen">
+          <div class="phone-appbar">JOGOS</div>
+          <div style="padding:8px; display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <div style="border:2px solid #000; padding:8px 4px; text-align:center; font-family:'Silkscreen',monospace; font-size:9px;">
+              LUDO<br><span style="font-family:'VT323',monospace; font-size:11px;">2d6</span>
+            </div>
+            <div style="border:2px solid #000; padding:8px 4px; text-align:center; font-family:'Silkscreen',monospace; font-size:9px;">
+              BANCO IM.<br><span style="font-family:'VT323',monospace; font-size:11px;">2d6</span>
+            </div>
+            <div style="border:2px solid #000; padding:8px 4px; text-align:center; font-family:'Silkscreen',monospace; font-size:9px;">
+              WAR ATQ.<br><span style="font-family:'VT323',monospace; font-size:11px;">3d6</span>
+            </div>
+            <div style="border:2px solid #000; padding:8px 4px; text-align:center; font-family:'Silkscreen',monospace; font-size:9px;">
+              WAR DEF.<br><span style="font-family:'VT323',monospace; font-size:11px;">2d6</span>
+            </div>
+            <div style="border:2px solid #000; padding:8px 4px; text-align:center; font-family:'Silkscreen',monospace; font-size:9px;">
+              YAHTZEE<br><span style="font-family:'VT323',monospace; font-size:11px;">5d6</span>
+            </div>
+            <div style="border:2px solid #000; padding:8px 4px; text-align:center; font-family:'Silkscreen',monospace; font-size:9px;">
+              CATAN<br><span style="font-family:'VT323',monospace; font-size:11px;">2d6</span>
+            </div>
+            <div style="border:2px solid #000; padding:8px 4px; text-align:center; font-family:'Silkscreen',monospace; font-size:9px;">
+              D&amp;D<br><span style="font-family:'VT323',monospace; font-size:11px;">1d20</span>
+            </div>
+            <div style="border:2px solid #000; padding:8px 4px; text-align:center; font-family:'Silkscreen',monospace; font-size:9px; background:#000; color:#fff;">
+              + NOVO
+            </div>
+          </div>
+          <div style="flex:1;"></div>
+          <div class="px-btn">USAR PRESET</div>
+        </div>
+      </div>
+
+      <!-- ===== SCREENSHOT 4 — HISTORICO ===== -->
+      <div class="phone">
+        <div class="phone-status"><span>9:41</span><span>BAT 100%</span></div>
+        <div class="phone-overlay">
+          <div class="ov-title">HISTÓRICO INFINITO</div>
+          <div class="ov-sub">cada rolagem salva localmente</div>
+        </div>
+        <div class="phone-screen">
+          <div class="phone-appbar">HISTÓRICO</div>
+          <div style="font-family:'VT323',monospace; font-size:13px; line-height:1.4;">
+            <div style="display:flex; justify-content:space-between; padding:5px 8px; border-bottom:1px solid #000;">
+              <span>21:04 · 2d6 LUDO</span><span>=09</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:5px 8px; border-bottom:1px solid #000;">
+              <span>21:03 · 2d6 BANC.</span><span>=07</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:5px 8px; border-bottom:1px solid #000;">
+              <span>20:58 · 1d20 D&amp;D</span><span>=18</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:5px 8px; border-bottom:1px solid #000;">
+              <span>20:55 · 3d6 WAR</span><span>=12</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:5px 8px; border-bottom:1px solid #000;">
+              <span>20:50 · 5d6 YAHT.</span><span>=21</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:5px 8px; border-bottom:1px solid #000;">
+              <span>20:42 · 2d6 CATAN</span><span>=11</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:5px 8px; border-bottom:1px solid #000;">
+              <span>20:30 · 1d100</span><span>=64</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:5px 8px; border-bottom:1px solid #000;">
+              <span>20:21 · 2d6</span><span>=08</span>
+            </div>
+          </div>
+          <div style="flex:1;"></div>
+          <div style="font-family:'Press Start 2P',monospace; font-size:7px; text-align:center; padding:4px;">256 ROLAGENS · LOCAL</div>
+          <div class="px-btn">LIMPAR</div>
+        </div>
+      </div>
+
+      <!-- ===== SCREENSHOT 5 — SPLASH ===== -->
+      <div class="phone">
+        <div class="phone-status"><span>9:41</span><span>BAT 100%</span></div>
+        <div class="phone-overlay">
+          <div class="ov-title">GRÁTIS · SEM ADS · OFFLINE</div>
+          <div class="ov-sub">como deveria ser</div>
+        </div>
+        <div class="phone-screen" style="align-items:center; justify-content:center; padding: 20px;">
+          <div style="text-align:center; margin: auto 0;">
+            <svg width="100" height="100" viewBox="0 0 100 100" shape-rendering="crispEdges" style="margin: 0 auto 20px;">
+              <rect x="4" y="4" width="92" height="92" fill="#fff" stroke="#000" stroke-width="4"/>
+              <rect x="12" y="12" width="76" height="76" fill="none" stroke="#000" stroke-width="2"/>
+              <rect x="24" y="24" width="10" height="10" fill="#000"/>
+              <rect x="24" y="45" width="10" height="10" fill="#000"/>
+              <rect x="24" y="66" width="10" height="10" fill="#000"/>
+              <rect x="66" y="24" width="10" height="10" fill="#000"/>
+              <rect x="66" y="45" width="10" height="10" fill="#000"/>
+              <rect x="66" y="66" width="10" height="10" fill="#000"/>
+            </svg>
+            <div style="font-family:'Silkscreen',monospace; font-size:20px; letter-spacing:2px; font-weight:700;">1-BIT<br>DICE</div>
+            <div style="font-family:'VT323',monospace; font-size:14px; margin-top:10px; border-top:1px solid #000; border-bottom:1px solid #000; padding:3px 0;">DICE FOR EVERY GAME</div>
+            <div style="font-family:'Press Start 2P',monospace; font-size:6px; margin-top:14px; letter-spacing:1px;">V1.0 · AM2 STUDIOS</div>
+          </div>
+          <div style="font-family:'Press Start 2P',monospace; font-size:6px; letter-spacing:1px; padding-bottom: 8px;">LOADING . . .</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============== DESC ============== -->
+  <div class="section">
+    <div class="section-title">04 · DESCRIÇÃO CURTA (80 chars)</div>
+    <div class="section-sub">aparece nos cards de busca · max 80 caracteres</div>
+    <hr class="divider-thin">
+
+    <div class="short-desc">
+      Dados em 1-bit retrô. Pra Ludo, Banco Imob., RPG. Grátis, sem ads, offline.
+    </div>
+    <div style="font-family:'Press Start 2P',monospace; font-size:8px; margin-top:8px; letter-spacing:1px; text-align:right;">
+      75 / 80 CHARS
+    </div>
+  </div>
+
+  <!-- ============== FULL DESC ============== -->
+  <div class="section">
+    <div class="section-title">05 · DESCRIÇÃO COMPLETA</div>
+    <div class="section-sub">corpo do listing · ~300 palavras</div>
+    <hr class="divider-thin">
+
+    <div class="full-desc">
+      <div class="mac-titlebar" style="height:20px;">
+        <div class="mac-titlebar-close" style="top:3px; left:6px; width:12px; height:12px;"></div>
+        <div class="mac-titlebar-text" style="font-size:10px;">DESCRIPTION.TXT</div>
+      </div>
+      <div class="full-desc-body">
+
+        <p>Lembra quando computador era preto sobre branco e cada pixel importava? O <b>1-Bit Dice</b> é um rolador de dados de mesa inspirado no Mac System 1, no Game Boy DMG e nos terminais Apple II. Sem 3D falso, sem partículas, sem brilho — só pixel art real e dados que rolam quando você precisa.</p>
+
+        <p><b>FEATURES</b></p>
+        <ul>
+          <li>Role até 10 dados de uma vez</li>
+          <li>7 tipos: d4, d6, d8, d10, d12, d20, d100</li>
+          <li>Presets prontos: Ludo, Banco Imobiliário, War, Yahtzee, Catan, D&amp;D</li>
+          <li>Histórico ilimitado salvo localmente</li>
+          <li>6 paletas retrô: Mac Classic, Mac Beige, Game Boy DMG, C64, ZX Spectrum, Apple II Green</li>
+          <li>Som 8-bit opcional</li>
+          <li>Feedback haptic configurável</li>
+          <li>Animação de rolagem pixel art</li>
+        </ul>
+
+        <p><b>QUANDO USAR</b></p>
+        <p>Esqueceu o dado do Ludo? Sumiu o do Banco Imobiliário? Tá jogando War com a galera e precisa rolar 3d6 rápido? Mestrando uma sessão de D&amp;D e quer uma rolagem limpa? Yahtzee em viagem? Decisão difícil que precisa de sorte? O 1-Bit Dice resolve.</p>
+
+        <p><b>POR QUE ESSE APP</b></p>
+        <p>Outros simuladores de dados são cheios de ads, pedem login, querem GPS, viram cassino. O 1-Bit Dice é <b>grátis pra valer</b>: sem anúncios, sem compras dentro do app, sem rastreamento, sem login, 100% offline. Funciona em qualquer Android. Pesa menos que uma foto.</p>
+
+        <p>Pixel art real, feito à mão, sem filtro. Como deveria ser.</p>
+
+        <p style="margin-top:18px;"><b>KEYWORDS:</b> ludo dados, banco imobiliário, simulador de dados RPG, D&amp;D dice roller, Yahtzee, Catan, pixel art, retrô, 1-bit, dados de mesa, dado virtual, dice roller offline.</p>
+
+        <div class="footer-micro">
+          · part of the call of old chico universe ·
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== METADATA ============== -->
+  <div class="section">
+    <div class="section-title">06 · METADATA DA LOJA</div>
+    <div class="section-sub">campos obrigatórios do Google Play Console</div>
+    <hr class="divider-thin">
+
+    <div class="metadata-grid">
+      <div class="meta-cell">
+        <div class="meta-label">CATEGORIA</div>
+        <div class="meta-value">Ferramentas · alt: Jogos &gt; Tabuleiro</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">CLASSIFICAÇÃO</div>
+        <div class="meta-value">Livre · todas as idades</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">IDIOMAS</div>
+        <div class="meta-value">PT-BR · EN-US · ES</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">PREÇO</div>
+        <div class="meta-value">Grátis · sem IAP</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">PERMISSÕES</div>
+        <div class="meta-value">Vibração (opcional)</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">TAMANHO</div>
+        <div class="meta-value">&lt; 5 MB · offline-first</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">DEV</div>
+        <div class="meta-value">AM2 Studios · monteiroamelo@gmail.com</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">POL. PRIVACIDADE</div>
+        <div class="meta-value">https://1bitdice.com/privacy</div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;">
+      <div class="meta-label" style="font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:1.5px; margin-bottom:8px;">TAGS</div>
+      <div class="tags-row">
+        <span class="tag">LUDO</span>
+        <span class="tag">DADOS</span>
+        <span class="tag">RPG</span>
+        <span class="tag">TABULEIRO</span>
+        <span class="tag">BANCO IMOBILIARIO</span>
+        <span class="tag">PIXEL ART</span>
+        <span class="tag">1-BIT</span>
+        <span class="tag">RETRO</span>
+        <span class="tag">D&amp;D</span>
+        <span class="tag">YAHTZEE</span>
+        <span class="tag">CATAN</span>
+        <span class="tag">OFFLINE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== SEARCH MOCK ============== -->
+  <div class="section">
+    <div class="section-title">07 · COMO APARECE NA BUSCA DO PLAY</div>
+    <div class="section-sub">mock do resultado · busca por "dados ludo"</div>
+    <hr class="divider-thin">
+
+    <div class="search-mock">
+      <div class="search-bar">
+        <div class="search-bar-input">dados ludo</div>
+      </div>
+
+      <!-- our app -->
+      <div class="search-result">
+        <div class="sr-icon">
+          <svg width="60" height="60" viewBox="0 0 60 60" shape-rendering="crispEdges">
+            <rect x="2" y="2" width="56" height="56" fill="#fff" stroke="#000" stroke-width="3"/>
+            <rect x="6" y="6" width="48" height="48" fill="none" stroke="#000" stroke-width="1"/>
+            <rect x="14" y="14" width="6" height="6" fill="#000"/>
+            <rect x="14" y="27" width="6" height="6" fill="#000"/>
+            <rect x="14" y="40" width="6" height="6" fill="#000"/>
+            <rect x="40" y="14" width="6" height="6" fill="#000"/>
+            <rect x="40" y="27" width="6" height="6" fill="#000"/>
+            <rect x="40" y="40" width="6" height="6" fill="#000"/>
+          </svg>
+        </div>
+        <div class="sr-info">
+          <div class="sr-name">1-BIT DICE</div>
+          <div class="sr-dev">am2 studios · Ferramentas</div>
+          <div class="sr-rating">5.0 STARS  ·  &lt; 5 MB  ·  OFFLINE</div>
+          <span class="sr-tag compare">DIFERENCIAL: PIXEL ART REAL · SEM ADS</span>
+        </div>
+        <div class="sr-install">INSTALAR</div>
+      </div>
+
+      <!-- competitor -->
+      <div class="search-result">
+        <div class="sr-icon" style="background:#777; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'VT323',monospace; font-size:28px;">
+          DICE
+        </div>
+        <div class="sr-info">
+          <div class="sr-name" style="text-transform:none; font-family: 'VT323', monospace; font-size: 22px; letter-spacing:0;">Lançador de Dados 3D</div>
+          <div class="sr-dev">DiceApps Inc. · Ferramentas</div>
+          <div class="sr-rating">3.4 STARS  ·  47 MB  ·  ADS</div>
+          <span class="sr-tag">CONCORRENTE: ICONE GENERICO · COM ADS</span>
+        </div>
+        <div class="sr-install" style="background:#fff; color:#000;">INSTALAR</div>
+      </div>
+    </div>
+
+    <div class="compare-row" style="padding-left:0; padding-right:0;">
+      <div class="compare-half">
+        <div class="compare-tb"><span class="compare-tb-text">1-BIT DICE</span></div>
+        <div style="padding:14px; font-family:'VT323',monospace; font-size:16px; line-height:1.5;">
+          + icone pixel art reconhecivel<br>
+          + nome curto e ASCII puro<br>
+          + sem ads, sem login, offline<br>
+          + &lt; 5 MB<br>
+          + 6 paletas, 7 tipos de dado<br>
+          + presets BR (Ludo, Banco Imob., War)
+        </div>
+      </div>
+      <div class="compare-half">
+        <div class="compare-tb"><span class="compare-tb-text">CONCORRENTE TIPICO</span></div>
+        <div style="padding:14px; font-family:'VT323',monospace; font-size:16px; line-height:1.5;">
+          - icone emoji ou 3D generico<br>
+          - nome longo SEO-stuffed<br>
+          - ads no meio das rolagens<br>
+          - 30-80 MB<br>
+          - 1 visual, sem customizacao<br>
+          - sem presets de jogos locais
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== FOOTER ============== -->
+  <div class="page-footer">
+    1-BIT DICE · GOOGLE PLAY LISTING V2 · AM2 STUDIOS · 2026
+    <div style="font-family:'VT323',monospace; font-size:13px; margin-top:8px; letter-spacing:0.5px; color:#555;">
+      part of the call of old chico universe
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

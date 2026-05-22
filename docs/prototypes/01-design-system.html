@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>1-BIT DICE — Design System v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&family=Press+Start+2P&display=swap');
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    image-rendering: pixelated;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: none;
+    font-smooth: never;
+    text-rendering: geometricPrecision;
+  }
+
+  :root {
+    --ink: #000000;
+    --paper: #FFFFFF;
+    --shadow: #000000;
+  }
+
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'VT323', monospace;
+  }
+
+  body {
+    width: 1400px;
+    margin: 0 auto;
+    padding: 32px;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent 0,
+        transparent 3px,
+        rgba(0,0,0,0.03) 3px,
+        rgba(0,0,0,0.03) 4px
+      ),
+      var(--paper);
+  }
+
+  /* ----------- MAC-STYLE WINDOW ----------- */
+  .mac-window {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    box-shadow: 4px 4px 0 var(--ink);
+    margin-bottom: 32px;
+  }
+
+  .mac-titlebar {
+    border-bottom: 2px solid var(--ink);
+    height: 24px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    position: relative;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        var(--ink) 0,
+        var(--ink) 1px,
+        var(--paper) 1px,
+        var(--paper) 3px
+      );
+  }
+
+  .mac-close {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    display: inline-block;
+  }
+
+  .mac-title {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    background: var(--paper);
+    padding: 0 12px;
+    margin: 0 auto;
+    border-left: 2px solid var(--ink);
+    border-right: 2px solid var(--ink);
+    line-height: 1;
+    letter-spacing: 1px;
+  }
+
+  .mac-body {
+    padding: 24px;
+    background: var(--paper);
+  }
+
+  /* ----------- HEADER ----------- */
+  .header-wrap .mac-body {
+    text-align: center;
+    padding: 40px 24px 32px;
+  }
+
+  .wordmark {
+    font-family: 'Silkscreen', monospace;
+    font-weight: 700;
+    font-size: 80px;
+    letter-spacing: 4px;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .tagline {
+    font-family: 'VT323', monospace;
+    font-size: 28px;
+    margin-top: 12px;
+    letter-spacing: 4px;
+  }
+
+  .header-strip {
+    margin-top: 20px;
+    height: 8px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        var(--ink) 0,
+        var(--ink) 4px,
+        var(--paper) 4px,
+        var(--paper) 8px
+      );
+  }
+
+  /* ----------- SECTION HEADERS ----------- */
+  .section-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 12px;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+
+  .section-sub {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    margin-bottom: 24px;
+    color: var(--ink);
+  }
+
+  /* ----------- PALETTES ----------- */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .palette-card {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  .palette-card .pal-title-bar {
+    border-bottom: 2px solid var(--ink);
+    padding: 4px 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        var(--ink) 0,
+        var(--ink) 1px,
+        var(--paper) 1px,
+        var(--paper) 3px
+      );
+  }
+
+  .palette-card .pal-title {
+    background: var(--paper);
+    padding: 2px 6px;
+    display: inline-block;
+    border: 2px solid var(--ink);
+  }
+
+  .pal-swatches {
+    display: flex;
+    height: 96px;
+  }
+
+  .pal-swatch {
+    flex: 1;
+    border-right: 2px solid var(--ink);
+  }
+
+  .pal-swatch:last-child {
+    border-right: none;
+  }
+
+  .pal-info {
+    border-top: 2px solid var(--ink);
+    padding: 8px 12px;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .pal-info .default-badge {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    border: 2px solid var(--ink);
+    padding: 3px 5px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .pal-hex {
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+
+  /* ----------- TYPOGRAPHY SECTION ----------- */
+  .type-row {
+    border-bottom: 2px dashed var(--ink);
+    padding: 20px 0;
+  }
+
+  .type-row:last-child {
+    border-bottom: none;
+  }
+
+  .type-row .type-meta {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+
+  .type-display {
+    font-family: 'Silkscreen', monospace;
+    font-weight: 700;
+    font-size: 64px;
+    line-height: 1;
+    letter-spacing: 2px;
+  }
+
+  .type-body {
+    font-family: 'VT323', monospace;
+    font-size: 24px;
+    line-height: 1.4;
+    max-width: 900px;
+  }
+
+  .type-micro {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    line-height: 1.6;
+    letter-spacing: 1px;
+  }
+
+  /* ----------- ICONS SECTION ----------- */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+
+  .icon-cell {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 18px 12px 12px;
+    text-align: center;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+
+  .icon-cell svg {
+    display: block;
+    margin: 0 auto 10px;
+  }
+
+  .icon-label {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  /* ----------- COMPONENTS SECTION ----------- */
+  .components-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+
+  .comp-card {
+    border: 2px solid var(--ink);
+    padding: 20px;
+    background: var(--paper);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  .comp-card h4 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+
+  /* Buttons */
+  .btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 12px;
+    padding: 12px 20px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    letter-spacing: 2px;
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .btn-secondary {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  /* Preset card */
+  .preset {
+    border: 2px solid var(--ink);
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+
+  .preset-text .preset-name {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  .preset-text .preset-desc {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    margin-top: 4px;
+  }
+
+  /* Divider */
+  .divider-demo {
+    height: 2px;
+    background: var(--ink);
+    margin: 20px 0;
+  }
+
+  .divider-demo.dashed {
+    background: none;
+    border-top: 2px dashed var(--ink);
+    height: 0;
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-block;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    border: 2px solid var(--ink);
+    padding: 4px 8px;
+    background: var(--ink);
+    color: var(--paper);
+    letter-spacing: 1px;
+  }
+
+  .badge-outline {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  /* Checkbox */
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+  }
+
+  .checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .checkbox.checked::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 5px;
+    height: 10px;
+    border-right: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    transform: rotate(45deg);
+  }
+
+  /* Toggle Mac-style */
+  .toggle {
+    width: 44px;
+    height: 22px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    display: inline-block;
+    position: relative;
+  }
+
+  .toggle .knob {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 18px;
+    height: 18px;
+    background: var(--ink);
+  }
+
+  .toggle.on .knob {
+    left: 22px;
+  }
+
+  /* Rules section */
+  .rules-list {
+    list-style: none;
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    line-height: 1.5;
+  }
+
+  .rules-list li {
+    padding: 10px 0 10px 32px;
+    position: relative;
+    border-bottom: 2px dashed var(--ink);
+  }
+
+  .rules-list li::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 18px;
+    width: 12px;
+    height: 12px;
+    background: var(--ink);
+  }
+
+  .rules-list li:last-child {
+    border-bottom: none;
+  }
+
+  /* Two col layout helper */
+  .two-col {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+  }
+
+  /* Footer signature */
+  .signature {
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    margin-top: 24px;
+    letter-spacing: 2px;
+    padding: 12px;
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- =========================================================
+       HEADER WINDOW
+       ========================================================= -->
+  <section class="mac-window header-wrap">
+    <div class="mac-titlebar">
+      <span class="mac-close"></span>
+      <span class="mac-title">1-BIT DICE.app</span>
+    </div>
+    <div class="mac-body">
+      <div class="wordmark">1-BIT DICE</div>
+      <div class="tagline">DICE FOR EVERY GAME</div>
+      <div class="header-strip"></div>
+      <div style="margin-top:16px; font-family:'VT323',monospace; font-size:20px;">
+        Design System v2 &middot; Retro Computer Aesthetic &middot; Mac System 1 / Game Boy DMG / Apple ][
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       PALETTES
+       ========================================================= -->
+  <section class="mac-window">
+    <div class="mac-titlebar">
+      <span class="mac-close"></span>
+      <span class="mac-title">Paletas</span>
+    </div>
+    <div class="mac-body">
+      <div class="section-label">01 / PALETAS</div>
+      <div class="section-sub">Mac Classic default. Dual-tone bitmaps de computadores antigos. Sem sépia.</div>
+
+      <div class="palette-grid">
+
+        <!-- Mac Classic -->
+        <div class="palette-card">
+          <div class="pal-title-bar"><span class="pal-title">Mac Classic</span></div>
+          <div class="pal-swatches">
+            <div class="pal-swatch" style="background:#000000;"></div>
+            <div class="pal-swatch" style="background:#FFFFFF;"></div>
+          </div>
+          <div class="pal-info">
+            <span class="pal-hex">#000000 / #FFFFFF</span>
+            <span class="default-badge">DEFAULT</span>
+          </div>
+        </div>
+
+        <!-- Mac Beige -->
+        <div class="palette-card">
+          <div class="pal-title-bar"><span class="pal-title">Mac Beige</span></div>
+          <div class="pal-swatches">
+            <div class="pal-swatch" style="background:#000000;"></div>
+            <div class="pal-swatch" style="background:#C7C7C7;"></div>
+          </div>
+          <div class="pal-info">
+            <span class="pal-hex">#000000 / #C7C7C7</span>
+          </div>
+        </div>
+
+        <!-- Game Boy DMG -->
+        <div class="palette-card">
+          <div class="pal-title-bar"><span class="pal-title">Game Boy DMG</span></div>
+          <div class="pal-swatches">
+            <div class="pal-swatch" style="background:#0F380F;"></div>
+            <div class="pal-swatch" style="background:#9BBC0F;"></div>
+          </div>
+          <div class="pal-info">
+            <span class="pal-hex">#0F380F / #9BBC0F</span>
+          </div>
+        </div>
+
+        <!-- Commodore 64 -->
+        <div class="palette-card">
+          <div class="pal-title-bar"><span class="pal-title">Commodore 64</span></div>
+          <div class="pal-swatches">
+            <div class="pal-swatch" style="background:#352879;"></div>
+            <div class="pal-swatch" style="background:#7869C4;"></div>
+          </div>
+          <div class="pal-info">
+            <span class="pal-hex">#352879 / #7869C4</span>
+          </div>
+        </div>
+
+        <!-- ZX Spectrum -->
+        <div class="palette-card">
+          <div class="pal-title-bar"><span class="pal-title">ZX Spectrum</span></div>
+          <div class="pal-swatches">
+            <div class="pal-swatch" style="background:#000000;"></div>
+            <div class="pal-swatch" style="background:#00FF00;"></div>
+          </div>
+          <div class="pal-info">
+            <span class="pal-hex">#000000 / #00FF00</span>
+          </div>
+        </div>
+
+        <!-- Apple II Green -->
+        <div class="palette-card">
+          <div class="pal-title-bar"><span class="pal-title">Apple ][ Green</span></div>
+          <div class="pal-swatches">
+            <div class="pal-swatch" style="background:#000000;"></div>
+            <div class="pal-swatch" style="background:#33FF33;"></div>
+          </div>
+          <div class="pal-info">
+            <span class="pal-hex">#000000 / #33FF33</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:24px; border:2px solid var(--ink); padding:12px 16px; display:flex; align-items:center; gap:16px; box-shadow:3px 3px 0 var(--ink);">
+        <div style="display:flex;">
+          <div style="width:48px; height:48px; background:#000000; border:2px solid #000;"></div>
+          <div style="width:48px; height:48px; background:#FF9933; border:2px solid #000; border-left:none;"></div>
+        </div>
+        <div>
+          <div style="font-family:'Press Start 2P',monospace; font-size:11px;">APPLE //E AMBER &middot; BONUS</div>
+          <div class="pal-hex" style="margin-top:6px;">#000000 / #FF9933</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================
+       TYPOGRAPHY
+       ========================================================= -->
+  <section class="mac-window">
+    <div class="mac-titlebar">
+      <span class="mac-close"></span>
+      <span class="mac-title">Tipografia</span>
+    </div>
+    <div class="mac-body">
+      <div class="section-label">02 / TIPOGRAFIA</div>
+      <div class="section-sub">Pixel fonts. Sem antialiasing. Sem itálico, sem cursiva.</div>
+
+      <div class="type-row">
+        <div class="type-meta">DISPLAY &middot; SILKSCREEN &middot; 64PX &middot; WORDMARK</div>
+        <div class="type-display">1-BIT DICE</div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">BODY / UI &middot; VT323 &middot; 24PX</div>
+        <div class="type-body">
+          Rolar dados pra Ludo, RPG, qualquer jogo de tabuleiro.
+          Escolha um d6, d20, d100 — ou monte seu próprio preset com a quantidade certa.
+          Histórico fica salvo. Sem propaganda, sem login.
+        </div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">MICRO / CAPS &middot; PRESS START 2P &middot; 10PX</div>
+        <div class="type-micro">
+          ROLAR &middot; LIMPAR &middot; AJUSTES &middot; HISTÓRICO &middot; TIPO &middot; QUANTIDADE &middot; JOGOS &middot; PRESETS
+        </div>
+      </div>
+
+      <div class="type-row">
+        <div class="type-meta">DISPLAY &middot; SILKSCREEN &middot; 32PX &middot; NUMERAIS</div>
+        <div style="font-family:'Silkscreen',monospace; font-weight:700; font-size:32px; letter-spacing:4px;">
+          0 1 2 3 4 5 6 7 8 9 + - × ÷
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       ICONS
+       ========================================================= -->
+  <section class="mac-window">
+    <div class="mac-titlebar">
+      <span class="mac-close"></span>
+      <span class="mac-title">Ícones</span>
+    </div>
+    <div class="mac-body">
+      <div class="section-label">03 / ÍCONES</div>
+      <div class="section-sub">SVG inline 32×32 com shape-rendering="crispEdges". Bordas duras 1-2px.</div>
+
+      <div class="icon-grid">
+
+        <!-- d6 -->
+        <div class="icon-cell">
+          <svg width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="1" y="1" width="14" height="14" fill="none" stroke="#000" stroke-width="1"/>
+            <rect x="4" y="4" width="2" height="2" fill="#000"/>
+            <rect x="10" y="4" width="2" height="2" fill="#000"/>
+            <rect x="7" y="7" width="2" height="2" fill="#000"/>
+            <rect x="4" y="10" width="2" height="2" fill="#000"/>
+            <rect x="10" y="10" width="2" height="2" fill="#000"/>
+          </svg>
+          <div class="icon-label">d6</div>
+        </div>
+
+        <!-- Engrenagem -->
+        <div class="icon-cell">
+          <svg width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="7" y="1" width="2" height="2" fill="#000"/>
+            <rect x="7" y="13" width="2" height="2" fill="#000"/>
+            <rect x="1" y="7" width="2" height="2" fill="#000"/>
+            <rect x="13" y="7" width="2" height="2" fill="#000"/>
+            <rect x="3" y="3" width="2" height="2" fill="#000"/>
+            <rect x="11" y="3" width="2" height="2" fill="#000"/>
+            <rect x="3" y="11" width="2" height="2" fill="#000"/>
+            <rect x="11" y="11" width="2" height="2" fill="#000"/>
+            <rect x="4" y="4" width="8" height="8" fill="none" stroke="#000" stroke-width="1"/>
+            <rect x="7" y="7" width="2" height="2" fill="#000"/>
+          </svg>
+          <div class="icon-label">ajustes</div>
+        </div>
+
+        <!-- Ampulheta -->
+        <div class="icon-cell">
+          <svg width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="3" y="1" width="10" height="1" fill="#000"/>
+            <rect x="3" y="14" width="10" height="1" fill="#000"/>
+            <rect x="3" y="2" width="1" height="2" fill="#000"/>
+            <rect x="12" y="2" width="1" height="2" fill="#000"/>
+            <rect x="3" y="12" width="1" height="2" fill="#000"/>
+            <rect x="12" y="12" width="1" height="2" fill="#000"/>
+            <rect x="4" y="3" width="8" height="1" fill="#000"/>
+            <rect x="4" y="12" width="8" height="1" fill="#000"/>
+            <rect x="5" y="4" width="6" height="1" fill="#000"/>
+            <rect x="5" y="11" width="6" height="1" fill="#000"/>
+            <rect x="6" y="5" width="4" height="1" fill="#000"/>
+            <rect x="6" y="10" width="4" height="1" fill="#000"/>
+            <rect x="7" y="6" width="2" height="4" fill="#000"/>
+          </svg>
+          <div class="icon-label">histórico</div>
+        </div>
+
+        <!-- Estrela genérica (sem pontos nos vértices) -->
+        <div class="icon-cell">
+          <svg width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="7" y="2" width="2" height="2" fill="#000"/>
+            <rect x="6" y="4" width="4" height="2" fill="#000"/>
+            <rect x="2" y="6" width="12" height="2" fill="#000"/>
+            <rect x="4" y="8" width="8" height="2" fill="#000"/>
+            <rect x="3" y="10" width="3" height="2" fill="#000"/>
+            <rect x="10" y="10" width="3" height="2" fill="#000"/>
+            <rect x="2" y="12" width="3" height="2" fill="#000"/>
+            <rect x="11" y="12" width="3" height="2" fill="#000"/>
+          </svg>
+          <div class="icon-label">presets</div>
+        </div>
+
+        <!-- Lixeira -->
+        <div class="icon-cell">
+          <svg width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="5" y="2" width="6" height="1" fill="#000"/>
+            <rect x="2" y="3" width="12" height="1" fill="#000"/>
+            <rect x="3" y="4" width="1" height="10" fill="#000"/>
+            <rect x="12" y="4" width="1" height="10" fill="#000"/>
+            <rect x="3" y="13" width="10" height="1" fill="#000"/>
+            <rect x="6" y="6" width="1" height="6" fill="#000"/>
+            <rect x="9" y="6" width="1" height="6" fill="#000"/>
+          </svg>
+          <div class="icon-label">limpar</div>
+        </div>
+
+        <!-- Toggle on/off Mac-style -->
+        <div class="icon-cell">
+          <svg width="48" height="32" viewBox="0 0 24 16" shape-rendering="crispEdges">
+            <rect x="1" y="3" width="22" height="10" fill="none" stroke="#000" stroke-width="1"/>
+            <rect x="12" y="3" width="11" height="10" fill="#000"/>
+            <rect x="15" y="6" width="5" height="1" fill="#fff"/>
+            <rect x="15" y="9" width="5" height="1" fill="#fff"/>
+          </svg>
+          <div class="icon-label">toggle</div>
+        </div>
+
+        <!-- Seta cima -->
+        <div class="icon-cell">
+          <svg width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="7" y="2" width="2" height="12" fill="#000"/>
+            <rect x="5" y="4" width="6" height="2" fill="#000"/>
+            <rect x="3" y="6" width="10" height="2" fill="#000"/>
+          </svg>
+          <div class="icon-label">seta acima</div>
+        </div>
+
+        <!-- Seta direita -->
+        <div class="icon-cell">
+          <svg width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="2" y="7" width="12" height="2" fill="#000"/>
+            <rect x="10" y="5" width="2" height="6" fill="#000"/>
+            <rect x="8" y="3" width="2" height="10" fill="#000"/>
+          </svg>
+          <div class="icon-label">seta direita</div>
+        </div>
+
+        <!-- Seta baixo -->
+        <div class="icon-cell">
+          <svg width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="7" y="2" width="2" height="12" fill="#000"/>
+            <rect x="5" y="10" width="6" height="2" fill="#000"/>
+            <rect x="3" y="8" width="10" height="2" fill="#000"/>
+          </svg>
+          <div class="icon-label">seta baixo</div>
+        </div>
+
+        <!-- Seta esquerda -->
+        <div class="icon-cell">
+          <svg width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="2" y="7" width="12" height="2" fill="#000"/>
+            <rect x="4" y="5" width="2" height="6" fill="#000"/>
+            <rect x="6" y="3" width="2" height="10" fill="#000"/>
+          </svg>
+          <div class="icon-label">seta esquerda</div>
+        </div>
+
+        <!-- Plus -->
+        <div class="icon-cell">
+          <svg width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="7" y="3" width="2" height="10" fill="#000"/>
+            <rect x="3" y="7" width="10" height="2" fill="#000"/>
+          </svg>
+          <div class="icon-label">mais</div>
+        </div>
+
+        <!-- Minus -->
+        <div class="icon-cell">
+          <svg width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="3" y="7" width="10" height="2" fill="#000"/>
+          </svg>
+          <div class="icon-label">menos</div>
+        </div>
+
+        <!-- Círculo -->
+        <div class="icon-cell">
+          <svg width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="6" y="2" width="4" height="1" fill="#000"/>
+            <rect x="6" y="13" width="4" height="1" fill="#000"/>
+            <rect x="4" y="3" width="2" height="1" fill="#000"/>
+            <rect x="10" y="3" width="2" height="1" fill="#000"/>
+            <rect x="4" y="12" width="2" height="1" fill="#000"/>
+            <rect x="10" y="12" width="2" height="1" fill="#000"/>
+            <rect x="3" y="4" width="1" height="2" fill="#000"/>
+            <rect x="12" y="4" width="1" height="2" fill="#000"/>
+            <rect x="3" y="10" width="1" height="2" fill="#000"/>
+            <rect x="12" y="10" width="1" height="2" fill="#000"/>
+            <rect x="2" y="6" width="1" height="4" fill="#000"/>
+            <rect x="13" y="6" width="1" height="4" fill="#000"/>
+          </svg>
+          <div class="icon-label">círculo</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       COMPONENTS
+       ========================================================= -->
+  <section class="mac-window">
+    <div class="mac-titlebar">
+      <span class="mac-close"></span>
+      <span class="mac-title">Componentes</span>
+    </div>
+    <div class="mac-body">
+      <div class="section-label">04 / COMPONENTES</div>
+      <div class="section-sub">Mac System 1 feel. Borda 2px + sombra offset 3px. Sem gradiente, sem radius.</div>
+
+      <div class="components-grid">
+
+        <!-- Botões -->
+        <div class="comp-card">
+          <h4>BOTÕES</h4>
+          <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:center;">
+            <button class="btn btn-primary">ROLAR</button>
+            <button class="btn btn-secondary">LIMPAR</button>
+          </div>
+          <div style="margin-top:18px; font-family:'VT323',monospace; font-size:18px;">
+            Primário: tinta sólida. Secundário: outline.
+          </div>
+        </div>
+
+        <!-- Preset card -->
+        <div class="comp-card">
+          <h4>CARD DE PRESET</h4>
+          <div class="preset">
+            <svg width="40" height="40" viewBox="0 0 16 16" shape-rendering="crispEdges">
+              <rect x="1" y="1" width="14" height="14" fill="none" stroke="#000" stroke-width="1"/>
+              <rect x="4" y="4" width="2" height="2" fill="#000"/>
+              <rect x="10" y="4" width="2" height="2" fill="#000"/>
+              <rect x="7" y="7" width="2" height="2" fill="#000"/>
+              <rect x="4" y="10" width="2" height="2" fill="#000"/>
+              <rect x="10" y="10" width="2" height="2" fill="#000"/>
+            </svg>
+            <div class="preset-text">
+              <div class="preset-name">D&amp;D 5E</div>
+              <div class="preset-desc">1d20 + 4d6 + 1d8</div>
+            </div>
+          </div>
+          <div class="preset" style="margin-top:12px;">
+            <svg width="40" height="40" viewBox="0 0 16 16" shape-rendering="crispEdges">
+              <rect x="1" y="1" width="14" height="14" fill="none" stroke="#000" stroke-width="1"/>
+              <rect x="7" y="7" width="2" height="2" fill="#000"/>
+            </svg>
+            <div class="preset-text">
+              <div class="preset-name">LUDO</div>
+              <div class="preset-desc">1d6</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Divisores -->
+        <div class="comp-card">
+          <h4>DIVISORES</h4>
+          <div style="font-family:'VT323',monospace; font-size:18px;">Linha sólida 2px</div>
+          <div class="divider-demo"></div>
+          <div style="font-family:'VT323',monospace; font-size:18px;">Linha tracejada 2px</div>
+          <div class="divider-demo dashed"></div>
+          <div style="font-family:'VT323',monospace; font-size:18px;">Faixa listrada Mac</div>
+          <div style="height:8px; margin-top:12px; background:repeating-linear-gradient(0deg,var(--ink) 0,var(--ink) 1px,var(--paper) 1px,var(--paper) 3px); border:2px solid var(--ink);"></div>
+        </div>
+
+        <!-- Badges -->
+        <div class="comp-card">
+          <h4>BADGES</h4>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <span class="badge">v1.0</span>
+            <span class="badge badge-outline">BETA</span>
+            <span class="badge">NOVO</span>
+            <span class="badge badge-outline">d20</span>
+          </div>
+          <div style="margin-top:18px; font-family:'VT323',monospace; font-size:18px;">
+            Sólido pra status, outline pra tag neutra.
+          </div>
+        </div>
+
+        <!-- Checkboxes / toggles -->
+        <div class="comp-card">
+          <h4>CHECKBOX &amp; TOGGLE</h4>
+          <div class="checkbox-row">
+            <div class="checkbox checked"></div>
+            <span>Salvar histórico</span>
+          </div>
+          <div class="checkbox-row">
+            <div class="checkbox"></div>
+            <span>Som ao rolar</span>
+          </div>
+          <div class="checkbox-row">
+            <div class="checkbox checked"></div>
+            <span>Vibrar (mobile)</span>
+          </div>
+          <div style="margin-top:16px; display:flex; align-items:center; gap:12px;">
+            <div class="toggle on"><div class="knob"></div></div>
+            <span style="font-family:'VT323',monospace; font-size:20px;">ON</span>
+            <div class="toggle" style="margin-left:16px;"><div class="knob"></div></div>
+            <span style="font-family:'VT323',monospace; font-size:20px;">OFF</span>
+          </div>
+        </div>
+
+        <!-- Mini janela mac -->
+        <div class="comp-card">
+          <h4>JANELA MAC (RESULTADO)</h4>
+          <div style="border:2px solid var(--ink); background:var(--paper); box-shadow:3px 3px 0 var(--ink);">
+            <div style="border-bottom:2px solid var(--ink); height:18px; display:flex; align-items:center; padding:0 6px; background:repeating-linear-gradient(0deg,var(--ink) 0,var(--ink) 1px,var(--paper) 1px,var(--paper) 3px);">
+              <span style="width:10px; height:10px; border:2px solid var(--ink); background:var(--paper);"></span>
+              <span style="font-family:'VT323',monospace; font-size:14px; background:var(--paper); padding:0 8px; margin:0 auto; border-left:2px solid var(--ink); border-right:2px solid var(--ink); line-height:1;">Rolar</span>
+            </div>
+            <div style="padding:14px; font-family:'VT323',monospace; font-size:20px; text-align:center;">
+              <div style="font-family:'Silkscreen',monospace; font-size:48px; line-height:1;">17</div>
+              <div style="margin-top:8px;">1d20 = 17</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       RULES
+       ========================================================= -->
+  <section class="mac-window">
+    <div class="mac-titlebar">
+      <span class="mac-close"></span>
+      <span class="mac-title">Regras de Uso</span>
+    </div>
+    <div class="mac-body">
+      <div class="section-label">05 / REGRAS DE USO</div>
+      <div class="section-sub">Coerência pixel-perfect. Quando em dúvida, mais simples ganha.</div>
+
+      <div class="two-col">
+        <ul class="rules-list">
+          <li>Sempre desligar antialiasing: <span style="font-family:'Press Start 2P',monospace; font-size:12px;">font-smooth: never</span> + <span style="font-family:'Press Start 2P',monospace; font-size:12px;">image-rendering: pixelated</span>.</li>
+          <li>Bordas sempre 1 ou 2px. Nunca 1.5px, nunca border-radius. Cantos retos.</li>
+          <li>Sombras: offset fixo 2-3px na cor da tinta. Sem blur, sem alpha.</li>
+          <li>Grid base 8px. Múltiplos de 8 para padding, gap e altura de linha.</li>
+          <li>Ícones SVG inline com <span style="font-family:'Press Start 2P',monospace; font-size:12px;">shape-rendering="crispEdges"</span>. Sem path curvo suave.</li>
+          <li>Dithering checker 2×2 só pra meio-tom real. Não como enfeite.</li>
+          <li>Copy neutro PT-BR: Rolar, Limpar, Ajustes, Histórico, Presets.</li>
+        </ul>
+
+        <div>
+          <div style="border:2px solid var(--ink); padding:14px; box-shadow:3px 3px 0 var(--ink);">
+            <div style="font-family:'Press Start 2P',monospace; font-size:10px; margin-bottom:10px;">GRID 8PX</div>
+            <div style="display:grid; grid-template-columns:repeat(8,1fr); gap:0; border:2px solid var(--ink);">
+              <div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div>
+              <div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div>
+              <div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div>
+              <div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div><div style="height:28px;"></div><div style="height:28px; background:var(--ink);"></div>
+            </div>
+            <div style="margin-top:10px; font-family:'VT323',monospace; font-size:16px;">
+              Espaçamentos sempre múltiplos de 8.
+            </div>
+          </div>
+
+          <div style="margin-top:18px; border:2px solid var(--ink); padding:14px; box-shadow:3px 3px 0 var(--ink);">
+            <div style="font-family:'Press Start 2P',monospace; font-size:10px; margin-bottom:10px;">DITHER CHECKER 2×2</div>
+            <div style="height:48px; background-image:linear-gradient(45deg,var(--ink) 25%,transparent 25%),linear-gradient(-45deg,var(--ink) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,var(--ink) 75%),linear-gradient(-45deg,transparent 75%,var(--ink) 75%); background-size:4px 4px; background-position:0 0,0 2px,2px -2px,-2px 0; border:2px solid var(--ink);"></div>
+            <div style="margin-top:10px; font-family:'VT323',monospace; font-size:16px;">
+              Use só pra indicar sombra ou meio-tom.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
+  <section class="mac-window" style="margin-bottom:0;">
+    <div class="mac-titlebar">
+      <span class="mac-close"></span>
+      <span class="mac-title">Sobre</span>
+    </div>
+    <div class="mac-body" style="text-align:center; padding:20px;">
+      <div style="font-family:'Silkscreen',monospace; font-size:28px; letter-spacing:3px;">1-BIT DICE</div>
+      <div style="font-family:'VT323',monospace; font-size:18px; margin-top:6px;">design system v2 &middot; 1 bit forever</div>
+      <div class="header-strip" style="margin-top:14px;"></div>
+    </div>
+  </section>
+
+  <div class="signature">© 1-BIT DICE / SYSTEM 1 INSPIRED / NO ANTIALIAS ZONE</div>
+
+</body>
+</html>

@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>1-Bit Dice — App Icon v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #000000;
+    --paper: #FFFFFF;
+  }
+
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'VT323', monospace;
+    image-rendering: pixelated;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px 80px 40px;
+  }
+
+  /* ---------- MAC WINDOW ---------- */
+  .mac-window {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    margin-bottom: 48px;
+  }
+  .mac-titlebar {
+    height: 22px;
+    border-bottom: 2px solid var(--ink);
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        var(--ink) 0 1px,
+        var(--paper) 1px 3px
+      );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .mac-titlebar .closebox {
+    position: absolute;
+    left: 6px; top: 4px;
+    width: 12px; height: 12px;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+  }
+  .mac-titlebar .title {
+    background: var(--paper);
+    padding: 0 12px;
+    font-family: 'Silkscreen', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--ink);
+  }
+  .mac-window .content {
+    padding: 32px 32px 40px 32px;
+  }
+
+  /* ---------- HEADER ---------- */
+  h1.display {
+    font-family: 'Silkscreen', monospace;
+    font-weight: 700;
+    font-size: 56px;
+    line-height: 1;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .subtitle {
+    font-family: 'VT323', monospace;
+    font-size: 24px;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .meta {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: var(--ink);
+    margin-top: 14px;
+    opacity: .8;
+  }
+
+  /* ---------- SECTION TITLES ---------- */
+  h2.section {
+    font-family: 'Silkscreen', monospace;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin: 48px 0 8px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px dashed var(--ink);
+  }
+  h2.section + .section-sub {
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+
+  /* ---------- ICON GRID ---------- */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 8px;
+  }
+  .icon-card {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 0;
+    position: relative;
+  }
+  /* Mac-style double border */
+  .icon-card::before {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 1px solid var(--ink);
+    pointer-events: none;
+  }
+  .icon-card .icon-stage {
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .icon-card .icon-label {
+    border-top: 2px solid var(--ink);
+    padding: 10px 14px 12px 14px;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    line-height: 1.15;
+  }
+  .icon-card .icon-label .palette {
+    font-family: 'Silkscreen', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .icon-card .icon-label .hex {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    letter-spacing: 1px;
+    display: block;
+    margin-top: 4px;
+    opacity: .85;
+  }
+
+  /* Icon SVG sizing */
+  svg.icon-svg {
+    image-rendering: pixelated;
+    shape-rendering: crispEdges;
+    display: block;
+  }
+
+  /* ---------- ZOOM ---------- */
+  .zoom-wrap {
+    display: grid;
+    grid-template-columns: 560px 1fr;
+    gap: 32px;
+    align-items: start;
+    margin-top: 8px;
+  }
+  .zoom-frame {
+    border: 2px solid var(--ink);
+    position: relative;
+    padding: 0;
+    background: var(--paper);
+  }
+  .zoom-frame::before {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 1px solid var(--ink);
+    pointer-events: none;
+  }
+  .zoom-frame .zoom-inner {
+    padding: 20px;
+    position: relative;
+  }
+  .zoom-grid-overlay {
+    position: absolute;
+    inset: 20px;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, rgba(0,0,0,0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0,0,0,0.12) 1px, transparent 1px);
+    background-size: calc(512px/32) calc(512px/32);
+  }
+  .zoom-caption {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    line-height: 1.25;
+  }
+  .zoom-caption .k {
+    font-family: 'Silkscreen', monospace;
+    font-size: 14px;
+    letter-spacing: 1px;
+    display: inline-block;
+    border: 2px solid var(--ink);
+    padding: 4px 8px;
+    margin-bottom: 12px;
+  }
+  .zoom-caption p { margin-bottom: 12px; }
+  .zoom-legend {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 2px dashed var(--ink);
+  }
+
+  /* ---------- CONTEXT (LAUNCHER) ---------- */
+  .context-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 40px;
+    padding: 32px;
+    border: 2px solid var(--ink);
+    position: relative;
+    background: var(--paper);
+  }
+  .context-row::before {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 1px solid var(--ink);
+    pointer-events: none;
+  }
+  .ctx-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .ctx-item .size-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  .ctx-item .name-label {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  /* ---------- RATIONALE ---------- */
+  .rationale {
+    border: 2px solid var(--ink);
+    padding: 24px 28px 28px 28px;
+    position: relative;
+    background: var(--paper);
+  }
+  .rationale::before {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 1px solid var(--ink);
+    pointer-events: none;
+  }
+  .rationale ul {
+    list-style: none;
+    margin-top: 8px;
+  }
+  .rationale li {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    line-height: 1.3;
+    padding: 8px 0 8px 28px;
+    position: relative;
+    border-bottom: 1px dashed var(--ink);
+  }
+  .rationale li:last-child { border-bottom: 0; }
+  .rationale li::before {
+    content: "\25A0";
+    position: absolute;
+    left: 4px;
+    top: 10px;
+    font-size: 14px;
+  }
+  .rationale li b {
+    font-family: 'Silkscreen', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    margin-top: 56px;
+    border-top: 2px solid var(--ink);
+    padding-top: 16px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER WINDOW
+     ============================================================ -->
+<div class="mac-window">
+  <div class="mac-titlebar">
+    <div class="closebox"></div>
+    <span class="title">1-BIT DICE — APP ICON v2</span>
+  </div>
+  <div class="content">
+    <h1 class="display">APP ICON</h1>
+    <div class="subtitle">1-BIT DICE — 6 paletas, 1 identidade</div>
+    <div class="meta">D6 PIXEL ART // 32x32 BASE // SHAPE-RENDERING: CRISPEDGES</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     ICON GRID (3x2)
+     ============================================================ -->
+<h2 class="section">PALETAS</h2>
+<div class="section-sub">Mesma arte. Trocando só duas cores.</div>
+
+<div class="icon-grid">
+
+  <!-- ============ MAC CLASSIC ============ -->
+  <div class="icon-card">
+    <div class="icon-stage" style="background:#FFFFFF;">
+      <svg class="icon-svg" width="256" height="256" viewBox="0 0 32 32" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" fill="#FFFFFF"/>
+        <rect x="1" y="1" width="1" height="1" fill="#000000"/>
+        <rect x="30" y="1" width="1" height="1" fill="#000000"/>
+        <rect x="1" y="30" width="1" height="1" fill="#000000"/>
+        <rect x="30" y="30" width="1" height="1" fill="#000000"/>
+        <rect x="4" y="4" width="24" height="2" fill="#000000"/>
+        <rect x="4" y="26" width="24" height="2" fill="#000000"/>
+        <rect x="4" y="4" width="2" height="24" fill="#000000"/>
+        <rect x="26" y="4" width="2" height="24" fill="#000000"/>
+        <rect x="9"  y="8"  width="4" height="4" fill="#000000"/>
+        <rect x="19" y="8"  width="4" height="4" fill="#000000"/>
+        <rect x="9"  y="14" width="4" height="4" fill="#000000"/>
+        <rect x="19" y="14" width="4" height="4" fill="#000000"/>
+        <rect x="9"  y="20" width="4" height="4" fill="#000000"/>
+        <rect x="19" y="20" width="4" height="4" fill="#000000"/>
+      </svg>
+    </div>
+    <div class="icon-label">
+      <span class="palette">MAC CLASSIC — DEFAULT</span>
+      Tinta sobre papel.
+      <span class="hex">#000000 / #FFFFFF</span>
+    </div>
+  </div>
+
+  <!-- ============ MAC BEIGE ============ -->
+  <div class="icon-card">
+    <div class="icon-stage" style="background:#C7C7C7;">
+      <svg class="icon-svg" width="256" height="256" viewBox="0 0 32 32" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" fill="#C7C7C7"/>
+        <rect x="1" y="1" width="1" height="1" fill="#000000"/>
+        <rect x="30" y="1" width="1" height="1" fill="#000000"/>
+        <rect x="1" y="30" width="1" height="1" fill="#000000"/>
+        <rect x="30" y="30" width="1" height="1" fill="#000000"/>
+        <rect x="4" y="4" width="24" height="2" fill="#000000"/>
+        <rect x="4" y="26" width="24" height="2" fill="#000000"/>
+        <rect x="4" y="4" width="2" height="24" fill="#000000"/>
+        <rect x="26" y="4" width="2" height="24" fill="#000000"/>
+        <rect x="9"  y="8"  width="4" height="4" fill="#000000"/>
+        <rect x="19" y="8"  width="4" height="4" fill="#000000"/>
+        <rect x="9"  y="14" width="4" height="4" fill="#000000"/>
+        <rect x="19" y="14" width="4" height="4" fill="#000000"/>
+        <rect x="9"  y="20" width="4" height="4" fill="#000000"/>
+        <rect x="19" y="20" width="4" height="4" fill="#000000"/>
+      </svg>
+    </div>
+    <div class="icon-label">
+      <span class="palette">MAC BEIGE</span>
+      Plástico antigo dos 80.
+      <span class="hex">#000000 / #C7C7C7</span>
+    </div>
+  </div>
+
+  <!-- ============ GAME BOY DMG ============ -->
+  <div class="icon-card">
+    <div class="icon-stage" style="background:#9BBC0F;">
+      <svg class="icon-svg" width="256" height="256" viewBox="0 0 32 32" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" fill="#9BBC0F"/>
+        <rect x="1" y="1" width="1" height="1" fill="#0F380F"/>
+        <rect x="30" y="1" width="1" height="1" fill="#0F380F"/>
+        <rect x="1" y="30" width="1" height="1" fill="#0F380F"/>
+        <rect x="30" y="30" width="1" height="1" fill="#0F380F"/>
+        <rect x="4" y="4" width="24" height="2" fill="#0F380F"/>
+        <rect x="4" y="26" width="24" height="2" fill="#0F380F"/>
+        <rect x="4" y="4" width="2" height="24" fill="#0F380F"/>
+        <rect x="26" y="4" width="2" height="24" fill="#0F380F"/>
+        <rect x="9"  y="8"  width="4" height="4" fill="#0F380F"/>
+        <rect x="19" y="8"  width="4" height="4" fill="#0F380F"/>
+        <rect x="9"  y="14" width="4" height="4" fill="#0F380F"/>
+        <rect x="19" y="14" width="4" height="4" fill="#0F380F"/>
+        <rect x="9"  y="20" width="4" height="4" fill="#0F380F"/>
+        <rect x="19" y="20" width="4" height="4" fill="#0F380F"/>
+      </svg>
+    </div>
+    <div class="icon-label" style="background:#9BBC0F;color:#0F380F;border-top-color:#0F380F;">
+      <span class="palette">GAME BOY DMG</span>
+      Verde pântano clássico.
+      <span class="hex">#0F380F / #9BBC0F</span>
+    </div>
+  </div>
+
+  <!-- ============ COMMODORE 64 ============ -->
+  <div class="icon-card">
+    <div class="icon-stage" style="background:#7869C4;">
+      <svg class="icon-svg" width="256" height="256" viewBox="0 0 32 32" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" fill="#7869C4"/>
+        <rect x="1" y="1" width="1" height="1" fill="#352879"/>
+        <rect x="30" y="1" width="1" height="1" fill="#352879"/>
+        <rect x="1" y="30" width="1" height="1" fill="#352879"/>
+        <rect x="30" y="30" width="1" height="1" fill="#352879"/>
+        <rect x="4" y="4" width="24" height="2" fill="#352879"/>
+        <rect x="4" y="26" width="24" height="2" fill="#352879"/>
+        <rect x="4" y="4" width="2" height="24" fill="#352879"/>
+        <rect x="26" y="4" width="2" height="24" fill="#352879"/>
+        <rect x="9"  y="8"  width="4" height="4" fill="#352879"/>
+        <rect x="19" y="8"  width="4" height="4" fill="#352879"/>
+        <rect x="9"  y="14" width="4" height="4" fill="#352879"/>
+        <rect x="19" y="14" width="4" height="4" fill="#352879"/>
+        <rect x="9"  y="20" width="4" height="4" fill="#352879"/>
+        <rect x="19" y="20" width="4" height="4" fill="#352879"/>
+      </svg>
+    </div>
+    <div class="icon-label" style="background:#7869C4;color:#352879;border-top-color:#352879;">
+      <span class="palette">COMMODORE 64</span>
+      BASIC 2.0 mood.
+      <span class="hex">#352879 / #7869C4</span>
+    </div>
+  </div>
+
+  <!-- ============ ZX SPECTRUM ============ -->
+  <div class="icon-card">
+    <div class="icon-stage" style="background:#00FF00;">
+      <svg class="icon-svg" width="256" height="256" viewBox="0 0 32 32" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" fill="#00FF00"/>
+        <rect x="1" y="1" width="1" height="1" fill="#000000"/>
+        <rect x="30" y="1" width="1" height="1" fill="#000000"/>
+        <rect x="1" y="30" width="1" height="1" fill="#000000"/>
+        <rect x="30" y="30" width="1" height="1" fill="#000000"/>
+        <rect x="4" y="4" width="24" height="2" fill="#000000"/>
+        <rect x="4" y="26" width="24" height="2" fill="#000000"/>
+        <rect x="4" y="4" width="2" height="24" fill="#000000"/>
+        <rect x="26" y="4" width="2" height="24" fill="#000000"/>
+        <rect x="9"  y="8"  width="4" height="4" fill="#000000"/>
+        <rect x="19" y="8"  width="4" height="4" fill="#000000"/>
+        <rect x="9"  y="14" width="4" height="4" fill="#000000"/>
+        <rect x="19" y="14" width="4" height="4" fill="#000000"/>
+        <rect x="9"  y="20" width="4" height="4" fill="#000000"/>
+        <rect x="19" y="20" width="4" height="4" fill="#000000"/>
+      </svg>
+    </div>
+    <div class="icon-label" style="background:#00FF00;color:#000000;border-top-color:#000000;">
+      <span class="palette">ZX SPECTRUM</span>
+      Verde fósforo agressivo.
+      <span class="hex">#000000 / #00FF00</span>
+    </div>
+  </div>
+
+  <!-- ============ APPLE II GREEN ============ -->
+  <div class="icon-card" style="border-color:#000000;">
+    <div class="icon-stage" style="background:#000000;">
+      <svg class="icon-svg" width="256" height="256" viewBox="0 0 32 32" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" fill="#000000"/>
+        <rect x="1" y="1" width="1" height="1" fill="#33FF33"/>
+        <rect x="30" y="1" width="1" height="1" fill="#33FF33"/>
+        <rect x="1" y="30" width="1" height="1" fill="#33FF33"/>
+        <rect x="30" y="30" width="1" height="1" fill="#33FF33"/>
+        <rect x="4" y="4" width="24" height="2" fill="#33FF33"/>
+        <rect x="4" y="26" width="24" height="2" fill="#33FF33"/>
+        <rect x="4" y="4" width="2" height="24" fill="#33FF33"/>
+        <rect x="26" y="4" width="2" height="24" fill="#33FF33"/>
+        <rect x="9"  y="8"  width="4" height="4" fill="#33FF33"/>
+        <rect x="19" y="8"  width="4" height="4" fill="#33FF33"/>
+        <rect x="9"  y="14" width="4" height="4" fill="#33FF33"/>
+        <rect x="19" y="14" width="4" height="4" fill="#33FF33"/>
+        <rect x="9"  y="20" width="4" height="4" fill="#33FF33"/>
+        <rect x="19" y="20" width="4" height="4" fill="#33FF33"/>
+      </svg>
+    </div>
+    <div class="icon-label" style="background:#000000;color:#33FF33;border-top-color:#33FF33;">
+      <span class="palette" style="color:#33FF33;">APPLE II GREEN</span>
+      CRT fósforo P1.
+      <span class="hex" style="color:#33FF33;">#33FF33 / #000000</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     ZOOM SECTION
+     ============================================================ -->
+<h2 class="section">ZOOM — 32x32 PIXEL HONESTO</h2>
+<div class="section-sub">Cada quadrado abaixo é UM pixel da arte real.</div>
+
+<div class="zoom-wrap">
+  <div class="zoom-frame">
+    <div class="zoom-inner">
+      <svg class="icon-svg" width="512" height="512" viewBox="0 0 32 32" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" fill="#FFFFFF"/>
+        <rect x="1" y="1" width="1" height="1" fill="#000000"/>
+        <rect x="30" y="1" width="1" height="1" fill="#000000"/>
+        <rect x="1" y="30" width="1" height="1" fill="#000000"/>
+        <rect x="30" y="30" width="1" height="1" fill="#000000"/>
+        <rect x="4" y="4" width="24" height="2" fill="#000000"/>
+        <rect x="4" y="26" width="24" height="2" fill="#000000"/>
+        <rect x="4" y="4" width="2" height="24" fill="#000000"/>
+        <rect x="26" y="4" width="2" height="24" fill="#000000"/>
+        <rect x="9"  y="8"  width="4" height="4" fill="#000000"/>
+        <rect x="19" y="8"  width="4" height="4" fill="#000000"/>
+        <rect x="9"  y="14" width="4" height="4" fill="#000000"/>
+        <rect x="19" y="14" width="4" height="4" fill="#000000"/>
+        <rect x="9"  y="20" width="4" height="4" fill="#000000"/>
+        <rect x="19" y="20" width="4" height="4" fill="#000000"/>
+      </svg>
+      <div class="zoom-grid-overlay"></div>
+    </div>
+  </div>
+
+  <div class="zoom-caption">
+    <span class="k">32 x 32 px</span>
+    <p>Sem antialiasing. Sem gradiente. Sem sombra.</p>
+    <p>O ícone é desenhado pixel por pixel num grid de 32x32. Renderizado em qualquer escala, cada bloco preto cobre N pixels físicos. Pixel honesto.</p>
+    <p>Borda 2px externa em volta dos 24x24 da face. Seis pontos 4x4 em grid 2x3 — a face 6 do d6.</p>
+    <div class="zoom-legend">
+      SHAPE-RENDERING: CRISPEDGES // IMAGE-RENDERING: PIXELATED
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CONTEXT — LAUNCHER SIZES
+     ============================================================ -->
+<h2 class="section">CONTEXTO — LAUNCHER iOS / ANDROID</h2>
+<div class="section-sub">Mesma arte, três tamanhos. Tem que ler aos 48px.</div>
+
+<div class="context-row">
+
+  <div class="ctx-item">
+    <svg class="icon-svg" width="192" height="192" viewBox="0 0 32 32" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" fill="#FFFFFF"/>
+      <rect x="1" y="1" width="1" height="1" fill="#000000"/>
+      <rect x="30" y="1" width="1" height="1" fill="#000000"/>
+      <rect x="1" y="30" width="1" height="1" fill="#000000"/>
+      <rect x="30" y="30" width="1" height="1" fill="#000000"/>
+      <rect x="4" y="4" width="24" height="2" fill="#000000"/>
+      <rect x="4" y="26" width="24" height="2" fill="#000000"/>
+      <rect x="4" y="4" width="2" height="24" fill="#000000"/>
+      <rect x="26" y="4" width="2" height="24" fill="#000000"/>
+      <rect x="9"  y="8"  width="4" height="4" fill="#000000"/>
+      <rect x="19" y="8"  width="4" height="4" fill="#000000"/>
+      <rect x="9"  y="14" width="4" height="4" fill="#000000"/>
+      <rect x="19" y="14" width="4" height="4" fill="#000000"/>
+      <rect x="9"  y="20" width="4" height="4" fill="#000000"/>
+      <rect x="19" y="20" width="4" height="4" fill="#000000"/>
+    </svg>
+    <div class="name-label">1-Bit Dice</div>
+    <div class="size-label">192 PX</div>
+  </div>
+
+  <div class="ctx-item">
+    <svg class="icon-svg" width="96" height="96" viewBox="0 0 32 32" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" fill="#FFFFFF"/>
+      <rect x="1" y="1" width="1" height="1" fill="#000000"/>
+      <rect x="30" y="1" width="1" height="1" fill="#000000"/>
+      <rect x="1" y="30" width="1" height="1" fill="#000000"/>
+      <rect x="30" y="30" width="1" height="1" fill="#000000"/>
+      <rect x="4" y="4" width="24" height="2" fill="#000000"/>
+      <rect x="4" y="26" width="24" height="2" fill="#000000"/>
+      <rect x="4" y="4" width="2" height="24" fill="#000000"/>
+      <rect x="26" y="4" width="2" height="24" fill="#000000"/>
+      <rect x="9"  y="8"  width="4" height="4" fill="#000000"/>
+      <rect x="19" y="8"  width="4" height="4" fill="#000000"/>
+      <rect x="9"  y="14" width="4" height="4" fill="#000000"/>
+      <rect x="19" y="14" width="4" height="4" fill="#000000"/>
+      <rect x="9"  y="20" width="4" height="4" fill="#000000"/>
+      <rect x="19" y="20" width="4" height="4" fill="#000000"/>
+    </svg>
+    <div class="name-label">1-Bit Dice</div>
+    <div class="size-label">96 PX</div>
+  </div>
+
+  <div class="ctx-item">
+    <svg class="icon-svg" width="48" height="48" viewBox="0 0 32 32" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" fill="#FFFFFF"/>
+      <rect x="1" y="1" width="1" height="1" fill="#000000"/>
+      <rect x="30" y="1" width="1" height="1" fill="#000000"/>
+      <rect x="1" y="30" width="1" height="1" fill="#000000"/>
+      <rect x="30" y="30" width="1" height="1" fill="#000000"/>
+      <rect x="4" y="4" width="24" height="2" fill="#000000"/>
+      <rect x="4" y="26" width="24" height="2" fill="#000000"/>
+      <rect x="4" y="4" width="2" height="24" fill="#000000"/>
+      <rect x="26" y="4" width="2" height="24" fill="#000000"/>
+      <rect x="9"  y="8"  width="4" height="4" fill="#000000"/>
+      <rect x="19" y="8"  width="4" height="4" fill="#000000"/>
+      <rect x="9"  y="14" width="4" height="4" fill="#000000"/>
+      <rect x="19" y="14" width="4" height="4" fill="#000000"/>
+      <rect x="9"  y="20" width="4" height="4" fill="#000000"/>
+      <rect x="19" y="20" width="4" height="4" fill="#000000"/>
+    </svg>
+    <div class="name-label">1-Bit Dice</div>
+    <div class="size-label">48 PX</div>
+  </div>
+
+  <div class="ctx-item" style="margin-left:40px;max-width:280px;text-align:left;align-items:flex-start;">
+    <div class="size-label" style="font-family:'Silkscreen',monospace;font-size:12px;letter-spacing:1px;">TESTE DE LEGIBILIDADE</div>
+    <div class="name-label" style="font-size:20px;line-height:1.25;">
+      Em 48px, ainda se lê: quadrado + 6 pontos = dado. Face frontal vence isométrico em launcher.
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     RATIONALE
+     ============================================================ -->
+<h2 class="section">RATIONALE</h2>
+<div class="section-sub">Por que esse desenho, dessa forma.</div>
+
+<div class="rationale">
+  <ul>
+    <li>
+      <b>D6 FRONTAL.</b> Vista de face — clareza máxima. Em 48px, isométrico vira manchinha. Quadrado com 6 pontos é universal: lê como dado em qualquer tamanho.
+    </li>
+    <li>
+      <b>PIXEL ART REAL.</b> Cada ponto é um rect SVG em grid 32x32. Não é vetor "simulando" pixel. Renderiza honesto em qualquer DPI com shape-rendering crispEdges.
+    </li>
+    <li>
+      <b>6 PALETAS.</b> Mesma silhueta, 6 sabores retrô. Identidade forte (forma reconhecível) com variedade (cor configurável). Mac Classic é o default — preto sobre branco vence sempre.
+    </li>
+    <li>
+      <b>ZERO ORNAMENTO.</b> Sem estrela, sem moldura, sem sombra, sem western. O ícone é só dado + cor. A nostalgia vem da escolha da paleta, não de filigrana.
+    </li>
+  </ul>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <span>1-BIT DICE // APP ICON v2</span>
+  <span>32x32 BASE // 6 PALETTES // PIXEL HONEST</span>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>App Store Listing — 1-Bit Dice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --apple-bg:#f5f5f7;
+    --apple-card:#ffffff;
+    --apple-text:#1d1d1f;
+    --apple-text-sec:#6e6e73;
+    --apple-blue:#0071e3;
+    --apple-blue-dark:#0077ed;
+    --apple-divider:#d2d2d7;
+    --apple-rating:#86868b;
+    --mac-bg:#ffffff;
+    --mac-ink:#000000;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html,body{
+    background:#e8e8ed;
+    color:var(--apple-text);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  .page{
+    width:1400px;
+    margin:0 auto;
+    padding:40px 32px 80px;
+  }
+
+  /* -------- Page Header -------- */
+  .page-header{
+    border-bottom:2px solid var(--apple-text);
+    padding-bottom:20px;
+    margin-bottom:32px;
+  }
+  .page-header h1{
+    font-family:"Silkscreen",monospace;
+    font-size:32px;
+    font-weight:700;
+    letter-spacing:1px;
+    line-height:1.2;
+  }
+  .page-header .sub{
+    font-family:"VT323",monospace;
+    font-size:22px;
+    color:var(--apple-text-sec);
+    margin-top:8px;
+  }
+  .page-header .meta{
+    font-family:"VT323",monospace;
+    font-size:16px;
+    color:var(--apple-text-sec);
+    margin-top:4px;
+    letter-spacing:0.5px;
+  }
+
+  /* -------- Section Titles -------- */
+  .section{
+    margin-top:48px;
+  }
+  .section-title{
+    font-family:"Silkscreen",monospace;
+    font-size:18px;
+    letter-spacing:1px;
+    color:var(--apple-text);
+    border-bottom:1px solid var(--apple-divider);
+    padding-bottom:8px;
+    margin-bottom:20px;
+    text-transform:uppercase;
+  }
+  .section-sub{
+    font-family:"VT323",monospace;
+    font-size:18px;
+    color:var(--apple-text-sec);
+    margin-bottom:16px;
+  }
+
+  /* -------- App Store Mock Page -------- */
+  .appstore-mock{
+    background:var(--apple-card);
+    border-radius:18px;
+    padding:36px 40px;
+    box-shadow:0 4px 24px rgba(0,0,0,.06);
+    border:1px solid var(--apple-divider);
+  }
+  .appstore-top{
+    display:grid;
+    grid-template-columns:200px 1fr auto;
+    gap:28px;
+    align-items:center;
+    padding-bottom:24px;
+    border-bottom:1px solid var(--apple-divider);
+  }
+  .app-icon{
+    width:180px;
+    height:180px;
+    border-radius:38px;
+    overflow:hidden;
+    background:#fff;
+    box-shadow:0 2px 12px rgba(0,0,0,.12);
+    border:1px solid var(--apple-divider);
+  }
+  .app-icon svg{
+    width:100%;
+    height:100%;
+    display:block;
+    image-rendering:pixelated;
+  }
+  .app-meta h2{
+    font-size:34px;
+    font-weight:700;
+    letter-spacing:-0.5px;
+    line-height:1.1;
+    color:var(--apple-text);
+  }
+  .app-meta .dev{
+    font-size:17px;
+    color:var(--apple-blue);
+    margin-top:6px;
+    font-weight:400;
+  }
+  .app-meta .short-desc{
+    font-size:15px;
+    color:var(--apple-text-sec);
+    margin-top:14px;
+    line-height:1.4;
+    max-width:520px;
+  }
+  .get-btn{
+    background:linear-gradient(180deg,#0a85f5,#0064d2);
+    color:#fff;
+    border:none;
+    border-radius:999px;
+    padding:8px 28px;
+    font-size:17px;
+    font-weight:600;
+    font-family:inherit;
+    cursor:pointer;
+    box-shadow:0 1px 2px rgba(0,0,0,.1);
+    letter-spacing:0.2px;
+  }
+  .get-btn .price{
+    display:block;
+    font-size:11px;
+    font-weight:400;
+    margin-top:-2px;
+    opacity:0.9;
+    letter-spacing:0.5px;
+  }
+
+  .stats-row{
+    display:flex;
+    gap:0;
+    padding:18px 0;
+    border-bottom:1px solid var(--apple-divider);
+    overflow:hidden;
+  }
+  .stat{
+    flex:1;
+    text-align:center;
+    padding:4px 12px;
+    border-right:1px solid var(--apple-divider);
+  }
+  .stat:last-child{border-right:none;}
+  .stat .v{
+    font-size:17px;
+    font-weight:600;
+    color:var(--apple-text-sec);
+    display:block;
+    line-height:1.1;
+  }
+  .stat .l{
+    font-size:11px;
+    color:var(--apple-rating);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-top:4px;
+    display:block;
+  }
+  .stat .stars{color:var(--apple-text-sec);font-size:13px;}
+
+  /* -------- Screenshots Strip -------- */
+  .shots-section{
+    padding:28px 0 8px;
+  }
+  .shots-title{
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:16px;
+    color:var(--apple-text);
+  }
+  .shots-strip{
+    display:flex;
+    gap:14px;
+    overflow:visible;
+  }
+  .shot-block{
+    width:258px;
+    flex-shrink:0;
+  }
+  .shot-overlay{
+    background:#f5f5f7;
+    border-radius:14px 14px 0 0;
+    padding:14px 12px 16px;
+    text-align:left;
+    border:1px solid var(--apple-divider);
+    border-bottom:none;
+    min-height:78px;
+  }
+  .shot-overlay .t{
+    font-size:15px;
+    font-weight:700;
+    color:var(--apple-text);
+    line-height:1.2;
+  }
+  .shot-overlay .s{
+    font-size:12px;
+    color:var(--apple-text-sec);
+    margin-top:4px;
+    line-height:1.3;
+  }
+
+  /* iPhone Frame (real Apple chrome - black) */
+  .iphone-frame{
+    width:258px;
+    height:559px;
+    background:#0a0a0a;
+    border-radius:38px;
+    padding:8px;
+    position:relative;
+    box-shadow:0 4px 16px rgba(0,0,0,.15);
+  }
+  .iphone-screen{
+    width:100%;
+    height:100%;
+    background:var(--mac-bg);
+    border-radius:30px;
+    overflow:hidden;
+    position:relative;
+  }
+  .notch{
+    position:absolute;
+    top:8px;
+    left:50%;
+    transform:translateX(-50%);
+    width:88px;
+    height:24px;
+    background:#0a0a0a;
+    border-radius:14px;
+    z-index:10;
+  }
+
+  /* -------- Mac Classic UI INSIDE screenshots -------- */
+  .mac{
+    width:100%;
+    height:100%;
+    background:#ffffff;
+    color:#000000;
+    font-family:"VT323",monospace;
+    position:relative;
+    padding-top:36px;
+    image-rendering:pixelated;
+  }
+  .mac-bar{
+    height:24px;
+    background:#000;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Silkscreen",monospace;
+    font-size:10px;
+    letter-spacing:1px;
+    border-bottom:2px solid #000;
+    position:relative;
+  }
+  .mac-bar::before,
+  .mac-bar::after{
+    content:"";
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:#fff;
+    top:9px;
+  }
+  .mac-bar::before{left:8px;}
+  .mac-bar::after{right:8px;}
+
+  .mac-body{
+    padding:12px 14px;
+    height:calc(100% - 26px);
+    overflow:hidden;
+  }
+  .mac h3{
+    font-family:"Silkscreen",monospace;
+    font-size:11px;
+    letter-spacing:1px;
+    margin-bottom:10px;
+    text-align:center;
+  }
+  .mac .row{
+    display:flex;
+    gap:6px;
+    margin-bottom:10px;
+  }
+  .mac .seg{
+    flex:1;
+    border:1.5px solid #000;
+    text-align:center;
+    padding:4px 0;
+    font-family:"Press Start 2P",monospace;
+    font-size:7px;
+  }
+  .mac .seg.active{
+    background:#000;
+    color:#fff;
+  }
+  .mac .label{
+    font-family:"Silkscreen",monospace;
+    font-size:8px;
+    letter-spacing:1px;
+    margin-bottom:4px;
+    text-transform:uppercase;
+  }
+  .mac .qty{
+    border:1.5px solid #000;
+    padding:4px 8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-family:"VT323",monospace;
+    font-size:18px;
+    margin-bottom:12px;
+  }
+  .mac .qty .num{
+    font-family:"Silkscreen",monospace;
+    font-size:14px;
+  }
+  .mac .dice-area{
+    background:#fff;
+    border:1.5px solid #000;
+    padding:10px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+    min-height:88px;
+  }
+  .mac .result{
+    text-align:center;
+    font-family:"Silkscreen",monospace;
+    font-size:16px;
+    margin:8px 0;
+    letter-spacing:1px;
+  }
+  .mac .btn{
+    background:#000;
+    color:#fff;
+    border:1.5px solid #000;
+    padding:8px 0;
+    text-align:center;
+    font-family:"Silkscreen",monospace;
+    font-size:12px;
+    letter-spacing:2px;
+    margin-top:8px;
+  }
+  .mac .btn.ghost{
+    background:#fff;
+    color:#000;
+  }
+
+  /* settings / palettes */
+  .mac .setting-row{
+    border-bottom:1px solid #000;
+    padding:6px 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-family:"VT323",monospace;
+    font-size:16px;
+  }
+  .mac .setting-row .chev{
+    font-family:"Silkscreen",monospace;
+    font-size:10px;
+  }
+  .palette-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:10px;
+  }
+  .palette-card{
+    border:1.5px solid #000;
+    padding:6px;
+  }
+  .palette-card .pname{
+    font-family:"Press Start 2P",monospace;
+    font-size:6px;
+    margin-bottom:4px;
+    text-align:center;
+  }
+  .palette-swatch{
+    display:flex;
+    height:18px;
+    border:1px solid #000;
+  }
+  .palette-swatch span{
+    flex:1;
+  }
+  .palette-card.selected{
+    background:#000;
+    color:#fff;
+  }
+  .palette-card.selected .palette-swatch{border-color:#fff;}
+
+  /* presets grid */
+  .presets-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    margin-top:8px;
+  }
+  .preset-card{
+    border:1.5px solid #000;
+    padding:8px 4px;
+    text-align:center;
+    aspect-ratio:1.4/1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:3px;
+  }
+  .preset-card .pico{
+    font-family:"Press Start 2P",monospace;
+    font-size:12px;
+  }
+  .preset-card .pname{
+    font-family:"Silkscreen",monospace;
+    font-size:8px;
+    letter-spacing:0.5px;
+  }
+  .preset-card .pdice{
+    font-family:"VT323",monospace;
+    font-size:11px;
+  }
+  .preset-card.plus{
+    background:#000;
+    color:#fff;
+  }
+
+  /* history */
+  .history-list{
+    margin-top:6px;
+  }
+  .hist-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px dashed #000;
+    padding:7px 0;
+    font-family:"VT323",monospace;
+    font-size:14px;
+  }
+  .hist-row .when{
+    font-family:"Press Start 2P",monospace;
+    font-size:6px;
+    color:#000;
+    opacity:0.7;
+  }
+  .hist-row .roll{
+    font-family:"Silkscreen",monospace;
+    font-size:11px;
+  }
+  .hist-row .total{
+    font-family:"Silkscreen",monospace;
+    font-size:12px;
+    background:#000;
+    color:#fff;
+    padding:2px 6px;
+  }
+
+  /* splash */
+  .splash{
+    height:100%;
+    background:#fff;
+    color:#000;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    text-align:center;
+    gap:14px;
+  }
+  .splash .wordmark{
+    font-family:"Silkscreen",monospace;
+    font-size:22px;
+    letter-spacing:2px;
+    line-height:1;
+  }
+  .splash .tag{
+    font-family:"VT323",monospace;
+    font-size:16px;
+    margin-top:4px;
+  }
+  .splash .micro{
+    font-family:"Press Start 2P",monospace;
+    font-size:6px;
+    letter-spacing:1px;
+    margin-top:20px;
+    opacity:0.7;
+  }
+  .splash .dice-big svg{
+    width:96px;
+    height:96px;
+    image-rendering:pixelated;
+  }
+
+  /* -------- Description Section -------- */
+  .desc-box{
+    background:var(--apple-card);
+    border:1px solid var(--apple-divider);
+    border-radius:14px;
+    padding:28px 32px;
+    font-family:"VT323",monospace;
+    font-size:19px;
+    line-height:1.5;
+    color:var(--apple-text);
+  }
+  .desc-box p{margin-bottom:14px;}
+  .desc-box ul{margin:10px 0 14px 20px;}
+  .desc-box li{margin-bottom:6px;}
+  .desc-box .hook{
+    font-size:22px;
+    font-weight:700;
+    color:var(--apple-text);
+    margin-bottom:18px;
+  }
+  .desc-box h4{
+    font-family:"Silkscreen",monospace;
+    font-size:13px;
+    letter-spacing:1px;
+    margin:18px 0 8px;
+    text-transform:uppercase;
+  }
+  .desc-box .micro{
+    font-family:"Press Start 2P",monospace;
+    font-size:8px;
+    line-height:1.6;
+    margin-top:20px;
+    padding-top:14px;
+    border-top:1px solid var(--apple-divider);
+    color:var(--apple-text-sec);
+    letter-spacing:0.5px;
+  }
+  .desc-box .privacy{
+    font-family:"VT323",monospace;
+    font-size:15px;
+    color:var(--apple-text-sec);
+    margin-top:12px;
+  }
+
+  /* -------- Promo / Keywords -------- */
+  .grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  .info-card{
+    background:var(--apple-card);
+    border:1px solid var(--apple-divider);
+    border-radius:14px;
+    padding:22px 24px;
+  }
+  .info-card .label{
+    font-family:"Silkscreen",monospace;
+    font-size:11px;
+    letter-spacing:1px;
+    color:var(--apple-text-sec);
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .info-card .value{
+    font-family:"VT323",monospace;
+    font-size:20px;
+    line-height:1.4;
+    color:var(--apple-text);
+  }
+  .info-card .count{
+    font-family:"Press Start 2P",monospace;
+    font-size:8px;
+    color:var(--apple-text-sec);
+    margin-top:8px;
+    letter-spacing:1px;
+  }
+
+  /* -------- Table (video script & categories) -------- */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--apple-card);
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid var(--apple-divider);
+  }
+  th{
+    background:#f5f5f7;
+    text-align:left;
+    padding:12px 16px;
+    font-family:"Silkscreen",monospace;
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--apple-text);
+    border-bottom:1px solid var(--apple-divider);
+  }
+  td{
+    padding:12px 16px;
+    font-family:"VT323",monospace;
+    font-size:18px;
+    color:var(--apple-text);
+    border-bottom:1px solid var(--apple-divider);
+    vertical-align:top;
+  }
+  tr:last-child td{border-bottom:none;}
+  td.time{
+    font-family:"Silkscreen",monospace;
+    font-size:12px;
+    color:var(--apple-blue);
+    white-space:nowrap;
+    width:90px;
+  }
+  td.scene{
+    font-family:"Silkscreen",monospace;
+    font-size:11px;
+    letter-spacing:1px;
+    width:160px;
+  }
+
+  /* -------- Categories / Rating -------- */
+  .cat-row{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:16px;
+  }
+  .cat-card{
+    background:var(--apple-card);
+    border:1px solid var(--apple-divider);
+    border-radius:12px;
+    padding:18px 22px;
+  }
+  .cat-card .clabel{
+    font-family:"Silkscreen",monospace;
+    font-size:10px;
+    letter-spacing:1px;
+    color:var(--apple-text-sec);
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .cat-card .cval{
+    font-family:"VT323",monospace;
+    font-size:24px;
+    color:var(--apple-text);
+  }
+  .cat-card .csub{
+    font-family:"VT323",monospace;
+    font-size:16px;
+    color:var(--apple-text-sec);
+  }
+
+  /* -------- Search Mock -------- */
+  .search-mock{
+    background:var(--apple-card);
+    border:1px solid var(--apple-divider);
+    border-radius:14px;
+    padding:0;
+    overflow:hidden;
+    max-width:720px;
+  }
+  .search-bar{
+    background:#f5f5f7;
+    padding:10px 16px;
+    border-bottom:1px solid var(--apple-divider);
+    font-family:-apple-system,system-ui;
+    font-size:14px;
+    color:var(--apple-text-sec);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .search-bar .ico{
+    width:14px;
+    height:14px;
+    border:2px solid var(--apple-text-sec);
+    border-radius:50%;
+    position:relative;
+  }
+  .search-bar .ico::after{
+    content:"";
+    position:absolute;
+    width:6px;
+    height:2px;
+    background:var(--apple-text-sec);
+    transform:rotate(45deg);
+    bottom:-3px;
+    right:-3px;
+  }
+  .search-result{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 16px;
+  }
+  .search-result .sr-icon{
+    width:60px;
+    height:60px;
+    border-radius:14px;
+    overflow:hidden;
+    flex-shrink:0;
+    border:1px solid var(--apple-divider);
+  }
+  .search-result .sr-icon svg{width:100%;height:100%;image-rendering:pixelated;}
+  .search-result .sr-text{flex:1;}
+  .search-result .sr-name{font-size:15px;font-weight:600;color:var(--apple-text);}
+  .search-result .sr-dev{font-size:13px;color:var(--apple-text-sec);margin-top:2px;}
+  .search-result .sr-stars{font-size:12px;color:var(--apple-text-sec);margin-top:4px;}
+  .search-result .get-btn{padding:6px 22px;font-size:14px;}
+
+  /* -------- Comparative -------- */
+  .compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  .compare-card{
+    background:var(--apple-card);
+    border:1px solid var(--apple-divider);
+    border-radius:14px;
+    padding:24px;
+  }
+  .compare-card.ours{
+    border-color:var(--apple-blue);
+    box-shadow:0 0 0 2px rgba(0,113,227,0.1);
+  }
+  .compare-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:16px;
+  }
+  .compare-head .ic{
+    width:64px;
+    height:64px;
+    border-radius:14px;
+    overflow:hidden;
+    border:1px solid var(--apple-divider);
+    flex-shrink:0;
+  }
+  .compare-head .ic svg{width:100%;height:100%;image-rendering:pixelated;}
+  .compare-head .ic.generic{
+    background:linear-gradient(135deg,#ff6b6b,#ffa500);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-weight:700;
+    font-size:24px;
+    font-family:sans-serif;
+  }
+  .compare-head .n{font-size:18px;font-weight:700;color:var(--apple-text);}
+  .compare-head .d{font-size:13px;color:var(--apple-text-sec);}
+  .compare-mini{
+    background:#f5f5f7;
+    border-radius:8px;
+    padding:14px;
+    margin-bottom:14px;
+    min-height:140px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .compare-mini.ours{background:#fff;border:1px solid #000;}
+  .compare-list{
+    font-family:"VT323",monospace;
+    font-size:17px;
+    color:var(--apple-text);
+    line-height:1.6;
+  }
+  .compare-list .y{color:#00a854;font-weight:bold;}
+  .compare-list .n{color:#d4302f;font-weight:bold;}
+
+  /* generic dice (colorful, NOT 1-bit) for the competitor */
+  .generic-dice{
+    width:80px;
+    height:80px;
+    background:linear-gradient(135deg,#ff6b6b,#ffa500);
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-family:sans-serif;
+    font-size:36px;
+    font-weight:700;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+  }
+
+  /* footer note */
+  .note{
+    font-family:"Press Start 2P",monospace;
+    font-size:8px;
+    color:var(--apple-text-sec);
+    margin-top:48px;
+    text-align:center;
+    letter-spacing:1px;
+    padding-top:20px;
+    border-top:1px solid var(--apple-divider);
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ====== Page Header ====== -->
+  <header class="page-header">
+    <h1>APPLE APP STORE LISTING — 1-BIT DICE</h1>
+    <div class="sub">Mockup completo de listing iOS · paleta Mac Classic nos screenshots</div>
+    <div class="meta">v2 · AM2 Studios · ZERO western · puro retro computador antigo</div>
+  </header>
+
+  <!-- ====== 1. App Store Mock Page ====== -->
+  <section class="section">
+    <div class="section-title">1. Página principal (mock)</div>
+
+    <div class="appstore-mock">
+
+      <!-- Top: Icon + Name + Get -->
+      <div class="appstore-top">
+        <div class="app-icon">
+          <!-- App Icon: D6 pixel art Mac Classic -->
+          <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+            <rect width="18" height="18" fill="#ffffff"/>
+            <rect x="2" y="1" width="14" height="1" fill="#000"/>
+            <rect x="2" y="16" width="14" height="1" fill="#000"/>
+            <rect x="1" y="2" width="1" height="14" fill="#000"/>
+            <rect x="16" y="2" width="1" height="14" fill="#000"/>
+            <!-- Pips: showing 5 -->
+            <rect x="4" y="4" width="2" height="2" fill="#000"/>
+            <rect x="12" y="4" width="2" height="2" fill="#000"/>
+            <rect x="8" y="8" width="2" height="2" fill="#000"/>
+            <rect x="4" y="12" width="2" height="2" fill="#000"/>
+            <rect x="12" y="12" width="2" height="2" fill="#000"/>
+          </svg>
+        </div>
+
+        <div class="app-meta">
+          <h2>1-Bit Dice</h2>
+          <div class="dev">AM2 Studios</div>
+          <div class="short-desc">Dados retrô em 1-bit. Para Ludo, Banco Imobiliário, RPG e qualquer jogo de tabuleiro.</div>
+        </div>
+
+        <button class="get-btn">
+          OBTER
+          <span class="price">Compras no app</span>
+        </button>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat">
+          <span class="v">5,0 <span class="stars">★★★★★</span></span>
+          <span class="l">128 avaliações</span>
+        </div>
+        <div class="stat">
+          <span class="v">4+</span>
+          <span class="l">Idade</span>
+        </div>
+        <div class="stat">
+          <span class="v">#12</span>
+          <span class="l">Ferramentas</span>
+        </div>
+        <div class="stat">
+          <span class="v">PT EN</span>
+          <span class="l">Idiomas</span>
+        </div>
+        <div class="stat">
+          <span class="v">AM2</span>
+          <span class="l">Desenvolvedor</span>
+        </div>
+      </div>
+
+      <!-- Screenshots Strip -->
+      <div class="shots-section">
+        <div class="shots-title">Visualizar</div>
+        <div class="shots-strip">
+
+          <!-- ====== SHOT 1 — HOME ====== -->
+          <div class="shot-block">
+            <div class="shot-overlay">
+              <div class="t">Roll any dice, instantly.</div>
+              <div class="s">Até 10 dados de uma vez</div>
+            </div>
+            <div class="iphone-frame">
+              <div class="notch"></div>
+              <div class="iphone-screen">
+                <div class="mac">
+                  <div class="mac-bar">1-BIT DICE</div>
+                  <div class="mac-body">
+                    <div class="label">Tipo</div>
+                    <div class="row">
+                      <div class="seg">D4</div>
+                      <div class="seg active">D6</div>
+                      <div class="seg">D8</div>
+                      <div class="seg">D10</div>
+                      <div class="seg">D20</div>
+                    </div>
+                    <div class="label">Quantidade</div>
+                    <div class="qty"><span>−</span><span class="num">2</span><span>+</span></div>
+                    <div class="dice-area">
+                      <!-- die showing 4 -->
+                      <svg width="64" height="64" viewBox="0 0 16 16" shape-rendering="crispEdges">
+                        <rect width="16" height="16" fill="#fff"/>
+                        <rect x="1" y="1" width="14" height="1" fill="#000"/>
+                        <rect x="1" y="14" width="14" height="1" fill="#000"/>
+                        <rect x="1" y="1" width="1" height="14" fill="#000"/>
+                        <rect x="14" y="1" width="1" height="14" fill="#000"/>
+                        <rect x="4" y="4" width="2" height="2" fill="#000"/>
+                        <rect x="10" y="4" width="2" height="2" fill="#000"/>
+                        <rect x="4" y="10" width="2" height="2" fill="#000"/>
+                        <rect x="10" y="10" width="2" height="2" fill="#000"/>
+                      </svg>
+                      <!-- die showing 6 -->
+                      <svg width="64" height="64" viewBox="0 0 16 16" shape-rendering="crispEdges">
+                        <rect width="16" height="16" fill="#fff"/>
+                        <rect x="1" y="1" width="14" height="1" fill="#000"/>
+                        <rect x="1" y="14" width="14" height="1" fill="#000"/>
+                        <rect x="1" y="1" width="1" height="14" fill="#000"/>
+                        <rect x="14" y="1" width="1" height="14" fill="#000"/>
+                        <rect x="4" y="3" width="2" height="2" fill="#000"/>
+                        <rect x="10" y="3" width="2" height="2" fill="#000"/>
+                        <rect x="4" y="7" width="2" height="2" fill="#000"/>
+                        <rect x="10" y="7" width="2" height="2" fill="#000"/>
+                        <rect x="4" y="11" width="2" height="2" fill="#000"/>
+                        <rect x="10" y="11" width="2" height="2" fill="#000"/>
+                      </svg>
+                    </div>
+                    <div class="result">4 + 6 = 10</div>
+                    <div class="btn">ROLAR</div>
+                    <div class="btn ghost" style="margin-top:6px;">HISTÓRICO</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ====== SHOT 2 — PALETTES ====== -->
+          <div class="shot-block">
+            <div class="shot-overlay">
+              <div class="t">6 paletas retrô.</div>
+              <div class="s">Mac, Game Boy, Commodore...</div>
+            </div>
+            <div class="iphone-frame">
+              <div class="notch"></div>
+              <div class="iphone-screen">
+                <div class="mac">
+                  <div class="mac-bar">AJUSTES</div>
+                  <div class="mac-body">
+                    <div class="setting-row"><span>Som</span><span class="chev">ON ▶</span></div>
+                    <div class="setting-row"><span>Vibração</span><span class="chev">OFF ▶</span></div>
+                    <div class="setting-row" style="border-bottom:2px solid #000;"><span style="font-family:'Silkscreen',monospace;font-size:10px;letter-spacing:1px;">PALETA</span><span class="chev">▼</span></div>
+                    <div class="palette-grid">
+                      <div class="palette-card selected">
+                        <div class="pname">MAC CLASSIC</div>
+                        <div class="palette-swatch"><span style="background:#fff"></span><span style="background:#000"></span></div>
+                      </div>
+                      <div class="palette-card">
+                        <div class="pname">GAME BOY</div>
+                        <div class="palette-swatch"><span style="background:#9bbc0f"></span><span style="background:#306230"></span><span style="background:#0f380f"></span></div>
+                      </div>
+                      <div class="palette-card">
+                        <div class="pname">APPLE II</div>
+                        <div class="palette-swatch"><span style="background:#000"></span><span style="background:#00ff00"></span></div>
+                      </div>
+                      <div class="palette-card">
+                        <div class="pname">C-64</div>
+                        <div class="palette-swatch"><span style="background:#352879"></span><span style="background:#6c5eb5"></span></div>
+                      </div>
+                      <div class="palette-card">
+                        <div class="pname">CGA</div>
+                        <div class="palette-swatch"><span style="background:#000"></span><span style="background:#ff00ff"></span><span style="background:#00ffff"></span></div>
+                      </div>
+                      <div class="palette-card">
+                        <div class="pname">AMBER CRT</div>
+                        <div class="palette-swatch"><span style="background:#1a0a00"></span><span style="background:#ffb000"></span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ====== SHOT 3 — PRESETS ====== -->
+          <div class="shot-block">
+            <div class="shot-overlay">
+              <div class="t">Presets prontos.</div>
+              <div class="s">Ludo, Banco Imob., RPG...</div>
+            </div>
+            <div class="iphone-frame">
+              <div class="notch"></div>
+              <div class="iphone-screen">
+                <div class="mac">
+                  <div class="mac-bar">JOGOS</div>
+                  <div class="mac-body">
+                    <div class="presets-grid">
+                      <div class="preset-card">
+                        <div class="pico">●●</div>
+                        <div class="pname">LUDO</div>
+                        <div class="pdice">1d6</div>
+                      </div>
+                      <div class="preset-card">
+                        <div class="pico">●●</div>
+                        <div class="pname">B. IMOB.</div>
+                        <div class="pdice">2d6</div>
+                      </div>
+                      <div class="preset-card">
+                        <div class="pico">▲</div>
+                        <div class="pname">WAR</div>
+                        <div class="pdice">3d6</div>
+                      </div>
+                      <div class="preset-card">
+                        <div class="pico">■■</div>
+                        <div class="pname">YAHTZEE</div>
+                        <div class="pdice">5d6</div>
+                      </div>
+                      <div class="preset-card">
+                        <div class="pico">◆</div>
+                        <div class="pname">CATAN</div>
+                        <div class="pdice">2d6</div>
+                      </div>
+                      <div class="preset-card">
+                        <div class="pico">★</div>
+                        <div class="pname">D&amp;D</div>
+                        <div class="pdice">1d20</div>
+                      </div>
+                      <div class="preset-card">
+                        <div class="pico">◇</div>
+                        <div class="pname">CRAPS</div>
+                        <div class="pdice">2d6</div>
+                      </div>
+                      <div class="preset-card plus">
+                        <div class="pico">+</div>
+                        <div class="pname">NOVO</div>
+                        <div class="pdice">criar</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ====== SHOT 4 — HISTORY ====== -->
+          <div class="shot-block">
+            <div class="shot-overlay">
+              <div class="t">Histórico infinito.</div>
+              <div class="s">Cada rolagem salva localmente</div>
+            </div>
+            <div class="iphone-frame">
+              <div class="notch"></div>
+              <div class="iphone-screen">
+                <div class="mac">
+                  <div class="mac-bar">HISTÓRICO</div>
+                  <div class="mac-body">
+                    <div class="history-list">
+                      <div class="hist-row">
+                        <div>
+                          <div class="roll">2D6</div>
+                          <div class="when">22 MAI · 14:32</div>
+                        </div>
+                        <div class="total">10</div>
+                      </div>
+                      <div class="hist-row">
+                        <div>
+                          <div class="roll">1D20</div>
+                          <div class="when">22 MAI · 14:28</div>
+                        </div>
+                        <div class="total">17</div>
+                      </div>
+                      <div class="hist-row">
+                        <div>
+                          <div class="roll">5D6</div>
+                          <div class="when">22 MAI · 14:20</div>
+                        </div>
+                        <div class="total">22</div>
+                      </div>
+                      <div class="hist-row">
+                        <div>
+                          <div class="roll">2D6</div>
+                          <div class="when">22 MAI · 14:15</div>
+                        </div>
+                        <div class="total">7</div>
+                      </div>
+                      <div class="hist-row">
+                        <div>
+                          <div class="roll">1D6</div>
+                          <div class="when">22 MAI · 14:11</div>
+                        </div>
+                        <div class="total">4</div>
+                      </div>
+                      <div class="hist-row">
+                        <div>
+                          <div class="roll">3D6</div>
+                          <div class="when">21 MAI · 23:08</div>
+                        </div>
+                        <div class="total">14</div>
+                      </div>
+                    </div>
+                    <div class="btn ghost" style="margin-top:10px;">LIMPAR</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ====== SHOT 5 — SPLASH ====== -->
+          <div class="shot-block">
+            <div class="shot-overlay">
+              <div class="t">Free. No ads. Offline.</div>
+              <div class="s">Como deveria ser.</div>
+            </div>
+            <div class="iphone-frame">
+              <div class="notch"></div>
+              <div class="iphone-screen">
+                <div class="mac" style="padding-top:0;">
+                  <div class="splash">
+                    <div class="wordmark">1-BIT<br>DICE</div>
+                    <div class="dice-big">
+                      <svg viewBox="0 0 16 16" shape-rendering="crispEdges">
+                        <rect width="16" height="16" fill="#fff"/>
+                        <rect x="1" y="1" width="14" height="1" fill="#000"/>
+                        <rect x="1" y="14" width="14" height="1" fill="#000"/>
+                        <rect x="1" y="1" width="1" height="14" fill="#000"/>
+                        <rect x="14" y="1" width="1" height="14" fill="#000"/>
+                        <rect x="4" y="3" width="2" height="2" fill="#000"/>
+                        <rect x="10" y="3" width="2" height="2" fill="#000"/>
+                        <rect x="7" y="7" width="2" height="2" fill="#000"/>
+                        <rect x="4" y="11" width="2" height="2" fill="#000"/>
+                        <rect x="10" y="11" width="2" height="2" fill="#000"/>
+                      </svg>
+                    </div>
+                    <div class="tag">Roll any dice.<br>Anywhere.</div>
+                    <div class="micro">v1.0 · AM2 STUDIOS</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 2. Promotional Text + Keywords ====== -->
+  <section class="section">
+    <div class="section-title">2. Promotional text · Keywords</div>
+    <div class="grid-2">
+      <div class="info-card">
+        <div class="label">Promotional Text (max 170)</div>
+        <div class="value">Dados em 1-bit retrô. Ludo, Banco Imobiliário, RPG, Yahtzee, qualquer jogo. 6 paletas (Mac, Game Boy, Apple II...). Grátis. Sem anúncios. Offline.</div>
+        <div class="count">160 / 170 CHARS</div>
+      </div>
+      <div class="info-card">
+        <div class="label">Keywords (max 100)</div>
+        <div class="value">dados,dice,ludo,RPG,banco imobiliario,tabuleiro,pixel,retro,1bit,yahtzee,catan,DD</div>
+        <div class="count">82 / 100 CHARS</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 3. Full Description ====== -->
+  <section class="section">
+    <div class="section-title">3. Descrição completa</div>
+    <div class="desc-box">
+      <p class="hook">Esqueceu o dado em casa? Pegou Banco Imobiliário e o cachorro comeu o d6? 1-Bit Dice resolve.</p>
+
+      <p>Um aplicativo simples, rápido e bonito para rolar qualquer dado em qualquer jogo de tabuleiro. Sem cadastro, sem anúncios, sem internet — só dado.</p>
+
+      <h4>Recursos</h4>
+      <ul>
+        <li>Rola d4, d6, d8, d10, d12, d20 e d100</li>
+        <li>Até 10 dados ao mesmo tempo, com soma automática</li>
+        <li>6 paletas retrô: Mac Classic, Game Boy, Apple II, Commodore 64, CGA e Amber CRT</li>
+        <li>Presets prontos: Ludo, Banco Imobiliário, War, Yahtzee, Catan, D&amp;D, Craps</li>
+        <li>Crie e salve seus próprios presets</li>
+        <li>Histórico infinito de rolagens, com data e hora</li>
+        <li>Animação pixel art em 1-bit, no melhor estilo Mac System 1</li>
+        <li>Modo silencioso ou com som retrô bipado</li>
+        <li>Funciona 100% offline</li>
+      </ul>
+
+      <h4>Para quem</h4>
+      <ul>
+        <li>FAMÍLIA — Ludo, Banco Imobiliário, jogos de tabuleiro do fim de semana</li>
+        <li>RPG — Mesa de D&amp;D, Tormenta, Cthulhu, Old-School Renaissance</li>
+        <li>DECISÕES — "Cara ou coroa não dá mais? Joga um d20."</li>
+        <li>EDUCAÇÃO — Probabilidade pra criança aprender, sem distração</li>
+      </ul>
+
+      <h4>Diferencial</h4>
+      <p>Enquanto a App Store está cheia de apps de dado com 3D exagerado, anúncios pop-up e in-app purchase de "skin de dado dourado", o 1-Bit Dice faz o oposto: pixel art puro, paleta de 2 cores, zero tracking, zero ads, zero login. Você abre, rola, fecha. Como em 1984.</p>
+
+      <p class="micro">CALL OF OLD CHICO &nbsp;·&nbsp; AM2 STUDIOS &nbsp;·&nbsp; FEITO POR ARTHUR MELO EM SÃO PAULO &nbsp;·&nbsp; PIXEL POR PIXEL</p>
+
+      <div class="privacy">
+        Privacidade: o app NÃO coleta dados. Tudo fica salvo apenas no seu dispositivo. Sem analytics, sem trackers, sem login. Política de privacidade: am2.studio/1bitdice/privacy
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 4. App Preview Video Script ====== -->
+  <section class="section">
+    <div class="section-title">4. App Preview · roteiro 15-30s</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:90px;">Tempo</th>
+          <th style="width:160px;">Cena</th>
+          <th>Ação · narração visual</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="time">0:00–0:03</td>
+          <td class="scene">SPLASH</td>
+          <td>Fade in em branco. Wordmark "1-BIT DICE" surge pixel a pixel. Tagline "Roll any dice. Anywhere."</td>
+        </tr>
+        <tr>
+          <td class="time">0:03–0:07</td>
+          <td class="scene">HOME · ROLAR</td>
+          <td>Usuário seleciona D6, quantidade 2, toca ROLAR. Dois dados aparecem pulando em pixel art. Resultado: 4 + 6 = 10.</td>
+        </tr>
+        <tr>
+          <td class="time">0:07–0:13</td>
+          <td class="scene">PALETAS</td>
+          <td>Abre Ajustes, expande PALETA. Mostra 6 swatches. Seleciona Game Boy. A tela inteira vira verde do Game Boy em 1 frame.</td>
+        </tr>
+        <tr>
+          <td class="time">0:13–0:19</td>
+          <td class="scene">PRESETS</td>
+          <td>Volta pra paleta Mac. Abre tela JOGOS. Cards de Ludo, Banco Imob., D&amp;D piscam. Toca em "B. IMOB." e vai direto pra home com 2d6 configurado.</td>
+        </tr>
+        <tr>
+          <td class="time">0:19–0:25</td>
+          <td class="scene">HISTÓRICO</td>
+          <td>Pull-down revela histórico de rolagens com data/hora. Lista scrolla em loop pixelizado.</td>
+        </tr>
+        <tr>
+          <td class="time">0:25–0:30</td>
+          <td class="scene">CTA</td>
+          <td>Volta pro splash. Texto "FREE. NO ADS. OFFLINE." em Silkscreen. Logo AM2 Studios pisca uma vez. Fade out.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ====== 5. Categorias e Classificação ====== -->
+  <section class="section">
+    <div class="section-title">5. Categorias · Classificação · Disponibilidade</div>
+    <div class="cat-row">
+      <div class="cat-card">
+        <div class="clabel">Categoria primária</div>
+        <div class="cval">Ferramentas</div>
+        <div class="csub">Tools</div>
+      </div>
+      <div class="cat-card">
+        <div class="clabel">Categoria secundária</div>
+        <div class="cval">Jogos &gt; Tabuleiro</div>
+        <div class="csub">Games &gt; Board</div>
+      </div>
+      <div class="cat-card">
+        <div class="clabel">Classificação etária</div>
+        <div class="cval">4+</div>
+        <div class="csub">Sem conteúdo objetável</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 6. Search Mock ====== -->
+  <section class="section">
+    <div class="section-title">6. Mock de busca na App Store</div>
+    <div class="search-mock">
+      <div class="search-bar">
+        <span class="ico"></span>
+        <span>dado</span>
+      </div>
+      <div class="search-result">
+        <div class="sr-icon">
+          <svg viewBox="0 0 18 18" shape-rendering="crispEdges">
+            <rect width="18" height="18" fill="#ffffff"/>
+            <rect x="2" y="1" width="14" height="1" fill="#000"/>
+            <rect x="2" y="16" width="14" height="1" fill="#000"/>
+            <rect x="1" y="2" width="1" height="14" fill="#000"/>
+            <rect x="16" y="2" width="1" height="14" fill="#000"/>
+            <rect x="4" y="4" width="2" height="2" fill="#000"/>
+            <rect x="12" y="4" width="2" height="2" fill="#000"/>
+            <rect x="8" y="8" width="2" height="2" fill="#000"/>
+            <rect x="4" y="12" width="2" height="2" fill="#000"/>
+            <rect x="12" y="12" width="2" height="2" fill="#000"/>
+          </svg>
+        </div>
+        <div class="sr-text">
+          <div class="sr-name">1-Bit Dice</div>
+          <div class="sr-dev">AM2 Studios · Ferramentas</div>
+          <div class="sr-stars">★★★★★ 5,0 · 128</div>
+        </div>
+        <button class="get-btn">OBTER</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 7. Comparative ====== -->
+  <section class="section">
+    <div class="section-title">7. 1-Bit Dice vs. "Dice Roller" genérico</div>
+    <div class="compare">
+
+      <!-- OURS -->
+      <div class="compare-card ours">
+        <div class="compare-head">
+          <div class="ic">
+            <svg viewBox="0 0 18 18" shape-rendering="crispEdges">
+              <rect width="18" height="18" fill="#ffffff"/>
+              <rect x="2" y="1" width="14" height="1" fill="#000"/>
+              <rect x="2" y="16" width="14" height="1" fill="#000"/>
+              <rect x="1" y="2" width="1" height="14" fill="#000"/>
+              <rect x="16" y="2" width="1" height="14" fill="#000"/>
+              <rect x="4" y="4" width="2" height="2" fill="#000"/>
+              <rect x="12" y="4" width="2" height="2" fill="#000"/>
+              <rect x="8" y="8" width="2" height="2" fill="#000"/>
+              <rect x="4" y="12" width="2" height="2" fill="#000"/>
+              <rect x="12" y="12" width="2" height="2" fill="#000"/>
+            </svg>
+          </div>
+          <div>
+            <div class="n">1-Bit Dice</div>
+            <div class="d">AM2 Studios</div>
+          </div>
+        </div>
+        <div class="compare-mini ours">
+          <svg width="100" height="100" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect width="16" height="16" fill="#fff"/>
+            <rect x="1" y="1" width="14" height="1" fill="#000"/>
+            <rect x="1" y="14" width="14" height="1" fill="#000"/>
+            <rect x="1" y="1" width="1" height="14" fill="#000"/>
+            <rect x="14" y="1" width="1" height="14" fill="#000"/>
+            <rect x="4" y="3" width="2" height="2" fill="#000"/>
+            <rect x="10" y="3" width="2" height="2" fill="#000"/>
+            <rect x="4" y="7" width="2" height="2" fill="#000"/>
+            <rect x="10" y="7" width="2" height="2" fill="#000"/>
+            <rect x="4" y="11" width="2" height="2" fill="#000"/>
+            <rect x="10" y="11" width="2" height="2" fill="#000"/>
+          </svg>
+        </div>
+        <div class="compare-list">
+          <div><span class="y">✓</span> Pixel art 1-bit · identidade visual única</div>
+          <div><span class="y">✓</span> 6 paletas retrô (Mac, GB, Apple II...)</div>
+          <div><span class="y">✓</span> Sem anúncios · sem tracking</div>
+          <div><span class="y">✓</span> 100% offline</div>
+          <div><span class="y">✓</span> Presets de jogos prontos</div>
+          <div><span class="y">✓</span> Grátis · sem in-app purchase</div>
+        </div>
+      </div>
+
+      <!-- GENERIC -->
+      <div class="compare-card">
+        <div class="compare-head">
+          <div class="ic generic">D</div>
+          <div>
+            <div class="n">Dice Roller (genérico)</div>
+            <div class="d">App qualquer · Utilidades</div>
+          </div>
+        </div>
+        <div class="compare-mini">
+          <div class="generic-dice">6</div>
+        </div>
+        <div class="compare-list">
+          <div><span class="n">✗</span> 3D genérico · igual aos outros 200 apps</div>
+          <div><span class="n">✗</span> 1 paleta só (vermelho ou preto)</div>
+          <div><span class="n">✗</span> Anúncios em banner e popup</div>
+          <div><span class="n">✗</span> Pede internet pra abrir</div>
+          <div><span class="n">✗</span> Só d6 grátis · resto é IAP</div>
+          <div><span class="n">✗</span> Coleta dados de uso (analytics)</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="note">FIM DO LISTING · 1-BIT DICE v2 · AM2 STUDIOS · 2026</div>
+
+</div>
+
+</body>
+</html>

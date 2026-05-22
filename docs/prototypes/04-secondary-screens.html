@@ -1,0 +1,989 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>1-Bit Dice — Secondary Screens v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#000000;
+    --paper:#FFFFFF;
+    --line:#000000;
+    --bezel:#9a9a9a;
+    --bezel-dark:#5a5a5a;
+    --board:#d8d8d8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--board);font-family:"VT323",monospace;color:var(--ink);image-rendering:pixelated;-webkit-font-smoothing:none;font-smooth:never}
+  svg{shape-rendering:crispEdges}
+  .stage{
+    width:1300px;
+    margin:0 auto;
+    padding:48px 24px 64px;
+    display:flex;
+    justify-content:space-between;
+    gap:24px;
+    align-items:flex-start;
+  }
+  .col{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .device{
+    width:413px;height:872px;
+    background:var(--bezel);
+    border:2px solid #000;
+    border-radius:42px;
+    padding:10px;
+    box-shadow:0 6px 0 var(--bezel-dark), 0 0 0 2px #000 inset;
+    position:relative;
+  }
+  .device::before{
+    content:"";
+    position:absolute;
+    top:18px;left:50%;
+    transform:translateX(-50%);
+    width:110px;height:22px;
+    background:#000;
+    border-radius:14px;
+    z-index:5;
+  }
+  .screen{
+    width:393px;height:852px;
+    background:var(--paper);
+    overflow:hidden;
+    position:relative;
+    border:1px solid #000;
+    display:flex;
+    flex-direction:column;
+  }
+  .statusbar{
+    height:40px;
+    flex-shrink:0;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    padding:0 22px 6px;
+    font-family:"Silkscreen",monospace;
+    font-size:11px;
+  }
+  .appbar{
+    height:54px;
+    flex-shrink:0;
+    border-bottom:2px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 16px;
+    background:var(--paper);
+  }
+  .appbar h1{
+    font-family:"Silkscreen",monospace;
+    font-weight:700;
+    font-size:19px;
+    letter-spacing:1px;
+  }
+  .icon-btn{
+    width:32px;height:32px;
+    display:flex;align-items:center;justify-content:center;
+    border:0;background:transparent;cursor:pointer;
+  }
+  .subhead{
+    padding:10px 16px 8px;
+    font-family:"VT323",monospace;
+    font-size:13px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    border-bottom:1px solid var(--line);
+  }
+  .content{
+    flex:1;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .tabbar{
+    flex-shrink:0;
+    height:64px;
+    border-top:2px solid var(--line);
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    background:var(--paper);
+  }
+  .tab{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    font-family:"Press Start 2P",monospace;
+    font-size:7px;
+    letter-spacing:0.5px;
+    opacity:0.45;
+  }
+  .tab.active{opacity:1}
+  .tab .tab-ico{width:24px;height:24px;display:block}
+  .tab span{margin-top:2px}
+
+  /* TELA 1 */
+  .hist-list{flex:1;overflow-y:auto}
+  .hist-row{
+    padding:10px 16px 8px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    height:72px;
+  }
+  .hist-left{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+  .hist-date{
+    font-family:"VT323",monospace;
+    font-size:14px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    opacity:0.7;
+  }
+  .hist-eq{
+    font-family:"Silkscreen",monospace;
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:0.5px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .hist-right{display:flex;gap:4px;flex-shrink:0}
+  .clear-bar{
+    padding:14px 16px 18px;
+    flex-shrink:0;
+    border-top:2px solid var(--line);
+    background:var(--paper);
+  }
+  .btn-outline{
+    display:block;
+    width:100%;
+    padding:12px 0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Silkscreen",monospace;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    border:2px solid var(--line);
+    box-shadow:3px 3px 0 var(--line);
+    cursor:pointer;
+  }
+
+  /* TELA 2 */
+  .settings-list{flex:1;overflow-y:auto}
+  .set-row{
+    padding:10px 16px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    height:72px;
+  }
+  .set-row:last-child{border-bottom:none}
+  .set-titles{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .set-title{
+    font-family:"Silkscreen",monospace;
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:1px;
+  }
+  .set-title.sm{font-size:14px}
+  .set-sub{
+    font-family:"VT323",monospace;
+    font-size:14px;
+    opacity:0.7;
+    letter-spacing:0.5px;
+  }
+  .swatches{display:flex;gap:4px}
+  .sw{width:20px;height:20px;border:1px solid var(--line);position:relative}
+  .sw.active::after{
+    content:"";
+    position:absolute;
+    inset:-3px;
+    border:2px solid var(--line);
+    pointer-events:none;
+  }
+  .toggle{
+    width:42px;height:24px;
+    border:2px solid var(--line);
+    background:var(--paper);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Silkscreen",monospace;
+    font-size:14px;
+    line-height:1;
+  }
+  .speed-dots{display:flex;gap:6px;align-items:center}
+  .dot{width:10px;height:10px;border:2px solid var(--line);background:var(--paper)}
+  .dot.on{background:var(--ink)}
+  .chev{font-family:"Silkscreen",monospace;font-size:18px;font-weight:700}
+
+  /* TELA 3 */
+  .games-grid{
+    flex:1;
+    overflow-y:auto;
+    padding:12px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    align-content:start;
+  }
+  .game-card{
+    aspect-ratio:1/1;
+    border:2px solid var(--line);
+    box-shadow:3px 3px 0 var(--line);
+    background:var(--paper);
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    position:relative;
+  }
+  .game-card.empty{
+    box-shadow:none;
+    border-style:dashed;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
+  .game-name{
+    font-family:"Silkscreen",monospace;
+    font-weight:700;
+    letter-spacing:1px;
+    line-height:1.1;
+  }
+  .game-name.lg{font-size:20px}
+  .game-name.md{font-size:17px}
+  .game-name.xl{font-size:22px}
+  .game-dice-line{
+    font-family:"VT323",monospace;
+    font-size:18px;
+    letter-spacing:1px;
+    margin-top:4px;
+  }
+  .game-mini{
+    display:flex;
+    gap:3px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .plus-big{
+    font-family:"Silkscreen",monospace;
+    font-size:32px;
+    line-height:1;
+  }
+
+  .caption{
+    font-family:"VT323",monospace;
+    font-size:16px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--ink);
+    text-align:center;
+  }
+  .head{
+    text-align:center;
+    margin-top:8px;
+    padding-bottom:32px;
+  }
+  .head h2{
+    font-family:"Silkscreen",monospace;
+    font-size:20px;
+    letter-spacing:2px;
+    margin-bottom:4px;
+  }
+  .head p{
+    font-family:"VT323",monospace;
+    font-size:15px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    opacity:0.7;
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-trash" viewBox="0 0 24 24">
+      <rect x="8" y="3" width="8" height="2" fill="#000"/>
+      <rect x="5" y="6" width="14" height="2" fill="#000"/>
+      <rect x="7" y="8" width="2" height="13" fill="#000"/>
+      <rect x="15" y="8" width="2" height="13" fill="#000"/>
+      <rect x="9" y="19" width="6" height="2" fill="#000"/>
+      <rect x="10" y="10" width="1" height="8" fill="#000"/>
+      <rect x="12" y="10" width="1" height="8" fill="#000"/>
+      <rect x="14" y="10" width="1" height="8" fill="#000"/>
+    </symbol>
+    <symbol id="ic-x" viewBox="0 0 24 24">
+      <rect x="4" y="4" width="2" height="2" fill="#000"/>
+      <rect x="6" y="6" width="2" height="2" fill="#000"/>
+      <rect x="8" y="8" width="2" height="2" fill="#000"/>
+      <rect x="10" y="10" width="4" height="4" fill="#000"/>
+      <rect x="14" y="8" width="2" height="2" fill="#000"/>
+      <rect x="16" y="6" width="2" height="2" fill="#000"/>
+      <rect x="18" y="4" width="2" height="2" fill="#000"/>
+      <rect x="14" y="14" width="2" height="2" fill="#000"/>
+      <rect x="16" y="16" width="2" height="2" fill="#000"/>
+      <rect x="18" y="18" width="2" height="2" fill="#000"/>
+      <rect x="8" y="14" width="2" height="2" fill="#000"/>
+      <rect x="6" y="16" width="2" height="2" fill="#000"/>
+      <rect x="4" y="18" width="2" height="2" fill="#000"/>
+    </symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24">
+      <rect x="10" y="4" width="4" height="16" fill="#000"/>
+      <rect x="4" y="10" width="16" height="4" fill="#000"/>
+    </symbol>
+    <symbol id="ic-tab-d6" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="18" height="18" fill="#fff" stroke="#000" stroke-width="2"/>
+      <rect x="7" y="7" width="3" height="3" fill="#000"/>
+      <rect x="14" y="7" width="3" height="3" fill="#000"/>
+      <rect x="10" y="10" width="3" height="3" fill="#000"/>
+      <rect x="7" y="14" width="3" height="3" fill="#000"/>
+      <rect x="14" y="14" width="3" height="3" fill="#000"/>
+    </symbol>
+    <symbol id="ic-tab-hourglass" viewBox="0 0 24 24">
+      <rect x="5" y="3" width="14" height="2" fill="#000"/>
+      <rect x="5" y="19" width="14" height="2" fill="#000"/>
+      <rect x="6" y="5" width="2" height="2" fill="#000"/>
+      <rect x="16" y="5" width="2" height="2" fill="#000"/>
+      <rect x="8" y="7" width="2" height="2" fill="#000"/>
+      <rect x="14" y="7" width="2" height="2" fill="#000"/>
+      <rect x="10" y="9" width="4" height="2" fill="#000"/>
+      <rect x="11" y="11" width="2" height="2" fill="#000"/>
+      <rect x="10" y="13" width="4" height="2" fill="#000"/>
+      <rect x="8" y="15" width="2" height="2" fill="#000"/>
+      <rect x="14" y="15" width="2" height="2" fill="#000"/>
+      <rect x="6" y="17" width="2" height="2" fill="#000"/>
+      <rect x="16" y="17" width="2" height="2" fill="#000"/>
+    </symbol>
+    <symbol id="ic-tab-star" viewBox="0 0 24 24">
+      <rect x="11" y="3" width="2" height="2" fill="#000"/>
+      <rect x="10" y="5" width="4" height="2" fill="#000"/>
+      <rect x="9" y="7" width="6" height="2" fill="#000"/>
+      <rect x="3" y="9" width="18" height="2" fill="#000"/>
+      <rect x="5" y="11" width="14" height="2" fill="#000"/>
+      <rect x="7" y="13" width="10" height="2" fill="#000"/>
+      <rect x="6" y="15" width="4" height="2" fill="#000"/>
+      <rect x="14" y="15" width="4" height="2" fill="#000"/>
+      <rect x="5" y="17" width="3" height="2" fill="#000"/>
+      <rect x="16" y="17" width="3" height="2" fill="#000"/>
+      <rect x="4" y="19" width="3" height="2" fill="#000"/>
+      <rect x="17" y="19" width="3" height="2" fill="#000"/>
+    </symbol>
+    <symbol id="ic-tab-gear" viewBox="0 0 24 24">
+      <rect x="10" y="2" width="4" height="3" fill="#000"/>
+      <rect x="10" y="19" width="4" height="3" fill="#000"/>
+      <rect x="2" y="10" width="3" height="4" fill="#000"/>
+      <rect x="19" y="10" width="3" height="4" fill="#000"/>
+      <rect x="4" y="4" width="3" height="3" fill="#000"/>
+      <rect x="17" y="4" width="3" height="3" fill="#000"/>
+      <rect x="4" y="17" width="3" height="3" fill="#000"/>
+      <rect x="17" y="17" width="3" height="3" fill="#000"/>
+      <rect x="6" y="6" width="12" height="12" fill="#000"/>
+      <rect x="9" y="9" width="6" height="6" fill="#fff"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="stage">
+
+  <!-- =========================================
+       TELA 1 — HISTORICO
+  ========================================= -->
+  <div class="col">
+    <div class="device">
+      <div class="screen">
+        <div class="statusbar">
+          <span>9:41</span>
+          <span>100%</span>
+        </div>
+        <div class="appbar">
+          <h1>HISTÓRICO</h1>
+          <button class="icon-btn" aria-label="Limpar">
+            <svg width="24" height="24"><use href="#ic-trash"/></svg>
+          </button>
+        </div>
+        <div class="subhead">TODAS AS ROLAGENS</div>
+
+        <div class="content">
+          <div class="hist-list">
+
+            <div class="hist-row">
+              <div class="hist-left">
+                <div class="hist-date">22 MAI · 14:32</div>
+                <div class="hist-eq">2d6 → 4 + 5 = 9</div>
+              </div>
+              <div class="hist-right">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                  <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="hist-row">
+              <div class="hist-left">
+                <div class="hist-date">22 MAI · 13:58</div>
+                <div class="hist-eq">1d20 → 13</div>
+              </div>
+              <div class="hist-right">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="11" y="2" width="2" height="2" fill="#000"/>
+                  <rect x="9" y="4" width="6" height="2" fill="#000"/>
+                  <rect x="6" y="6" width="12" height="2" fill="#000"/>
+                  <rect x="4" y="8" width="2" height="8" fill="#000"/>
+                  <rect x="18" y="8" width="2" height="8" fill="#000"/>
+                  <rect x="6" y="16" width="12" height="2" fill="#000"/>
+                  <rect x="9" y="18" width="6" height="2" fill="#000"/>
+                  <rect x="11" y="20" width="2" height="2" fill="#000"/>
+                  <text x="12" y="14" text-anchor="middle" font-family="Silkscreen" font-size="7" fill="#000">13</text>
+                </svg>
+              </div>
+            </div>
+
+            <div class="hist-row">
+              <div class="hist-left">
+                <div class="hist-date">22 MAI · 12:11</div>
+                <div class="hist-eq">2d6 → 3 + 4 = 7</div>
+              </div>
+              <div class="hist-right">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="hist-row">
+              <div class="hist-left">
+                <div class="hist-date">21 MAI · 22:04</div>
+                <div class="hist-eq">3d6 → 11</div>
+              </div>
+              <div class="hist-right">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="hist-row">
+              <div class="hist-left">
+                <div class="hist-date">21 MAI · 19:47</div>
+                <div class="hist-eq">5d6 → 18</div>
+              </div>
+              <div class="hist-right">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                  <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="hist-row">
+              <div class="hist-left">
+                <div class="hist-date">21 MAI · 17:20</div>
+                <div class="hist-eq">1d100 → 42</div>
+              </div>
+              <div class="hist-right">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <text x="12" y="15" text-anchor="middle" font-family="Silkscreen" font-size="8" fill="#000">42</text>
+                </svg>
+              </div>
+            </div>
+
+            <div class="hist-row">
+              <div class="hist-left">
+                <div class="hist-date">20 MAI · 23:12</div>
+                <div class="hist-eq">4d6 → 14</div>
+              </div>
+              <div class="hist-right">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                  <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                  <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                  <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="hist-row">
+              <div class="hist-left">
+                <div class="hist-date">20 MAI · 18:55</div>
+                <div class="hist-eq">2d20 → 25</div>
+              </div>
+              <div class="hist-right">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="11" y="2" width="2" height="2" fill="#000"/>
+                  <rect x="9" y="4" width="6" height="2" fill="#000"/>
+                  <rect x="6" y="6" width="12" height="2" fill="#000"/>
+                  <rect x="4" y="8" width="2" height="8" fill="#000"/>
+                  <rect x="18" y="8" width="2" height="8" fill="#000"/>
+                  <rect x="6" y="16" width="12" height="2" fill="#000"/>
+                  <rect x="9" y="18" width="6" height="2" fill="#000"/>
+                  <rect x="11" y="20" width="2" height="2" fill="#000"/>
+                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="11" y="2" width="2" height="2" fill="#000"/>
+                  <rect x="9" y="4" width="6" height="2" fill="#000"/>
+                  <rect x="6" y="6" width="12" height="2" fill="#000"/>
+                  <rect x="4" y="8" width="2" height="8" fill="#000"/>
+                  <rect x="18" y="8" width="2" height="8" fill="#000"/>
+                  <rect x="6" y="16" width="12" height="2" fill="#000"/>
+                  <rect x="9" y="18" width="6" height="2" fill="#000"/>
+                  <rect x="11" y="20" width="2" height="2" fill="#000"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="hist-row">
+              <div class="hist-left">
+                <div class="hist-date">19 MAI · 21:30</div>
+                <div class="hist-eq">1d12 → 9</div>
+              </div>
+              <div class="hist-right">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <rect x="9" y="3" width="6" height="2" fill="#000"/>
+                  <rect x="5" y="5" width="2" height="2" fill="#000"/>
+                  <rect x="17" y="5" width="2" height="2" fill="#000"/>
+                  <rect x="3" y="7" width="2" height="10" fill="#000"/>
+                  <rect x="19" y="7" width="2" height="10" fill="#000"/>
+                  <rect x="5" y="17" width="2" height="2" fill="#000"/>
+                  <rect x="17" y="17" width="2" height="2" fill="#000"/>
+                  <rect x="9" y="19" width="6" height="2" fill="#000"/>
+                  <text x="12" y="14" text-anchor="middle" font-family="Silkscreen" font-size="7" fill="#000">9</text>
+                </svg>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="clear-bar">
+            <button class="btn-outline">LIMPAR HISTÓRICO</button>
+          </div>
+        </div>
+
+        <div class="tabbar">
+          <div class="tab"><svg class="tab-ico"><use href="#ic-tab-d6"/></svg><span>ROLAR</span></div>
+          <div class="tab active"><svg class="tab-ico"><use href="#ic-tab-hourglass"/></svg><span>HISTÓRICO</span></div>
+          <div class="tab"><svg class="tab-ico"><use href="#ic-tab-star"/></svg><span>JOGOS</span></div>
+          <div class="tab"><svg class="tab-ico"><use href="#ic-tab-gear"/></svg><span>AJUSTES</span></div>
+        </div>
+
+      </div>
+    </div>
+    <div class="caption">HISTÓRICO — TODAS AS ROLAGENS</div>
+  </div>
+
+  <!-- =========================================
+       TELA 2 — AJUSTES
+  ========================================= -->
+  <div class="col">
+    <div class="device">
+      <div class="screen">
+        <div class="statusbar">
+          <span>9:41</span>
+          <span>100%</span>
+        </div>
+        <div class="appbar">
+          <h1>AJUSTES</h1>
+          <button class="icon-btn" aria-label="Fechar">
+            <svg width="24" height="24"><use href="#ic-x"/></svg>
+          </button>
+        </div>
+
+        <div class="content">
+          <div class="settings-list">
+
+            <div class="set-row">
+              <div class="set-titles">
+                <div class="set-title">PALETA</div>
+                <div class="set-sub">Mac Classic</div>
+              </div>
+              <div class="swatches">
+                <div class="sw active" style="background:#FFFFFF"></div>
+                <div class="sw" style="background:#9BBC0F"></div>
+                <div class="sw" style="background:#FFB000"></div>
+                <div class="sw" style="background:#00FF66"></div>
+                <div class="sw" style="background:#33B5FF"></div>
+                <div class="sw" style="background:#000000"></div>
+              </div>
+            </div>
+
+            <div class="set-row">
+              <div class="set-titles">
+                <div class="set-title">SOM</div>
+                <div class="set-sub">Efeitos sonoros</div>
+              </div>
+              <div class="toggle">
+                <svg width="14" height="14" viewBox="0 0 14 14">
+                  <rect x="1" y="1" width="2" height="2" fill="#000"/>
+                  <rect x="3" y="3" width="2" height="2" fill="#000"/>
+                  <rect x="5" y="5" width="4" height="4" fill="#000"/>
+                  <rect x="9" y="3" width="2" height="2" fill="#000"/>
+                  <rect x="11" y="1" width="2" height="2" fill="#000"/>
+                  <rect x="9" y="9" width="2" height="2" fill="#000"/>
+                  <rect x="11" y="11" width="2" height="2" fill="#000"/>
+                  <rect x="3" y="9" width="2" height="2" fill="#000"/>
+                  <rect x="1" y="11" width="2" height="2" fill="#000"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="set-row">
+              <div class="set-titles">
+                <div class="set-title">VIBRAÇÃO</div>
+                <div class="set-sub">Haptic ao rolar</div>
+              </div>
+              <div class="toggle">
+                <svg width="14" height="14" viewBox="0 0 14 14">
+                  <rect x="1" y="1" width="2" height="2" fill="#000"/>
+                  <rect x="3" y="3" width="2" height="2" fill="#000"/>
+                  <rect x="5" y="5" width="4" height="4" fill="#000"/>
+                  <rect x="9" y="3" width="2" height="2" fill="#000"/>
+                  <rect x="11" y="1" width="2" height="2" fill="#000"/>
+                  <rect x="9" y="9" width="2" height="2" fill="#000"/>
+                  <rect x="11" y="11" width="2" height="2" fill="#000"/>
+                  <rect x="3" y="9" width="2" height="2" fill="#000"/>
+                  <rect x="1" y="11" width="2" height="2" fill="#000"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="set-row">
+              <div class="set-titles">
+                <div class="set-title">ANIMAÇÃO</div>
+                <div class="set-sub">Velocidade da rolagem</div>
+              </div>
+              <div class="speed-dots">
+                <div class="dot"></div>
+                <div class="dot on"></div>
+                <div class="dot"></div>
+              </div>
+            </div>
+
+            <div class="set-row">
+              <div class="set-titles">
+                <div class="set-title">SOBRE</div>
+                <div class="set-sub">v1.0.0</div>
+              </div>
+              <div class="chev">&gt;</div>
+            </div>
+
+            <div class="set-row">
+              <div class="set-titles">
+                <div class="set-title sm">PRIVACIDADE</div>
+              </div>
+              <div class="chev">&gt;</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="tabbar">
+          <div class="tab"><svg class="tab-ico"><use href="#ic-tab-d6"/></svg><span>ROLAR</span></div>
+          <div class="tab"><svg class="tab-ico"><use href="#ic-tab-hourglass"/></svg><span>HISTÓRICO</span></div>
+          <div class="tab"><svg class="tab-ico"><use href="#ic-tab-star"/></svg><span>JOGOS</span></div>
+          <div class="tab active"><svg class="tab-ico"><use href="#ic-tab-gear"/></svg><span>AJUSTES</span></div>
+        </div>
+
+      </div>
+    </div>
+    <div class="caption">AJUSTES — PALETA, SOM, SOBRE</div>
+  </div>
+
+  <!-- =========================================
+       TELA 3 — JOGOS
+  ========================================= -->
+  <div class="col">
+    <div class="device">
+      <div class="screen">
+        <div class="statusbar">
+          <span>9:41</span>
+          <span>100%</span>
+        </div>
+        <div class="appbar">
+          <h1>JOGOS</h1>
+          <button class="icon-btn" aria-label="Novo">
+            <svg width="24" height="24"><use href="#ic-plus"/></svg>
+          </button>
+        </div>
+        <div class="subhead">PRESETS PROS SEUS JOGOS</div>
+
+        <div class="content">
+          <div class="games-grid">
+
+            <div class="game-card">
+              <div class="game-name lg">LUDO</div>
+              <div>
+                <div class="game-mini">
+                  <svg width="28" height="28" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                  </svg>
+                </div>
+                <div class="game-dice-line">1d6</div>
+              </div>
+            </div>
+
+            <div class="game-card">
+              <div class="game-name md">BANCO IMOB.</div>
+              <div>
+                <div class="game-mini">
+                  <svg width="26" height="26" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                  <svg width="26" height="26" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                </div>
+                <div class="game-dice-line">2d6</div>
+              </div>
+            </div>
+
+            <div class="game-card">
+              <div class="game-name md">WAR ATAQ.</div>
+              <div>
+                <div class="game-mini">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                </div>
+                <div class="game-dice-line">3d6</div>
+              </div>
+            </div>
+
+            <div class="game-card">
+              <div class="game-name md">WAR DEF.</div>
+              <div>
+                <div class="game-mini">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                  </svg>
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                    <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                </div>
+                <div class="game-dice-line">3d6</div>
+              </div>
+            </div>
+
+            <div class="game-card">
+              <div class="game-name lg">YAHTZEE</div>
+              <div>
+                <div class="game-mini">
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                  </svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                    <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                </div>
+                <div class="game-dice-line">5d6</div>
+              </div>
+            </div>
+
+            <div class="game-card">
+              <div class="game-name lg">CATAN</div>
+              <div>
+                <div class="game-mini">
+                  <svg width="26" height="26" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                  <svg width="26" height="26" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="#fff" stroke="#000" stroke-width="2"/>
+                    <rect x="6" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="6" width="3" height="3" fill="#000"/>
+                    <rect x="11" y="11" width="3" height="3" fill="#000"/>
+                    <rect x="6" y="15" width="3" height="3" fill="#000"/>
+                    <rect x="15" y="15" width="3" height="3" fill="#000"/>
+                  </svg>
+                </div>
+                <div class="game-dice-line">2d6</div>
+              </div>
+            </div>
+
+            <div class="game-card">
+              <div class="game-name xl">D&amp;D</div>
+              <div>
+                <div class="game-mini">
+                  <svg width="44" height="44" viewBox="0 0 24 24">
+                    <rect x="11" y="2" width="2" height="2" fill="#000"/>
+                    <rect x="9" y="4" width="6" height="2" fill="#000"/>
+                    <rect x="6" y="6" width="12" height="2" fill="#000"/>
+                    <rect x="4" y="8" width="2" height="2" fill="#000"/>
+                    <rect x="18" y="8" width="2" height="2" fill="#000"/>
+                    <rect x="3" y="10" width="2" height="4" fill="#000"/>
+                    <rect x="19" y="10" width="2" height="4" fill="#000"/>
+                    <rect x="4" y="14" width="2" height="2" fill="#000"/>
+                    <rect x="18" y="14" width="2" height="2" fill="#000"/>
+                    <rect x="6" y="16" width="12" height="2" fill="#000"/>
+                    <rect x="9" y="18" width="6" height="2" fill="#000"/>
+                    <rect x="11" y="20" width="2" height="2" fill="#000"/>
+                    <text x="12" y="14" text-anchor="middle" font-family="Silkscreen" font-size="6" fill="#000">20</text>
+                  </svg>
+                </div>
+                <div class="game-dice-line">1d20</div>
+              </div>
+            </div>
+
+            <div class="game-card empty">
+              <div class="plus-big">+</div>
+              <div class="game-name md">NOVO</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="tabbar">
+          <div class="tab"><svg class="tab-ico"><use href="#ic-tab-d6"/></svg><span>ROLAR</span></div>
+          <div class="tab"><svg class="tab-ico"><use href="#ic-tab-hourglass"/></svg><span>HISTÓRICO</span></div>
+          <div class="tab active"><svg class="tab-ico"><use href="#ic-tab-star"/></svg><span>JOGOS</span></div>
+          <div class="tab"><svg class="tab-ico"><use href="#ic-tab-gear"/></svg><span>AJUSTES</span></div>
+        </div>
+
+      </div>
+    </div>
+    <div class="caption">JOGOS — PRESETS PRONTOS</div>
+  </div>
+
+</div>
+
+<div class="head">
+  <h2>1-BIT DICE · v2 · TELAS SECUNDÁRIAS</h2>
+  <p>Mac Classic — preto sobre branco, sem western</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>1-BIT DICE — Splash & Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    image-rendering: pixelated;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    font-smooth: never;
+  }
+
+  html, body {
+    background: #d8d8d8;
+    font-family: "VT323", monospace;
+    color: #000;
+    min-height: 100vh;
+    padding: 40px 0;
+  }
+
+  .stage {
+    width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+  }
+
+  /* iPhone bezel frame */
+  .device {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bezel {
+    width: 413px;
+    height: 872px;
+    background: #4a4a4a;
+    border-radius: 50px;
+    padding: 10px;
+    position: relative;
+    box-shadow:
+      inset 0 0 0 2px #6a6a6a,
+      0 0 0 2px #2a2a2a;
+  }
+
+  .bezel::before {
+    content: "";
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px;
+    height: 30px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 10;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .caption {
+    margin-top: 18px;
+    font-family: "VT323", monospace;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: #000;
+    text-transform: uppercase;
+  }
+
+  /* ==================== SPLASH ==================== */
+  .splash {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100%;
+    color: #000;
+    background: #FFFFFF;
+  }
+
+  /* Mac-style title bar with horizontal stripes */
+  .mac-titlebar {
+    height: 22px;
+    border: 2px solid #000;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        #000 0px,
+        #000 1px,
+        #FFF 1px,
+        #FFF 3px
+      );
+    position: relative;
+    margin-top: 70px;
+    margin-left: 24px;
+    margin-right: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mac-titlebar .titlebar-name {
+    background: #FFF;
+    padding: 0 12px;
+    font-family: "Silkscreen", monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: #000;
+  }
+
+  .mac-titlebar .close-box {
+    position: absolute;
+    left: 5px;
+    top: 3px;
+    width: 12px;
+    height: 12px;
+    background: #FFF;
+    border: 1.5px solid #000;
+  }
+
+  .splash-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 30px;
+  }
+
+  .wordmark {
+    font-family: "Silkscreen", monospace;
+    font-weight: 700;
+    font-size: 56px;
+    letter-spacing: 2px;
+    color: #000;
+    text-transform: uppercase;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .splash-divider {
+    width: 60%;
+    height: 2px;
+    background: #000;
+    margin: 20px 0 14px 0;
+  }
+
+  .tagline {
+    font-family: "VT323", monospace;
+    font-size: 22px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #000;
+    text-align: center;
+  }
+
+  .splash-die {
+    margin-top: 48px;
+  }
+
+  .splash-footer {
+    padding-bottom: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .footer-version {
+    font-family: "Press Start 2P", monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: #000;
+    text-transform: lowercase;
+  }
+
+  .footer-universe {
+    font-family: "Press Start 2P", monospace;
+    font-size: 6px;
+    letter-spacing: 0.5px;
+    color: #888;
+    text-transform: lowercase;
+    font-style: italic;
+  }
+
+  /* ==================== HOME ==================== */
+  .home {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: #000;
+    background: #FFFFFF;
+    padding-top: 58px;
+  }
+
+  .appbar {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    border-bottom: 2px solid #000;
+    flex-shrink: 0;
+  }
+
+  .appbar-title {
+    font-family: "Silkscreen", monospace;
+    font-size: 18px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .gear-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Section blocks */
+  .section {
+    padding: 10px 18px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .section-label {
+    font-family: "VT323", monospace;
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 8px;
+    color: #000;
+  }
+
+  .type-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 4px;
+  }
+
+  .type-btn {
+    width: 44px;
+    height: 44px;
+    border: 2px solid #000;
+    background: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Silkscreen", monospace;
+    font-size: 12px;
+    color: #000;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  .type-btn.active {
+    background: #000;
+    color: #FFF;
+  }
+
+  .qty-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    width: 100%;
+  }
+
+  .qty-btn {
+    width: 44px;
+    height: 44px;
+    border: 2px solid #000;
+    background: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Silkscreen", monospace;
+    font-size: 22px;
+    color: #000;
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  .qty-value {
+    font-family: "Silkscreen", monospace;
+    font-size: 56px;
+    color: #000;
+    min-width: 80px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .result-area {
+    margin: 6px 18px 0;
+    padding: 16px 12px;
+    border: 2px solid #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 3px 3px 0 #000;
+    flex-shrink: 0;
+  }
+
+  .result-dice {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+  }
+
+  .equation {
+    font-family: "Silkscreen", monospace;
+    font-size: 34px;
+    letter-spacing: 1px;
+    color: #000;
+    line-height: 1;
+  }
+
+  .action {
+    padding: 14px 18px 10px;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .btn-roll {
+    width: 90%;
+    height: 60px;
+    background: #FFF;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0 #000;
+    font-family: "Silkscreen", monospace;
+    font-size: 26px;
+    letter-spacing: 4px;
+    color: #000;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+  }
+
+  .btn-roll:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  .tabbar {
+    margin-top: auto;
+    height: 60px;
+    display: flex;
+    border-top: 2px solid #000;
+    flex-shrink: 0;
+  }
+
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: #000;
+  }
+
+  .tab.active {
+    background: #000;
+    color: #FFF;
+  }
+
+  .tab-label {
+    font-family: "VT323", monospace;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* Pixel SVG helpers */
+  svg {
+    shape-rendering: crispEdges;
+    image-rendering: pixelated;
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- ============ TELA 1: SPLASH ============ -->
+  <div class="device">
+    <div class="bezel">
+      <div class="screen">
+        <div class="splash">
+
+          <!-- Mac-style striped titlebar (optional flair) -->
+          <div class="mac-titlebar">
+            <div class="close-box"></div>
+            <span class="titlebar-name">1-BIT DICE</span>
+          </div>
+
+          <div class="splash-body">
+            <div class="wordmark">1-BIT<br>DICE</div>
+            <div class="splash-divider"></div>
+            <div class="tagline">Dice for every game</div>
+
+            <!-- Pixel art d6 front view, face = 6 dots (2x3) -->
+            <div class="splash-die">
+              <svg width="144" height="144" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+                <!-- outer border ring -->
+                <rect x="1" y="0" width="16" height="1" fill="#000"/>
+                <rect x="1" y="17" width="16" height="1" fill="#000"/>
+                <rect x="0" y="1" width="1" height="16" fill="#000"/>
+                <rect x="17" y="1" width="1" height="16" fill="#000"/>
+                <!-- inner border ring (double border) -->
+                <rect x="2" y="2" width="14" height="1" fill="#000"/>
+                <rect x="2" y="15" width="14" height="1" fill="#000"/>
+                <rect x="2" y="3" width="1" height="12" fill="#000"/>
+                <rect x="15" y="3" width="1" height="12" fill="#000"/>
+                <!-- white fill -->
+                <rect x="3" y="3" width="12" height="12" fill="#FFF"/>
+                <!-- 6 pips (2 cols x 3 rows) -->
+                <rect x="5" y="4" width="2" height="2" fill="#000"/>
+                <rect x="11" y="4" width="2" height="2" fill="#000"/>
+                <rect x="5" y="8" width="2" height="2" fill="#000"/>
+                <rect x="11" y="8" width="2" height="2" fill="#000"/>
+                <rect x="5" y="12" width="2" height="2" fill="#000"/>
+                <rect x="11" y="12" width="2" height="2" fill="#000"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="splash-footer">
+            <div class="footer-version">v1.0 &middot; am2 studios</div>
+            <div class="footer-universe">_part of the call of old chico universe_</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="caption">SPLASH</div>
+  </div>
+
+
+  <!-- ============ TELA 2: HOME ============ -->
+  <div class="device">
+    <div class="bezel">
+      <div class="screen">
+        <div class="home">
+
+          <!-- App bar -->
+          <div class="appbar">
+            <div class="appbar-title">1-BIT DICE</div>
+            <div class="gear-btn">
+              <!-- gear icon -->
+              <svg width="24" height="24" viewBox="0 0 12 12" shape-rendering="crispEdges">
+                <rect x="5" y="0" width="2" height="2" fill="#000"/>
+                <rect x="5" y="10" width="2" height="2" fill="#000"/>
+                <rect x="0" y="5" width="2" height="2" fill="#000"/>
+                <rect x="10" y="5" width="2" height="2" fill="#000"/>
+                <rect x="1" y="1" width="2" height="2" fill="#000"/>
+                <rect x="9" y="1" width="2" height="2" fill="#000"/>
+                <rect x="1" y="9" width="2" height="2" fill="#000"/>
+                <rect x="9" y="9" width="2" height="2" fill="#000"/>
+                <rect x="3" y="2" width="6" height="1" fill="#000"/>
+                <rect x="3" y="9" width="6" height="1" fill="#000"/>
+                <rect x="2" y="3" width="1" height="6" fill="#000"/>
+                <rect x="9" y="3" width="1" height="6" fill="#000"/>
+                <rect x="3" y="3" width="6" height="6" fill="#000"/>
+                <rect x="5" y="5" width="2" height="2" fill="#FFF"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Type selector -->
+          <div class="section">
+            <div class="type-row">
+              <div class="type-btn">d4</div>
+              <div class="type-btn active">d6</div>
+              <div class="type-btn">d8</div>
+              <div class="type-btn">d10</div>
+              <div class="type-btn">d12</div>
+              <div class="type-btn">d20</div>
+              <div class="type-btn">d100</div>
+            </div>
+            <div class="section-label">TIPO</div>
+          </div>
+
+          <!-- Quantity -->
+          <div class="section">
+            <div class="qty-row">
+              <div class="qty-btn">&minus;</div>
+              <div class="qty-value">2</div>
+              <div class="qty-btn">+</div>
+            </div>
+            <div class="section-label">QUANTIDADE</div>
+          </div>
+
+          <!-- Result area -->
+          <div class="result-area">
+            <div class="result-dice">
+              <!-- Die A: face 4 (corners) -->
+              <svg width="120" height="120" viewBox="0 0 18 18" shape-rendering="crispEdges">
+                <rect x="1" y="0" width="16" height="1" fill="#000"/>
+                <rect x="1" y="17" width="16" height="1" fill="#000"/>
+                <rect x="0" y="1" width="1" height="16" fill="#000"/>
+                <rect x="17" y="1" width="1" height="16" fill="#000"/>
+                <rect x="2" y="2" width="14" height="1" fill="#000"/>
+                <rect x="2" y="15" width="14" height="1" fill="#000"/>
+                <rect x="2" y="3" width="1" height="12" fill="#000"/>
+                <rect x="15" y="3" width="1" height="12" fill="#000"/>
+                <rect x="3" y="3" width="12" height="12" fill="#FFF"/>
+                <!-- 4 dots at corners -->
+                <rect x="5" y="5" width="2" height="2" fill="#000"/>
+                <rect x="11" y="5" width="2" height="2" fill="#000"/>
+                <rect x="5" y="11" width="2" height="2" fill="#000"/>
+                <rect x="11" y="11" width="2" height="2" fill="#000"/>
+              </svg>
+              <!-- Die B: face 6 (2x3) -->
+              <svg width="120" height="120" viewBox="0 0 18 18" shape-rendering="crispEdges">
+                <rect x="1" y="0" width="16" height="1" fill="#000"/>
+                <rect x="1" y="17" width="16" height="1" fill="#000"/>
+                <rect x="0" y="1" width="1" height="16" fill="#000"/>
+                <rect x="17" y="1" width="1" height="16" fill="#000"/>
+                <rect x="2" y="2" width="14" height="1" fill="#000"/>
+                <rect x="2" y="15" width="14" height="1" fill="#000"/>
+                <rect x="2" y="3" width="1" height="12" fill="#000"/>
+                <rect x="15" y="3" width="1" height="12" fill="#000"/>
+                <rect x="3" y="3" width="12" height="12" fill="#FFF"/>
+                <rect x="5" y="4" width="2" height="2" fill="#000"/>
+                <rect x="11" y="4" width="2" height="2" fill="#000"/>
+                <rect x="5" y="8" width="2" height="2" fill="#000"/>
+                <rect x="11" y="8" width="2" height="2" fill="#000"/>
+                <rect x="5" y="12" width="2" height="2" fill="#000"/>
+                <rect x="11" y="12" width="2" height="2" fill="#000"/>
+              </svg>
+            </div>
+            <div class="equation">4 + 6 = 10</div>
+          </div>
+
+          <!-- Action -->
+          <div class="action">
+            <button class="btn-roll">
+              <!-- small d6 icon -->
+              <svg width="22" height="22" viewBox="0 0 18 18" shape-rendering="crispEdges">
+                <rect x="1" y="0" width="16" height="1" fill="#000"/>
+                <rect x="1" y="17" width="16" height="1" fill="#000"/>
+                <rect x="0" y="1" width="1" height="16" fill="#000"/>
+                <rect x="17" y="1" width="1" height="16" fill="#000"/>
+                <rect x="2" y="2" width="14" height="1" fill="#000"/>
+                <rect x="2" y="15" width="14" height="1" fill="#000"/>
+                <rect x="2" y="3" width="1" height="12" fill="#000"/>
+                <rect x="15" y="3" width="1" height="12" fill="#000"/>
+                <rect x="3" y="3" width="12" height="12" fill="#FFF"/>
+                <rect x="8" y="8" width="2" height="2" fill="#000"/>
+                <rect x="4" y="4" width="2" height="2" fill="#000"/>
+                <rect x="12" y="12" width="2" height="2" fill="#000"/>
+              </svg>
+              ROLAR
+            </button>
+          </div>
+
+          <!-- Tab bar -->
+          <div class="tabbar">
+            <div class="tab active">
+              <!-- d6 icon inverted (for active tab on black bg) -->
+              <svg width="24" height="24" viewBox="0 0 18 18" shape-rendering="crispEdges">
+                <rect x="1" y="0" width="16" height="1" fill="#FFF"/>
+                <rect x="1" y="17" width="16" height="1" fill="#FFF"/>
+                <rect x="0" y="1" width="1" height="16" fill="#FFF"/>
+                <rect x="17" y="1" width="1" height="16" fill="#FFF"/>
+                <rect x="2" y="2" width="14" height="1" fill="#FFF"/>
+                <rect x="2" y="15" width="14" height="1" fill="#FFF"/>
+                <rect x="2" y="3" width="1" height="12" fill="#FFF"/>
+                <rect x="15" y="3" width="1" height="12" fill="#FFF"/>
+                <rect x="5" y="5" width="2" height="2" fill="#FFF"/>
+                <rect x="11" y="5" width="2" height="2" fill="#FFF"/>
+                <rect x="5" y="11" width="2" height="2" fill="#FFF"/>
+                <rect x="11" y="11" width="2" height="2" fill="#FFF"/>
+                <rect x="8" y="8" width="2" height="2" fill="#FFF"/>
+              </svg>
+              <span class="tab-label">ROLAR</span>
+            </div>
+            <div class="tab">
+              <!-- hourglass icon -->
+              <svg width="24" height="24" viewBox="0 0 12 12" shape-rendering="crispEdges">
+                <rect x="2" y="1" width="8" height="1" fill="#000"/>
+                <rect x="2" y="10" width="8" height="1" fill="#000"/>
+                <rect x="2" y="2" width="1" height="1" fill="#000"/>
+                <rect x="9" y="2" width="1" height="1" fill="#000"/>
+                <rect x="3" y="3" width="1" height="1" fill="#000"/>
+                <rect x="8" y="3" width="1" height="1" fill="#000"/>
+                <rect x="4" y="4" width="1" height="1" fill="#000"/>
+                <rect x="7" y="4" width="1" height="1" fill="#000"/>
+                <rect x="5" y="5" width="2" height="2" fill="#000"/>
+                <rect x="4" y="7" width="1" height="1" fill="#000"/>
+                <rect x="7" y="7" width="1" height="1" fill="#000"/>
+                <rect x="3" y="8" width="1" height="1" fill="#000"/>
+                <rect x="8" y="8" width="1" height="1" fill="#000"/>
+                <rect x="2" y="9" width="1" height="1" fill="#000"/>
+                <rect x="9" y="9" width="1" height="1" fill="#000"/>
+                <rect x="4" y="9" width="4" height="1" fill="#000"/>
+              </svg>
+              <span class="tab-label">HIST&Oacute;RICO</span>
+            </div>
+            <div class="tab">
+              <!-- 5-point star, solid, no vertex dots -->
+              <svg width="24" height="24" viewBox="0 0 12 12" shape-rendering="crispEdges">
+                <rect x="5" y="1" width="2" height="1" fill="#000"/>
+                <rect x="5" y="2" width="2" height="1" fill="#000"/>
+                <rect x="4" y="3" width="4" height="1" fill="#000"/>
+                <rect x="1" y="4" width="10" height="1" fill="#000"/>
+                <rect x="2" y="5" width="8" height="1" fill="#000"/>
+                <rect x="3" y="6" width="6" height="1" fill="#000"/>
+                <rect x="3" y="7" width="2" height="1" fill="#000"/>
+                <rect x="7" y="7" width="2" height="1" fill="#000"/>
+                <rect x="2" y="8" width="2" height="1" fill="#000"/>
+                <rect x="8" y="8" width="2" height="1" fill="#000"/>
+                <rect x="1" y="9" width="2" height="1" fill="#000"/>
+                <rect x="9" y="9" width="2" height="1" fill="#000"/>
+              </svg>
+              <span class="tab-label">JOGOS</span>
+            </div>
+            <div class="tab">
+              <!-- gear icon -->
+              <svg width="24" height="24" viewBox="0 0 12 12" shape-rendering="crispEdges">
+                <rect x="5" y="0" width="2" height="2" fill="#000"/>
+                <rect x="5" y="10" width="2" height="2" fill="#000"/>
+                <rect x="0" y="5" width="2" height="2" fill="#000"/>
+                <rect x="10" y="5" width="2" height="2" fill="#000"/>
+                <rect x="1" y="1" width="2" height="2" fill="#000"/>
+                <rect x="9" y="1" width="2" height="2" fill="#000"/>
+                <rect x="1" y="9" width="2" height="2" fill="#000"/>
+                <rect x="9" y="9" width="2" height="2" fill="#000"/>
+                <rect x="3" y="2" width="6" height="1" fill="#000"/>
+                <rect x="3" y="9" width="6" height="1" fill="#000"/>
+                <rect x="2" y="3" width="1" height="6" fill="#000"/>
+                <rect x="9" y="3" width="1" height="6" fill="#000"/>
+                <rect x="3" y="3" width="6" height="6" fill="#000"/>
+                <rect x="5" y="5" width="2" height="2" fill="#FFF"/>
+              </svg>
+              <span class="tab-label">AJUSTES</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="caption">TELA PRINCIPAL &mdash; ROLAR</div>
+  </div>
+
+</div>
+
+</body>
+</html>
