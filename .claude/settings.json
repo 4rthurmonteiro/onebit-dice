@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.aihero.dev)",
+      "Read(//Users/arthurmonteiroalvesmelo/.claude/plugins/cache/very-good-claude-code-marketplace/vgv-wingspan/0.0.1/skills/plan/references/**)",
+      "Bash(curl -sL \"https://github.com/googlefonts/Silkscreen/raw/main/fonts/ttf/Silkscreen-Regular.ttf\" -o Silkscreen-Regular.ttf)",
+      "Bash(curl -sL \"https://github.com/googlefonts/Silkscreen/raw/main/fonts/ttf/Silkscreen-Bold.ttf\" -o Silkscreen-Bold.ttf)",
+      "Bash(curl -sL \"https://github.com/googlefonts/VT323/raw/main/fonts/VT323-Regular.ttf\" -o VT323-Regular.ttf)",
+      "Bash(curl -sL \"https://github.com/googlefonts/PressStart2P/raw/main/fonts/ttf/PressStart2P-Regular.ttf\" -o PressStart2P-Regular.ttf)",
+      "Bash(flutter pub *)",
+      "Bash(flutter analyze *)",
+      "mcp__plugin_vgv-ai-flutter-plugin_very-good-cli__test",
+      "Read(//Users/arthurmonteiroalvesmelo/.claude/plugins/cache/very-good-claude-code-marketplace/vgv-wingspan/0.0.1/skills/build/references/**)",
+      "Bash(flutter --version)",
+      "Bash(git add *)"
+    ]
+  }
+}
