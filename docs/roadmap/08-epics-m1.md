@@ -2,7 +2,7 @@
 
 | # | Epic | Descrição |
 |---|---|---|
-| E01 | Setup do Projeto | Configurar Flutter, dependências, estrutura de pastas, linting, CI |
+| E01 | Setup do Projeto | Configurar Flutter, dependências, estrutura de pastas, linting, CI | check
 | E02 | Design System | Paletas 1-bit, tipografia (Silkscreen/VT323/Press Start 2P), widgets base (MacButton, MacWindow, divisores, tab bar) |
 | E03 | Engine de Dados | Lógica pura de rolagem — tipos de dado (d4–d100), aleatoriedade com `Random.secure()`, modelo de resultado |
 | E04 | Persistência Local | SharedPreferences para configurações, Hive para histórico e presets customizados |
