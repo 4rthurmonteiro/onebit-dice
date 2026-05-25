@@ -167,10 +167,7 @@ class HivePresetsRepository implements PresetsRepository {
   }
 
   @override
-  Future<void> remove(String id) async {
-    if (!_box.containsKey(id)) return;
-    await _box.delete(id);
-  }
+  Future<void> remove(String id) => _box.delete(id);
 
   @override
   Future<void> rename(String id, String newName) async {

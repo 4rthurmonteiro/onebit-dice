@@ -25,10 +25,15 @@ class CustomPreset {
     required this.diceTypeIndex,
     required this.diceCount,
     required this.createdAt,
-  }) : assert(
-         name.length <= customPresetMaxNameLength,
-         'CustomPreset.name must be <= $customPresetMaxNameLength chars',
-       );
+  }) {
+    if (name.length > customPresetMaxNameLength) {
+      throw ArgumentError.value(
+        name,
+        'name',
+        'CustomPreset.name must be <= $customPresetMaxNameLength chars',
+      );
+    }
+  }
 
   /// Builds a brand-new preset, generating [id] and [createdAt] internally.
   ///

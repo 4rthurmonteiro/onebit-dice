@@ -111,5 +111,25 @@ void main() {
       expect(emissions.first, 1);
       expect(emissions, contains(2));
     });
+
+    test('watch eventually reflects an empty snapshot after clear', () async {
+      await repo.append(_result(seed: 1));
+      await repo.append(_result(seed: 2));
+
+      final emissions = <int>[];
+      final sub = repo.watch().listen((snap) => emissions.add(snap.length));
+
+      await Future<void>.value();
+      await repo.clear();
+      // Give the broadcast stream a few microtasks to drain the
+      // per-key deletion notifications that `Box.clear()` emits.
+      for (var i = 0; i < 5; i++) {
+        await Future<void>.value();
+      }
+      await sub.cancel();
+
+      expect(emissions.first, 2);
+      expect(emissions.last, 0);
+    });
   });
 }

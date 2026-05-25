@@ -71,7 +71,7 @@ void main() {
       expect(() => preset.diceType, throwsStateError);
     });
 
-    test('constructor asserts name length cap in debug', () {
+    test('constructor throws ArgumentError when name exceeds the cap', () {
       expect(
         () => CustomPreset(
           id: 'x',
@@ -80,7 +80,20 @@ void main() {
           diceCount: 1,
           createdAt: DateTime.utc(2026),
         ),
-        throwsA(isA<AssertionError>()),
+        throwsArgumentError,
+      );
+    });
+
+    test('constructor accepts a name exactly at the cap length', () {
+      expect(
+        () => CustomPreset(
+          id: 'x',
+          name: 'a' * customPresetMaxNameLength,
+          diceTypeIndex: 0,
+          diceCount: 1,
+          createdAt: DateTime.utc(2026),
+        ),
+        returnsNormally,
       );
     });
 

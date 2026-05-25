@@ -1,17 +1,9 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:onebit_dice/core/models/dice_type.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Minimum allowed dice count for a roll (inclusive).
-const int _minDiceCount = 1;
-
-/// Maximum allowed dice count for a roll (inclusive).
-const int _maxDiceCount = 10;
-
 /// Immutable snapshot of the user's last dice configuration: the chosen
 /// [DiceType] and the chosen [count] of dice (between 1 and 10).
-@immutable
 class LastDiceConfig extends Equatable {
   /// Creates a snapshot for [diceType] and [count].
   const LastDiceConfig({required this.diceType, required this.count});
@@ -72,7 +64,7 @@ class SharedPreferencesLastDiceConfigPreference
     final count = _prefs.getInt(_countKey);
     if (typeIndex == null || count == null) return null;
     if (typeIndex < 0 || typeIndex >= DiceType.values.length) return null;
-    if (count < _minDiceCount || count > _maxDiceCount) return null;
+    if (count < 1 || count > 10) return null;
     return LastDiceConfig(diceType: DiceType.values[typeIndex], count: count);
   }
 

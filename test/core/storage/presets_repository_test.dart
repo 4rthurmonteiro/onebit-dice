@@ -183,5 +183,44 @@ void main() {
       expect(emissions.first, 1);
       expect(emissions, contains(2));
     });
+
+    test('watch eventually shows the renamed value', () async {
+      final preset = await repo.add(
+        name: 'Old',
+        diceType: DiceType.d6,
+        diceCount: 1,
+      );
+
+      final names = <String>[];
+      final sub = repo.watch().listen(
+        (s) => names.addAll(s.map((p) => p.name)),
+      );
+
+      await Future<void>.value();
+      await repo.rename(preset.id, 'New');
+      await Future<void>.value();
+      await sub.cancel();
+
+      expect(names.last, 'New');
+    });
+
+    test('watch eventually drops removed entries', () async {
+      final preset = await repo.add(
+        name: 'A',
+        diceType: DiceType.d6,
+        diceCount: 1,
+      );
+
+      final emissions = <int>[];
+      final sub = repo.watch().listen((s) => emissions.add(s.length));
+
+      await Future<void>.value();
+      await repo.remove(preset.id);
+      await Future<void>.value();
+      await sub.cancel();
+
+      expect(emissions.first, 1);
+      expect(emissions.last, 0);
+    });
   });
 }
