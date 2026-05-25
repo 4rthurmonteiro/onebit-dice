@@ -46,13 +46,21 @@
 
 ## EPIC 3 — Core: Storage Layer
 
-- [ ] 3.1 `lib/core/storage/app_prefs.dart` — wrapper SharedPreferences (paleta, som, haptic, animação, último dado)
-- [ ] 3.2 `lib/core/storage/models/roll_entry.dart` — `@HiveType` com todos os campos
-- [ ] 3.3 `lib/core/storage/models/custom_preset.dart` — `@HiveType` com nome + dado
-- [ ] 3.4 `lib/core/storage/hive_init.dart` — `HiveInit.init()` com `initFlutter` + adapters + boxes
-- [ ] 3.5 Rodar `dart run build_runner build --delete-conflicting-outputs` (gera `.g.dart`)
-- [ ] 3.6 `test/core/storage/app_prefs_test.dart` — mock SharedPreferences
-- [ ] 3.7 `test/core/storage/models/roll_entry_test.dart` — testar `total`
+> Nota: o item 3.1 original (um único `app_prefs.dart` agregando tudo) foi
+> dividido em quatro interfaces por domínio, conforme decidido no brainstorm
+> de E04: `SharedPreferencesPalettePreference`, `AppSettingsPreference`,
+> `LastDiceConfigPreference`, mais os repositórios `HistoryRepository` e
+> `PresetsRepository`. O id de `CustomPreset` usa
+> `microsecondsSinceEpoch + Random.nextInt(1<<16)` em vez de `uuid` para
+> evitar dependência adicional para um uso pontual.
+
+- [x] 3.1 Storage por domínio: `palette_preference.dart` (+ impl SharedPreferences), `app_settings_preference.dart`, `last_dice_config_preference.dart`
+- [x] 3.2 `lib/core/storage/models/roll_entry.dart` — `@HiveType(typeId: 0)` com todos os campos
+- [x] 3.3 `lib/core/storage/models/custom_preset.dart` — `@HiveType(typeId: 1)` com nome + dado
+- [x] 3.4 `lib/core/storage/hive_init.dart` — `HiveInit.init()` / `registerAndOpen()` com adapters + boxes
+- [x] 3.5 Codegen via `dart run build_runner build` (gera `.g.dart` committados)
+- [x] 3.6 Testes de cada preference (mock SharedPreferences) e dos repositórios (Hive em tempDir)
+- [x] 3.7 `test/core/storage/models/roll_entry_test.dart` — round-trip `RollResult` ↔ `RollEntry`
 
 ---
 
