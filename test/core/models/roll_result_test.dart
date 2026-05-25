@@ -70,17 +70,24 @@ void main() {
       );
     });
 
-    test('differs when diceCount changes', () {
-      expect(
-        build(count: 3, values: const [3, 5, 2]),
-        isNot(build(count: 2, values: const [3, 5, 2])),
-      );
-    });
-
     test('differs when values change', () {
       expect(
         build(values: const [3, 5, 2]),
         isNot(build(values: const [1, 5, 2])),
+      );
+    });
+  });
+
+  group('RollResult invariants', () {
+    test('asserts diceCount matches values.length', () {
+      expect(
+        () => RollResult(
+          timestamp: timestamp,
+          diceType: DiceType.d6,
+          diceCount: 5,
+          values: const [1, 2, 3],
+        ),
+        throwsA(isA<AssertionError>()),
       );
     });
   });

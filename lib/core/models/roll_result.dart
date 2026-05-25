@@ -17,7 +17,7 @@ class RollResult extends Equatable {
     required this.diceType,
     required this.diceCount,
     required this.values,
-  });
+  }) : assert(values.length == diceCount, 'diceCount must match values.length');
 
   /// When the roll occurred. Always supplied explicitly by the caller.
   final DateTime timestamp;

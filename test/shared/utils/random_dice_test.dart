@@ -17,9 +17,15 @@ void main() {
     });
 
     test('produces the same sequence for the same seed', () {
-      final a = List.generate(20, (_) => rollDie(20, rng: Random(7)));
-      final b = List.generate(20, (_) => rollDie(20, rng: Random(7)));
+      final rngA = Random(7);
+      final rngB = Random(7);
+      final a = List.generate(20, (_) => rollDie(20, rng: rngA));
+      final b = List.generate(20, (_) => rollDie(20, rng: rngB));
       expect(a, b);
+      // Sanity: the seeded sequence is not constant — guards against
+      // accidentally re-passing `Random(7)` per call and getting a
+      // trivially-equal pair of single-step outputs.
+      expect(a.toSet().length, greaterThan(1));
     });
 
     test('returns a value in 1..sides when no rng is provided', () {
