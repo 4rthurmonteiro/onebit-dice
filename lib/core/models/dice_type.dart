@@ -3,6 +3,10 @@
 /// Each member exposes the number of [sides] and a display [label] used
 /// across the type selector (E08), the preset registry (E10), and the
 /// `RollEntry` Hive adapter (E04).
+///
+/// AVISO: `RollEntry` e `CustomPreset` persistem `DiceType.index`.
+/// Reordenar membros desta enum quebra a deserialização de dados já
+/// gravados em disco — não reordenar sem coordenar uma migração.
 enum DiceType {
   /// Four-sided die.
   d4(sides: 4, label: 'D4'),

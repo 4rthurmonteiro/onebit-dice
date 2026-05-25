@@ -8,7 +8,7 @@ import 'package:onebit_dice/core/storage/presets_repository.dart';
 
 void main() {
   Future<void> fillToCap(PresetsRepository repo) async {
-    for (var i = 0; i < presetsRepositoryMaxPresets; i++) {
+    for (var i = 0; i < PresetsRepository.maxPresets; i++) {
       await repo.add(name: 'Preset $i', diceType: DiceType.d6, diceCount: 1);
     }
   }
@@ -23,7 +23,7 @@ void main() {
     test('add appends presets up to the cap', () async {
       final repo = InMemoryPresetsRepository();
       await fillToCap(repo);
-      expect(repo.snapshot(), hasLength(presetsRepositoryMaxPresets));
+      expect(repo.snapshot(), hasLength(PresetsRepository.maxPresets));
       expect(repo.canAddMore, isFalse);
     });
 

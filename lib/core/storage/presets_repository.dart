@@ -4,15 +4,15 @@ import 'package:hive_ce/hive_ce.dart';
 import 'package:onebit_dice/core/models/dice_type.dart';
 import 'package:onebit_dice/core/storage/models/custom_preset.dart';
 
-/// Maximum number of [CustomPreset] entries the user may create.
-const int presetsRepositoryMaxPresets = 10;
-
 /// Repository of user-created [CustomPreset]s.
 ///
-/// Capped at [presetsRepositoryMaxPresets] entries — attempting to add when
+/// Capped at [PresetsRepository.maxPresets] entries — attempting to add when
 /// the cap is reached throws [StateError]. The UI should consult
 /// [canAddMore] before exposing an "add" affordance.
 abstract interface class PresetsRepository {
+  /// Maximum number of [CustomPreset] entries the user may create.
+  static const int maxPresets = 10;
+
   /// Returns the current presets, in insertion order.
   List<CustomPreset> snapshot();
 
@@ -20,8 +20,7 @@ abstract interface class PresetsRepository {
   /// mutation.
   Stream<List<CustomPreset>> watch();
 
-  /// `true` when [snapshot] length is below
-  /// [presetsRepositoryMaxPresets].
+  /// `true` when [snapshot] length is below [maxPresets].
   bool get canAddMore;
 
   /// Creates and stores a new preset.
@@ -72,7 +71,7 @@ class InMemoryPresetsRepository implements PresetsRepository {
   }
 
   @override
-  bool get canAddMore => _presets.length < presetsRepositoryMaxPresets;
+  bool get canAddMore => _presets.length < PresetsRepository.maxPresets;
 
   @override
   Future<CustomPreset> add({
@@ -81,7 +80,9 @@ class InMemoryPresetsRepository implements PresetsRepository {
     required int diceCount,
   }) async {
     if (!canAddMore) {
-      throw StateError('Preset cap reached (max $presetsRepositoryMaxPresets)');
+      throw StateError(
+        'Preset cap reached (max $PresetsRepository.maxPresets)',
+      );
     }
     final preset = CustomPreset.create(
       name: name,
@@ -143,7 +144,7 @@ class HivePresetsRepository implements PresetsRepository {
   }
 
   @override
-  bool get canAddMore => _box.length < presetsRepositoryMaxPresets;
+  bool get canAddMore => _box.length < PresetsRepository.maxPresets;
 
   @override
   Future<CustomPreset> add({
@@ -152,7 +153,9 @@ class HivePresetsRepository implements PresetsRepository {
     required int diceCount,
   }) async {
     if (!canAddMore) {
-      throw StateError('Preset cap reached (max $presetsRepositoryMaxPresets)');
+      throw StateError(
+        'Preset cap reached (max $PresetsRepository.maxPresets)',
+      );
     }
     final preset = CustomPreset.create(
       name: name,
