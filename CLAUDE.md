@@ -10,7 +10,7 @@ Visual theme: strict 1-bit pixel aesthetic — no gradients, no shadows, no anti
 
 - **Flutter** (stable channel)
 - **Dart** `^3.12.0`
-- No external state management packages in M1
+- State management: `setState` + `ChangeNotifier` + `package:provider` (DI only). No Bloc, no Riverpod.
 
 ## Folder Structure
 
@@ -41,7 +41,9 @@ assets/
 
 ## State Management
 
-Use `setState` and `ChangeNotifier` only. No Bloc, Riverpod, or Provider in M1.
+Use `setState` + `ChangeNotifier` + `package:provider` for distribution/DI. No Bloc, no Riverpod in M1.
+
+`package:provider` is allowed exclusively for exposing `ChangeNotifier`s to the widget tree (typically via `ChangeNotifierProvider` at the root and `context.watch` / `Provider.of` in consumers). Do not introduce additional state-management packages without updating this section first.
 
 ## Palette Rule
 
