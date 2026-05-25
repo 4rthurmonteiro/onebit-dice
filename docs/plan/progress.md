@@ -36,11 +36,11 @@
 
 ## EPIC 2 — Core: Dice Engine
 
-- [ ] 2.1 `lib/core/models/dice_type.dart` — enum com d4, d6, d8, d10, d12, d20, d100
-- [ ] 2.2 `lib/shared/utils/random_dice.dart` — `rollDie()` e `rollDice()` com `Random.secure()`
-- [ ] 2.3 `lib/core/models/roll_result.dart` — classe imutável com `total` e `equation`
-- [ ] 2.4 `test/core/models/dice_type_test.dart` — testes unitários
-- [ ] 2.5 `test/shared/utils/random_dice_test.dart` — distribuição uniforme 10k iterações
+- [x] 2.1 `lib/core/models/dice_type.dart` — enum com d4, d6, d8, d10, d12, d20, d100
+- [x] 2.2 `lib/shared/utils/random_dice.dart` — `rollDie()` e `rollDice()` com `Random.secure()`
+- [x] 2.3 `lib/core/models/roll_result.dart` — classe imutável com `total` e `equation`
+- [x] 2.4 `test/core/models/dice_type_test.dart` — testes unitários
+- [x] 2.5 `test/shared/utils/random_dice_test.dart` — distribuição uniforme 10k iterações
 
 ---
 
