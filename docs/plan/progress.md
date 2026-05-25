@@ -19,14 +19,18 @@
 
 ## EPIC 1 — Core: Theme & Design System
 
-- [ ] 1.1 `lib/core/theme/palette.dart` — enum `PaletteId` + classe `Palette` com 7 paletas
-- [ ] 1.2 `lib/core/theme/theme_provider.dart` — `ChangeNotifier` com `current` + `setPalette()`
-- [ ] 1.3 `lib/core/theme/app_typography.dart` — TextStyles para Silkscreen, VT323, Press Start 2P
-- [ ] 1.4 Declarar fontes no `pubspec.yaml` + baixar arquivos `.ttf` para `assets/fonts/`
-- [ ] 1.5 `lib/shared/widgets/mac_button.dart` — borda dupla, sombra offset, estado pressionado
-- [ ] 1.6 `lib/shared/widgets/mac_window.dart` — title bar listrada + borda dupla
-- [ ] 1.7 `lib/shared/widgets/pixel_divider.dart` — linha 2px
-- [ ] 1.8 `lib/app.dart` — MaterialApp com `ChangeNotifierProvider<ThemeProvider>`
+- [x] 1.1 `lib/core/theme/palette.dart` — enum `PaletteId` + classe `Palette` com 7 paletas
+- [x] 1.2 `lib/core/theme/theme_provider.dart` — `ChangeNotifier` com `current` + `setPalette()`
+- [x] 1.3 `lib/core/theme/app_typography.dart` — TextStyles para Silkscreen, VT323, Press Start 2P
+- [x] 1.4 Declarar fontes no `pubspec.yaml` + baixar arquivos `.ttf` para `assets/fonts/`
+- [x] 1.5 `lib/shared/widgets/mac_button.dart` — borda dupla, sombra offset, estado pressionado
+- [x] 1.6 `lib/shared/widgets/mac_window.dart` — title bar listrada + borda dupla
+- [x] 1.7 `lib/shared/widgets/pixel_divider.dart` — linha 2px
+- [x] 1.8 `lib/app.dart` — MaterialApp com `ChangeNotifierProvider<ThemeProvider>`
+- [x] 1.9 `lib/core/theme/app_theme.dart` — `OneBitColors` ThemeExtension + `buildThemeData(palette)`
+- [x] 1.10 `lib/core/theme/palette_preference.dart` — interface + `InMemoryPalettePreference`
+- [x] 1.11 `lib/features/_dev/design_system_preview.dart` — preview manual (smoke-test)
+  - **Remover em E09** (Navegação) quando o app shell real entrar
 
 ---
 
