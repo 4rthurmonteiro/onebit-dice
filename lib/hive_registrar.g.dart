@@ -3,16 +3,19 @@
 // Check in to version control
 
 import 'package:hive_ce/hive_ce.dart';
+import 'package:onebit_dice/core/storage/models/custom_preset.dart';
 import 'package:onebit_dice/core/storage/models/roll_entry.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
+    registerAdapter(CustomPresetAdapter());
     registerAdapter(RollEntryAdapter());
   }
 }
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
+    registerAdapter(CustomPresetAdapter());
     registerAdapter(RollEntryAdapter());
   }
 }
