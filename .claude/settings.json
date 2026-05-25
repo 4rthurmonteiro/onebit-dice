@@ -13,7 +13,12 @@
       "Read(//Users/arthurmonteiroalvesmelo/.claude/plugins/cache/very-good-claude-code-marketplace/vgv-wingspan/0.0.1/skills/build/references/**)",
       "Bash(flutter --version)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "mcp__plugin_vgv-ai-flutter-plugin_dart__analyze_files",
+      "mcp__plugin_vgv-ai-flutter-plugin_dart__read_package_uris",
+      "mcp__plugin_vgv-ai-flutter-plugin_dart__rip_grep_packages",
+      "Bash(ls /Users/arthurmonteiroalvesmelo/.pub-cache/bin/ 2>/dev/null; which flutter; which dart)",
+      "Read(//Users/arthurmonteiroalvesmelo/.pub-cache/bin/**)"
     ]
   }
 }
