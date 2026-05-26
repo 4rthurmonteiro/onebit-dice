@@ -31,5 +31,11 @@
   "settingsSectionAbout": "Sobre",
   "settingsLanguageFollowSystem": "Seguir sistema",
   "diceCountIncreaseLabel": "Aumentar quantidade de dados",
-  "diceCountDecreaseLabel": "Diminuir quantidade de dados"
+  "diceCountDecreaseLabel": "Diminuir quantidade de dados",
+  "appTagline": "Dado para todo jogo",
+  "commonComingSoon": "EM BREVE",
+  "splashUniverseTagline": "parte do universo call of old chico",
+  "historyTitle": "Histórico",
+  "presetsTitle": "Jogos",
+  "settingsTitle": "Ajustes"
 }

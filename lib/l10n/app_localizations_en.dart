@@ -113,4 +113,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get diceCountDecreaseLabel => 'Decrease dice count';
+
+  @override
+  String get appTagline => 'Dice for every game';
+
+  @override
+  String get commonComingSoon => 'COMING SOON';
+
+  @override
+  String get splashUniverseTagline => 'part of the call of old chico universe';
+
+  @override
+  String get historyTitle => 'History';
+
+  @override
+  String get presetsTitle => 'Games';
+
+  @override
+  String get settingsTitle => 'Settings';
 }

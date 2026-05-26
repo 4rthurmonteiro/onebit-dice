@@ -31,5 +31,11 @@
   "settingsSectionAbout": "정보",
   "settingsLanguageFollowSystem": "시스템 설정 따르기",
   "diceCountIncreaseLabel": "주사위 개수 늘리기",
-  "diceCountDecreaseLabel": "주사위 개수 줄이기"
+  "diceCountDecreaseLabel": "주사위 개수 줄이기",
+  "appTagline": "모든 게임을 위한 주사위",
+  "commonComingSoon": "출시 예정",
+  "splashUniverseTagline": "call of old chico 세계관의 일부",
+  "historyTitle": "기록",
+  "presetsTitle": "게임",
+  "settingsTitle": "설정"
 }

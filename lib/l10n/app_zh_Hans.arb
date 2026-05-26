@@ -31,5 +31,11 @@
   "settingsSectionAbout": "关于",
   "settingsLanguageFollowSystem": "跟随系统",
   "diceCountIncreaseLabel": "增加骰子数量",
-  "diceCountDecreaseLabel": "减少骰子数量"
+  "diceCountDecreaseLabel": "减少骰子数量",
+  "appTagline": "每个游戏都有骰子",
+  "commonComingSoon": "即将推出",
+  "splashUniverseTagline": "call of old chico 宇宙的一部分",
+  "historyTitle": "历史",
+  "presetsTitle": "游戏",
+  "settingsTitle": "设置"
 }

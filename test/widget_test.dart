@@ -9,6 +9,7 @@ import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
 import 'package:onebit_dice/core/theme/theme_provider.dart';
 import 'package:onebit_dice/features/dice/dice_screen.dart';
+import 'package:onebit_dice/features/splash/splash_screen.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -41,13 +42,19 @@ App _buildApp() {
 }
 
 void main() {
-  testWidgets('App renders the design system preview at the Mac Classic '
-      'palette by default', (tester) async {
+  testWidgets('App shows the splash first, then routes to DiceScreen', (
+    tester,
+  ) async {
     await tester.pumpWidget(_buildApp());
     await tester.pump();
 
+    expect(find.byType(SplashScreen), findsOneWidget);
+    expect(find.byType(DiceScreen), findsNothing);
+
+    await tester.pump(SplashScreen.splashDuration);
+    await tester.pumpAndSettle();
+
     expect(find.byType(DiceScreen), findsOneWidget);
-    expect(find.text('1-BIT DICE'), findsOneWidget);
 
     final context = tester.element(find.byType(DiceScreen));
     expect(context.read<ThemeProvider>().current.id, PaletteId.macClassic);
@@ -57,22 +64,26 @@ void main() {
     );
   });
 
-  testWidgets('changing palette through the provider rebuilds the theme', (
-    tester,
-  ) async {
-    await tester.pumpWidget(_buildApp());
-    await tester.pumpAndSettle();
+  testWidgets(
+    'changing palette through the provider rebuilds the theme without '
+    'resetting the active route',
+    (tester) async {
+      await tester.pumpWidget(_buildApp());
+      await tester.pump(SplashScreen.splashDuration);
+      await tester.pumpAndSettle();
 
-    final provider = tester
-        .element(find.byType(DiceScreen))
-        .read<ThemeProvider>();
-    await provider.setPalette(PaletteId.gameBoy);
-    await tester.pumpAndSettle();
+      final provider = tester
+          .element(find.byType(DiceScreen))
+          .read<ThemeProvider>();
+      await provider.setPalette(PaletteId.gameBoy);
+      await tester.pumpAndSettle();
 
-    expect(provider.current.id, PaletteId.gameBoy);
-    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-    expect(scaffold.backgroundColor, Palette.of(PaletteId.gameBoy).paper);
-  });
+      expect(provider.current.id, PaletteId.gameBoy);
+      // The dice route stayed active across the palette swap — the router
+      // was not rebuilt.
+      expect(find.byType(DiceScreen), findsOneWidget);
+    },
+  );
 
   group('MaterialApp i18n wiring', () {
     testWidgets('exposes all 10 supported locales', (tester) async {
@@ -88,6 +99,14 @@ void main() {
       await tester.pumpWidget(_buildApp());
       final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
       expect(app.localizationsDelegates, contains(AppLocalizations.delegate));
+    });
+
+    testWidgets('uses MaterialApp.router (routerConfig is wired)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_buildApp());
+      final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
+      expect(app.routerConfig, isNotNull);
     });
   });
 

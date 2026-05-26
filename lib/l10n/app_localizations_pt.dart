@@ -114,6 +114,24 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get diceCountDecreaseLabel => 'Diminuir quantidade de dados';
+
+  @override
+  String get appTagline => 'Dado para todo jogo';
+
+  @override
+  String get commonComingSoon => 'EM BREVE';
+
+  @override
+  String get splashUniverseTagline => 'parte do universo call of old chico';
+
+  @override
+  String get historyTitle => 'Histórico';
+
+  @override
+  String get presetsTitle => 'Jogos';
+
+  @override
+  String get settingsTitle => 'Ajustes';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -226,4 +244,22 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get diceCountDecreaseLabel => 'Diminuir quantidade de dados';
+
+  @override
+  String get appTagline => 'Dado para todo jogo';
+
+  @override
+  String get commonComingSoon => 'EM BREVE';
+
+  @override
+  String get splashUniverseTagline => 'parte do universo call of old chico';
+
+  @override
+  String get historyTitle => 'Histórico';
+
+  @override
+  String get presetsTitle => 'Jogos';
+
+  @override
+  String get settingsTitle => 'Ajustes';
 }

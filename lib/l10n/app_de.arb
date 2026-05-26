@@ -31,5 +31,11 @@
   "settingsSectionAbout": "Über",
   "settingsLanguageFollowSystem": "System folgen",
   "diceCountIncreaseLabel": "Würfelanzahl erhöhen",
-  "diceCountDecreaseLabel": "Würfelanzahl verringern"
+  "diceCountDecreaseLabel": "Würfelanzahl verringern",
+  "appTagline": "Würfel für jedes Spiel",
+  "commonComingSoon": "DEMNÄCHST",
+  "splashUniverseTagline": "teil des call of old chico universums",
+  "historyTitle": "Verlauf",
+  "presetsTitle": "Spiele",
+  "settingsTitle": "Einstellungen"
 }

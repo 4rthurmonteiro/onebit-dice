@@ -112,4 +112,22 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get diceCountDecreaseLabel => '주사위 개수 줄이기';
+
+  @override
+  String get appTagline => '모든 게임을 위한 주사위';
+
+  @override
+  String get commonComingSoon => '출시 예정';
+
+  @override
+  String get splashUniverseTagline => 'call of old chico 세계관의 일부';
+
+  @override
+  String get historyTitle => '기록';
+
+  @override
+  String get presetsTitle => '게임';
+
+  @override
+  String get settingsTitle => '설정';
 }

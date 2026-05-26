@@ -114,4 +114,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get diceCountDecreaseLabel => 'Würfelanzahl verringern';
+
+  @override
+  String get appTagline => 'Würfel für jedes Spiel';
+
+  @override
+  String get commonComingSoon => 'DEMNÄCHST';
+
+  @override
+  String get splashUniverseTagline => 'teil des call of old chico universums';
+
+  @override
+  String get historyTitle => 'Verlauf';
+
+  @override
+  String get presetsTitle => 'Spiele';
+
+  @override
+  String get settingsTitle => 'Einstellungen';
 }

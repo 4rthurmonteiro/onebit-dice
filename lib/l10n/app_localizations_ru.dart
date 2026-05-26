@@ -115,4 +115,22 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get diceCountDecreaseLabel => 'Уменьшить количество кубиков';
+
+  @override
+  String get appTagline => 'Кубики для любой игры';
+
+  @override
+  String get commonComingSoon => 'СКОРО';
+
+  @override
+  String get splashUniverseTagline => 'часть вселенной call of old chico';
+
+  @override
+  String get historyTitle => 'История';
+
+  @override
+  String get presetsTitle => 'Игры';
+
+  @override
+  String get settingsTitle => 'Настройки';
 }

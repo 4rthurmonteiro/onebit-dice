@@ -31,5 +31,11 @@
   "settingsSectionAbout": "Informazioni",
   "settingsLanguageFollowSystem": "Segui sistema",
   "diceCountIncreaseLabel": "Aumenta numero di dadi",
-  "diceCountDecreaseLabel": "Diminuisci numero di dadi"
+  "diceCountDecreaseLabel": "Diminuisci numero di dadi",
+  "appTagline": "Dadi per ogni gioco",
+  "commonComingSoon": "IN ARRIVO",
+  "splashUniverseTagline": "parte dell'universo call of old chico",
+  "historyTitle": "Cronologia",
+  "presetsTitle": "Giochi",
+  "settingsTitle": "Impostazioni"
 }

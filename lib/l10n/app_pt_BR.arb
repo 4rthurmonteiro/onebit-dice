@@ -146,5 +146,30 @@
   "diceCountDecreaseLabel": "Diminuir quantidade de dados",
   "@diceCountDecreaseLabel": {
     "description": "Semantic label for the − button in the dice quantity stepper"
+  },
+
+  "appTagline": "Dado para todo jogo",
+  "@appTagline": {
+    "description": "Tagline shown under the wordmark on the splash screen"
+  },
+  "commonComingSoon": "EM BREVE",
+  "@commonComingSoon": {
+    "description": "Placeholder body text for screens not yet implemented"
+  },
+  "splashUniverseTagline": "parte do universo call of old chico",
+  "@splashUniverseTagline": {
+    "description": "Italic microcopy in the splash footer linking to the COCU universe"
+  },
+  "historyTitle": "Histórico",
+  "@historyTitle": {
+    "description": "AppBar title for the History tab stub"
+  },
+  "presetsTitle": "Jogos",
+  "@presetsTitle": {
+    "description": "AppBar title for the Presets/Games tab stub"
+  },
+  "settingsTitle": "Ajustes",
+  "@settingsTitle": {
+    "description": "AppBar title for the Settings tab stub"
   }
 }
