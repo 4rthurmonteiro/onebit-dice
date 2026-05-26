@@ -20,7 +20,9 @@ void main() {
     testWidgets('values == null → renders count slots, each showing "?"', (
       tester,
     ) async {
-      await tester.pumpWidget(_harness(DiceWidget(count: 3, values: null)));
+      await tester.pumpWidget(
+        _harness(const DiceWidget(count: 3, values: null)),
+      );
       expect(find.text('?'), findsNWidgets(3));
       expect(find.byKey(DiceWidget.totalKey), findsNothing);
       expect(find.byKey(DiceWidget.equationKey), findsNothing);
@@ -65,7 +67,9 @@ void main() {
     });
 
     testWidgets('grid key is present in both states', (tester) async {
-      await tester.pumpWidget(_harness(DiceWidget(count: 2, values: null)));
+      await tester.pumpWidget(
+        _harness(const DiceWidget(count: 2, values: null)),
+      );
       expect(find.byKey(DiceWidget.gridKey), findsOneWidget);
 
       await tester.pumpWidget(
@@ -84,12 +88,16 @@ void main() {
     testWidgets('renders 4 slots in a 3×2 layout when count is 4', (
       tester,
     ) async {
-      await tester.pumpWidget(_harness(DiceWidget(count: 4, values: null)));
+      await tester.pumpWidget(
+        _harness(const DiceWidget(count: 4, values: null)),
+      );
       expect(find.text('?'), findsNWidgets(4));
     });
 
     testWidgets('renders up to count 10 slots', (tester) async {
-      await tester.pumpWidget(_harness(DiceWidget(count: 10, values: null)));
+      await tester.pumpWidget(
+        _harness(const DiceWidget(count: 10, values: null)),
+      );
       expect(find.text('?'), findsNWidgets(10));
     });
   });

@@ -17,7 +17,7 @@ class DiceWidget extends StatelessWidget {
   /// Creates a [DiceWidget] showing [count] slots.
   ///
   /// When [values] is provided, its length must equal [count].
-  DiceWidget({required this.count, required this.values, super.key})
+  const DiceWidget({required this.count, required this.values, super.key})
     : assert(
         values == null || values.length == count,
         'values must be null or match count',

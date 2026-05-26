@@ -118,29 +118,27 @@ void main() {
       expect(find.byKey(DiceWidget.totalKey), findsNothing);
     });
 
-    testWidgets(
-      'tap on D20 chip: chip becomes selected, no result yet, pref.write called',
-      (tester) async {
-        final pref = InMemoryLastDiceConfigPreference();
-        await tester.pumpWidget(
-          _harness(
-            history: InMemoryHistoryRepository(),
-            audio: _RecordingAudio(),
-            haptic: _RecordingHaptic(),
-            lastDicePref: pref,
-          ),
-        );
+    testWidgets('tap on D20 chip: chip becomes selected '
+        'no result yet, pref.write called', (tester) async {
+      final pref = InMemoryLastDiceConfigPreference();
+      await tester.pumpWidget(
+        _harness(
+          history: InMemoryHistoryRepository(),
+          audio: _RecordingAudio(),
+          haptic: _RecordingHaptic(),
+          lastDicePref: pref,
+        ),
+      );
 
-        await tester.tap(find.text('D20'));
-        await tester.pumpAndSettle();
+      await tester.tap(find.text('D20'));
+      await tester.pumpAndSettle();
 
-        expect(find.text('?'), findsOneWidget);
-        expect(
-          pref.read(),
-          const LastDiceConfig(diceType: DiceType.d20, count: 1),
-        );
-      },
-    );
+      expect(find.text('?'), findsOneWidget);
+      expect(
+        pref.read(),
+        const LastDiceConfig(diceType: DiceType.d20, count: 1),
+      );
+    });
 
     testWidgets('tap +: count goes to 2 and two "?" slots show', (
       tester,
