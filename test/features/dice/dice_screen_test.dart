@@ -93,13 +93,12 @@ Widget _harness({
 // the visible viewport so taps reach them.
 Future<void> _pump(WidgetTester tester, Widget widget) async {
   await tester.binding.setSurfaceSize(const Size(800, 1200));
+  addTearDown(() => tester.binding.setSurfaceSize(null));
   await tester.pumpWidget(widget);
 }
 
 void main() {
   group('DiceScreen', () {
-    tearDown(() => TestWidgetsFlutterBinding.instance.setSurfaceSize(null));
-
     testWidgets('initial: 1 "?" slot, D6 chip selected, count 1, no total', (
       tester,
     ) async {
@@ -169,7 +168,8 @@ void main() {
         final audio = _RecordingAudio();
         final haptic = _RecordingHaptic();
         final pref = InMemoryLastDiceConfigPreference();
-        await tester.pumpWidget(
+        await _pump(
+          tester,
           _harness(
             history: history,
             audio: audio,

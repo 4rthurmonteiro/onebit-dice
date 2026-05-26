@@ -27,7 +27,9 @@
       "Bash(awk '/^SF:/ {sf=substr\\($0,4\\); next} /^LF:/ {lf=substr\\($0,4\\); next} /^LH:/ {lh=substr\\($0,4\\); if \\(lh != lf\\) print sf \" LH=\" lh \"/\" lf}' /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice/coverage/lcov.info)",
       "Bash(awk '/^SF:/ {sf=substr\\($0,4\\); next} /^LF:/ {lf=substr\\($0,4\\); next} /^LH:/ {lh=substr\\($0,4\\); print sf \" \" lh \"/\" lf}' /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice/coverage/lcov.info)",
       "Bash(gh pr create --title 'feat: e10 audio and haptic' --body ' *)",
-      "Bash(git symbolic-ref *)"
+      "Bash(git symbolic-ref *)",
+      "Bash(gh run *)",
+      "Bash(fvm flutter *)"
     ]
   }
 }
