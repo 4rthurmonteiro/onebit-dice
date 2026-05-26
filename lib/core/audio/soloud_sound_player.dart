@@ -27,14 +27,24 @@ class SoLoudSoundPlayer implements SoundPlayer {
   @override
   Future<void> init() async {
     if (_initialized) return;
+    // Target platforms are iOS and Android. `flutter_soloud` has no web
+    // JS bindings wired here, so attempting init is guaranteed noise.
+    if (kIsWeb) return; // coverage:ignore-line
     if (_gateway.isInitialized) {
       _gateway.deinit();
     }
-    await _gateway.init();
-    for (final event in SoundEvent.values) {
-      _sources[event] = await _gateway.loadAsset(event.assetPath);
+    try {
+      await _gateway.init();
+      for (final event in SoundEvent.values) {
+        _sources[event] = await _gateway.loadAsset(event.assetPath);
+      }
+      _initialized = true;
+    } on Object catch (error, stackTrace) {
+      // Audio is sensory feedback — never block app startup. Stays
+      // uninitialized; `play` becomes a no-op until a future `init`.
+      _sources.clear();
+      debugPrint('SoLoudSoundPlayer.init failed: $error\n$stackTrace');
     }
-    _initialized = true;
   }
 
   @override
