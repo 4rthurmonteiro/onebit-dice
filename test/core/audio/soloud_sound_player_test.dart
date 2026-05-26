@@ -13,6 +13,7 @@ class _FakeSoLoudGateway implements SoLoudGateway {
   _FakeSoLoudGateway({this.engineInitialized = false});
 
   bool engineInitialized;
+  bool throwOnInit = false;
   bool throwOnPlay = false;
   bool throwOnStop = false;
 
@@ -31,6 +32,9 @@ class _FakeSoLoudGateway implements SoLoudGateway {
   @override
   Future<void> init() async {
     initCalls++;
+    if (throwOnInit) {
+      throw StateError('boom');
+    }
     engineInitialized = true;
   }
 
@@ -105,6 +109,20 @@ void main() {
       expect(gateway.deinitCalls, 1);
       expect(gateway.initCalls, 1);
     });
+
+    test(
+      'init swallows engine errors and leaves the player uninitialized',
+      () async {
+        final gateway = _FakeSoLoudGateway()..throwOnInit = true;
+        final player = SoLoudSoundPlayer(gateway: gateway);
+
+        await expectLater(player.init(), completes);
+
+        // Subsequent play is a no-op because init failed.
+        player.play(SoundEvent.roll);
+        expect(gateway.playedSources, isEmpty);
+      },
+    );
 
     test('play before init is a no-op', () {
       final gateway = _FakeSoLoudGateway();
