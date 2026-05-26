@@ -35,8 +35,8 @@ tools/ralph/
 
 | Tool | Why | How to check |
 |------|-----|--------------|
-| `claude` | Claude Code CLI | `claude --version` |
-| `ANTHROPIC_API_KEY` | Required for non-interactive runs (AFK loop) | `echo $ANTHROPIC_API_KEY` |
+| `claude` | Claude Code CLI (authenticated via `claude login`) | `claude --version` |
+| `ANTHROPIC_API_KEY` | **Optional** — only needed in sandboxes/Docker without local keychain auth | `echo $ANTHROPIC_API_KEY` |
 | `gh` | GitHub CLI (authenticated) | `gh auth status` |
 | `flutter` or `fvm` | Flutter feedback loops | `flutter --version` |
 | `very_good` | Coverage gate via Very Good CLI | `very_good --version` (install: `dart pub global activate very_good_cli`) |

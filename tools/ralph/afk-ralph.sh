@@ -19,7 +19,8 @@
 # Outputs are tee'd to .ralph/runs/<timestamp>.log so you can audit AFK runs.
 #
 # Iteration cap is mandatory to prevent runaway loops with stochastic agents.
-# Requires: ANTHROPIC_API_KEY, claude CLI.
+# Requires: claude CLI (authenticated via `claude login`, or ANTHROPIC_API_KEY
+# in env if running in a sandbox/Docker without local auth).
 
 set -euo pipefail
 
@@ -60,10 +61,9 @@ if ! command -v claude >/dev/null 2>&1; then
   exit 1
 fi
 
-if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
-  echo "afk-ralph.sh: ANTHROPIC_API_KEY is not set." >&2
-  exit 1
-fi
+# ANTHROPIC_API_KEY is optional: when unset, claude CLI uses the local
+# keychain auth from `claude login`. Only required in headless sandboxes
+# (Docker, CI) where no keychain is available.
 
 cd "$REPO_ROOT"
 current_branch="$(git rev-parse --abbrev-ref HEAD)"
