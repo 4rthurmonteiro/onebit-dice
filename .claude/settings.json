@@ -18,7 +18,15 @@
       "mcp__plugin_vgv-ai-flutter-plugin_dart__read_package_uris",
       "mcp__plugin_vgv-ai-flutter-plugin_dart__rip_grep_packages",
       "Bash(ls /Users/arthurmonteiroalvesmelo/.pub-cache/bin/ 2>/dev/null; which flutter; which dart)",
-      "Read(//Users/arthurmonteiroalvesmelo/.pub-cache/bin/**)"
+      "Read(//Users/arthurmonteiroalvesmelo/.pub-cache/bin/**)",
+      "mcp__plugin_vgv-wingspan_context7__resolve-library-id",
+      "mcp__plugin_vgv-wingspan_context7__query-docs",
+      "WebSearch",
+      "Bash(awk '/^SF:lib\\\\/core\\\\/audio\\\\/audio_controller.dart$/{flag=1;next} flag && /^end_of_record$/{flag=0} flag' /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice/coverage/lcov.info)",
+      "Bash(awk '/^SF:lib\\\\/core\\\\/haptic\\\\/haptic_controller.dart$/{flag=1;next} flag && /^end_of_record$/{flag=0} flag' /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice/coverage/lcov.info)",
+      "Bash(awk '/^SF:/ {sf=substr\\($0,4\\); next} /^LF:/ {lf=substr\\($0,4\\); next} /^LH:/ {lh=substr\\($0,4\\); if \\(lh != lf\\) print sf \" LH=\" lh \"/\" lf}' /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice/coverage/lcov.info)",
+      "Bash(awk '/^SF:/ {sf=substr\\($0,4\\); next} /^LF:/ {lf=substr\\($0,4\\); next} /^LH:/ {lh=substr\\($0,4\\); print sf \" \" lh \"/\" lf}' /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice/coverage/lcov.info)",
+      "Bash(gh pr create --title 'feat: e10 audio and haptic' --body ' *)"
     ]
   }
 }
