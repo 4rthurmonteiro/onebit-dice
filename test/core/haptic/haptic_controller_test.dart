@@ -2,6 +2,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 
+class _RecordingAppSettings extends InMemoryAppSettingsPreference {
+  _RecordingAppSettings(this.events);
+
+  final List<String> events;
+
+  @override
+  Future<void> writeHapticEnabled({required bool value}) async {
+    events.add('writeHapticEnabled($value)');
+    await super.writeHapticEnabled(value: value);
+  }
+}
+
 void main() {
   group('HapticController', () {
     test('default constructor falls back to the real trigger', () {
@@ -64,36 +76,37 @@ void main() {
       expect(calls, 0);
     });
 
-    test('setHapticEnabled(true→false) notifies once and persists', () async {
-      final pref = InMemoryAppSettingsPreference();
+    test('setHapticEnabled(true→false) notifies, then persists '
+        '— in that order', () async {
+      final events = <String>[];
+      final pref = _RecordingAppSettings(events);
       final controller = HapticController(
         preference: pref,
         trigger: () async {},
-      );
-      var notifications = 0;
-      controller.addListener(() => notifications++);
+      )..addListener(() => events.add('notify'));
 
       await controller.setHapticEnabled(value: false);
 
       expect(controller.hapticEnabled, isFalse);
-      expect(notifications, 1);
+      expect(events, ['notify', 'writeHapticEnabled(false)']);
       expect(pref.readHapticEnabled(), isFalse);
     });
 
-    test('setHapticEnabled(false→true) notifies once and persists', () async {
-      final pref = InMemoryAppSettingsPreference();
+    test('setHapticEnabled(false→true) notifies, then persists '
+        '— in that order', () async {
+      final events = <String>[];
+      final pref = _RecordingAppSettings(events);
       await pref.writeHapticEnabled(value: false);
+      events.clear();
       final controller = HapticController(
         preference: pref,
         trigger: () async {},
-      );
-      var notifications = 0;
-      controller.addListener(() => notifications++);
+      )..addListener(() => events.add('notify'));
 
       await controller.setHapticEnabled(value: true);
 
       expect(controller.hapticEnabled, isTrue);
-      expect(notifications, 1);
+      expect(events, ['notify', 'writeHapticEnabled(true)']);
       expect(pref.readHapticEnabled(), isTrue);
     });
 

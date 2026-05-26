@@ -45,9 +45,10 @@ class AudioController extends ChangeNotifier with WidgetsBindingObserver {
     _player.play(event);
   }
 
-  /// Updates the flag and notifies listeners immediately, then persists in
-  /// the background. When [value] is `false`, any in-flight SFX is stopped
-  /// first.
+  /// Updates the flag and notifies listeners immediately for snappy UI,
+  /// then stops in-flight SFX (when [value] is `false`), then persists the
+  /// new value. The order is deliberate: UX > durability for a sound
+  /// toggle.
   Future<void> setSoundEnabled({required bool value}) async {
     if (_soundEnabled == value) return;
     _soundEnabled = value;

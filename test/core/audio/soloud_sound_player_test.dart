@@ -10,10 +10,9 @@ import 'package:onebit_dice/core/audio/soloud_sound_player.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 
 class _FakeSoLoudGateway implements SoLoudGateway {
-  _FakeSoLoudGateway({this.preInitialized = false});
+  _FakeSoLoudGateway({this.engineInitialized = false});
 
-  bool preInitialized;
-  bool engineInitialized = false;
+  bool engineInitialized;
   bool throwOnPlay = false;
   bool throwOnStop = false;
 
@@ -27,12 +26,7 @@ class _FakeSoLoudGateway implements SoLoudGateway {
   int _nextHash = 1;
 
   @override
-  bool get isInitialized {
-    if (initCalls == 0) {
-      return preInitialized;
-    }
-    return engineInitialized;
-  }
+  bool get isInitialized => engineInitialized;
 
   @override
   Future<void> init() async {
@@ -103,7 +97,7 @@ void main() {
 
     test('init calls deinit first when the gateway is already initialized '
         '(hot restart defense)', () async {
-      final gateway = _FakeSoLoudGateway(preInitialized: true);
+      final gateway = _FakeSoLoudGateway(engineInitialized: true);
       final player = SoLoudSoundPlayer(gateway: gateway);
 
       await player.init();

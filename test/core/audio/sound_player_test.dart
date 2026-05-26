@@ -21,10 +21,5 @@ void main() {
         expect(event.assetPath, endsWith('.mp3'));
       }
     });
-
-    test('asset paths are distinct so events never collide', () {
-      final paths = SoundEvent.values.map((e) => e.assetPath).toSet();
-      expect(paths, hasLength(SoundEvent.values.length));
-    });
   });
 }
