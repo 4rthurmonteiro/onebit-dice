@@ -1,0 +1,76 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
+import 'package:onebit_dice/core/audio/soloud_gateway.dart';
+import 'package:onebit_dice/core/audio/sound_player.dart';
+
+/// [SoundPlayer] backed by `flutter_soloud`.
+///
+/// Each [SoundEvent] asset is loaded once during [init] and held in memory
+/// for the process lifetime. [play] is fire-and-forget; failures are logged
+/// via `debugPrint` but never thrown — sensory feedback must never break a
+/// dice roll.
+///
+/// Hot restart can leave the native engine thread orphaned; [init] defends
+/// against that by `deinit`-ing first when the gateway is already in an
+/// initialized state.
+class SoLoudSoundPlayer implements SoundPlayer {
+  /// Creates a [SoLoudSoundPlayer]. Pass [gateway] to inject a fake in
+  /// tests; production code can use the default [RealSoLoudGateway].
+  SoLoudSoundPlayer({SoLoudGateway? gateway})
+    : _gateway = gateway ?? RealSoLoudGateway();
+
+  final SoLoudGateway _gateway;
+  final Map<SoundEvent, AudioSource> _sources = {};
+  final Set<SoundHandle> _activeHandles = {};
+  bool _initialized = false;
+
+  @override
+  Future<void> init() async {
+    if (_initialized) return;
+    if (_gateway.isInitialized) {
+      _gateway.deinit();
+    }
+    await _gateway.init();
+    for (final event in SoundEvent.values) {
+      _sources[event] = await _gateway.loadAsset(event.assetPath);
+    }
+    _initialized = true;
+  }
+
+  @override
+  void play(SoundEvent event) {
+    if (!_initialized) return;
+    final source = _sources[event];
+    if (source == null) return;
+    try {
+      _activeHandles.add(_gateway.play(source));
+    } on Object catch (error, stackTrace) {
+      debugPrint('SoLoudSoundPlayer.play($event) failed: $error\n$stackTrace');
+    }
+  }
+
+  @override
+  Future<void> stopAll() async {
+    if (!_initialized) return;
+    final handles = List<SoundHandle>.of(_activeHandles);
+    _activeHandles.clear();
+    for (final handle in handles) {
+      try {
+        await _gateway.stop(handle);
+      } on Object catch (error, stackTrace) {
+        debugPrint(
+          'SoLoudSoundPlayer.stop($handle) failed: $error\n$stackTrace',
+        );
+      }
+    }
+  }
+
+  @override
+  Future<void> dispose() async {
+    if (!_initialized) return;
+    _gateway.deinit();
+    _sources.clear();
+    _activeHandles.clear();
+    _initialized = false;
+  }
+}

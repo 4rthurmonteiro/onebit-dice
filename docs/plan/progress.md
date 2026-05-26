@@ -64,11 +64,19 @@
 
 ---
 
-## EPIC 4 — Core: Audio & Haptic
+## EPIC 4 — Core: Audio & Haptic — E10
 
-- [ ] 4.1 `lib/core/audio/sound_player.dart` — wrapper `just_audio` com `playRoll/Stop/Total` + `setEnabled`
-- [ ] 4.2 `lib/core/haptic/haptic_controller.dart` — wrapper `HapticFeedback.mediumImpact` + `setEnabled`
-- [ ] 4.3 Criar placeholders em `assets/sounds/` (roll.mp3, stop.mp3, total.mp3)
+> Nota: a engine de áudio passou a ser `flutter_soloud` 4.x (substitui o
+> `just_audio` originalmente citado no roadmap). Decisão registrada em
+> [docs/brainstorm/2026-05-26-e10-audio-haptic-brainstorm-doc.md](../brainstorm/2026-05-26-e10-audio-haptic-brainstorm-doc.md).
+> O item 4.1 original (um único `sound_player.dart`) foi dividido em
+> `sound_player.dart` (interface + `SoundEvent`), `soloud_gateway.dart`
+> (seam sobre `SoLoud.instance`), `soloud_sound_player.dart` (impl),
+> e `audio_controller.dart` (`ChangeNotifier` com lifecycle + toggle).
+
+- [x] 4.1 Camada de áudio: `sound_player.dart` (interface + `SoundEvent`), `soloud_gateway.dart` (seam), `soloud_sound_player.dart` (impl `flutter_soloud`), `audio_controller.dart` (`ChangeNotifier` + `WidgetsBindingObserver` + toggle persistido)
+- [x] 4.2 `lib/core/haptic/haptic_controller.dart` — `ChangeNotifier` com `HapticTrigger` seam sobre `HapticFeedback.mediumImpact` + toggle persistido
+- [x] 4.3 Placeholders em `assets/sounds/` (roll.mp3, stop.mp3, total.mp3) — 100 ms de silêncio
 - [!] 4.4 Substituir placeholders por arquivos `.mp3` reais (intervenção humana — assets de áudio)
 
 ---
