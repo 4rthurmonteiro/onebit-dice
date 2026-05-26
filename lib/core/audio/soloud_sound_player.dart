@@ -27,6 +27,9 @@ class SoLoudSoundPlayer implements SoundPlayer {
   @override
   Future<void> init() async {
     if (_initialized) return;
+    // Target platforms are iOS and Android. `flutter_soloud` has no web
+    // JS bindings wired here, so attempting init is guaranteed noise.
+    if (kIsWeb) return; // coverage:ignore-line
     if (_gateway.isInitialized) {
       _gateway.deinit();
     }
