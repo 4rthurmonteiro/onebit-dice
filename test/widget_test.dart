@@ -8,7 +8,7 @@ import 'package:onebit_dice/core/i18n/supported_locales.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
 import 'package:onebit_dice/core/theme/theme_provider.dart';
-import 'package:onebit_dice/features/_dev/design_system_preview.dart';
+import 'package:onebit_dice/features/dice/dice_screen.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -46,10 +46,10 @@ void main() {
     await tester.pumpWidget(_buildApp());
     await tester.pump();
 
-    expect(find.byType(DesignSystemPreview), findsOneWidget);
+    expect(find.byType(DiceScreen), findsOneWidget);
     expect(find.text('1-BIT DICE'), findsOneWidget);
 
-    final context = tester.element(find.byType(DesignSystemPreview));
+    final context = tester.element(find.byType(DiceScreen));
     expect(context.read<ThemeProvider>().current.id, PaletteId.macClassic);
     expect(
       Theme.of(context).scaffoldBackgroundColor,
@@ -64,7 +64,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final provider = tester
-        .element(find.byType(DesignSystemPreview))
+        .element(find.byType(DiceScreen))
         .read<ThemeProvider>();
     await provider.setPalette(PaletteId.gameBoy);
     await tester.pumpAndSettle();

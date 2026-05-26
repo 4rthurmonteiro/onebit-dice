@@ -29,5 +29,7 @@
   "settingsSectionAnimation": "Animación",
   "settingsSectionLanguage": "Idioma",
   "settingsSectionAbout": "Acerca de",
-  "settingsLanguageFollowSystem": "Seguir sistema"
+  "settingsLanguageFollowSystem": "Seguir sistema",
+  "diceCountIncreaseLabel": "Aumentar cantidad de dados",
+  "diceCountDecreaseLabel": "Disminuir cantidad de dados"
 }

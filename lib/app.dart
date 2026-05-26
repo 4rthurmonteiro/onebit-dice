@@ -3,9 +3,12 @@ import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
 import 'package:onebit_dice/core/i18n/locale_controller.dart';
 import 'package:onebit_dice/core/i18n/supported_locales.dart';
+import 'package:onebit_dice/core/storage/history_repository.dart';
+import 'package:onebit_dice/core/storage/last_dice_config_preference.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/theme_provider.dart';
-import 'package:onebit_dice/features/_dev/design_system_preview.dart';
+import 'package:onebit_dice/features/dice/dice_controller.dart';
+import 'package:onebit_dice/features/dice/dice_screen.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -54,6 +57,18 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<LocaleController>(
           create: (_) => LocaleController(),
         ),
+        Provider<HistoryRepository>(create: (_) => InMemoryHistoryRepository()),
+        Provider<LastDiceConfigPreference>(
+          create: (_) => InMemoryLastDiceConfigPreference(),
+        ),
+        ChangeNotifierProvider<DiceController>(
+          create: (context) => DiceController(
+            history: context.read<HistoryRepository>(),
+            audio: context.read<AudioController>(),
+            haptic: context.read<HapticController>(),
+            lastDiceConfig: context.read<LastDiceConfigPreference>(),
+          ),
+        ),
       ],
       child: const _AppView(),
     );
@@ -74,7 +89,7 @@ class _AppView extends StatelessWidget {
       supportedLocales: [for (final entry in supportedLocales) entry.locale],
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       localeResolutionCallback: resolveLocale,
-      home: const DesignSystemPreview(),
+      home: const DiceScreen(),
     );
   }
 }

@@ -29,5 +29,7 @@
   "settingsSectionAnimation": "애니메이션",
   "settingsSectionLanguage": "언어",
   "settingsSectionAbout": "정보",
-  "settingsLanguageFollowSystem": "시스템 설정 따르기"
+  "settingsLanguageFollowSystem": "시스템 설정 따르기",
+  "diceCountIncreaseLabel": "주사위 개수 늘리기",
+  "diceCountDecreaseLabel": "주사위 개수 줄이기"
 }

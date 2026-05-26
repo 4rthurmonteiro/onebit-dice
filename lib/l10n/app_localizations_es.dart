@@ -108,4 +108,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsLanguageFollowSystem => 'Seguir sistema';
+
+  @override
+  String get diceCountIncreaseLabel => 'Aumentar cantidad de dados';
+
+  @override
+  String get diceCountDecreaseLabel => 'Disminuir cantidad de dados';
 }

@@ -1,0 +1,132 @@
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
+import 'package:onebit_dice/core/audio/audio_controller.dart';
+import 'package:onebit_dice/core/audio/sound_player.dart';
+import 'package:onebit_dice/core/haptic/haptic_controller.dart';
+import 'package:onebit_dice/core/models/dice_type.dart';
+import 'package:onebit_dice/core/models/roll_result.dart';
+import 'package:onebit_dice/core/storage/history_repository.dart';
+import 'package:onebit_dice/core/storage/last_dice_config_preference.dart';
+import 'package:onebit_dice/shared/utils/random_dice.dart';
+
+/// Orchestrates the dice roll screen — owns `selectedType`, `count`, and the
+/// latest [RollResult], and translates user intent into the side effects that
+/// follow a roll.
+///
+/// On construction, hydrates `selectedType` and `count` from
+/// [LastDiceConfigPreference]. Defaults to `d6` × 1 on first launch.
+///
+/// `roll()` runs its side effects in a deliberate order:
+///   1. compute the [RollResult] and notify listeners (UI updates first)
+///   2. append to [HistoryRepository]
+///   3. play `SoundEvent.total`
+///   4. fire a haptic pulse
+///   5. persist the current config
+///
+/// The UI-first order favors a snappy view at the cost of durability: if the
+/// history append throws, the result is already on screen. That trade-off is
+/// fine for the in-memory repo in E05; revisit if/when the Hive-backed repo
+/// can fail in production.
+///
+/// Not reentrant — `roll()` is `async` because two of its side effects are
+/// awaited. A debounced `RollButton` (E12) will protect against double-taps;
+/// for now a second `roll()` started before the first completes will simply
+/// race the writes.
+class DiceController extends ChangeNotifier {
+  /// Creates a [DiceController] hydrated from [lastDiceConfig].
+  ///
+  /// Pass [rng] to seed [rollDice] deterministically in tests.
+  factory DiceController({
+    required HistoryRepository history,
+    required AudioController audio,
+    required HapticController haptic,
+    required LastDiceConfigPreference lastDiceConfig,
+    Random? rng,
+  }) {
+    final stored = lastDiceConfig.read();
+    return DiceController._(
+      history,
+      audio,
+      haptic,
+      lastDiceConfig,
+      rng,
+      stored?.diceType ?? DiceType.d6,
+      stored?.count ?? 1,
+    );
+  }
+
+  DiceController._(
+    this._history,
+    this._audio,
+    this._haptic,
+    this._lastDiceConfig,
+    this._rng,
+    this._selectedType,
+    this._count,
+  );
+
+  final HistoryRepository _history;
+  final AudioController _audio;
+  final HapticController _haptic;
+  final LastDiceConfigPreference _lastDiceConfig;
+  final Random? _rng;
+
+  DiceType _selectedType;
+  int _count;
+  RollResult? _lastResult;
+
+  /// The currently selected [DiceType].
+  DiceType get selectedType => _selectedType;
+
+  /// The currently selected dice count, in `1..10`.
+  int get count => _count;
+
+  /// The most recent roll, or `null` when none has happened in this session
+  /// or the user has changed the type/count since the last roll.
+  RollResult? get lastResult => _lastResult;
+
+  /// Selects [type]. No-op when [type] already matches [selectedType].
+  /// Otherwise clears [lastResult], notifies listeners, and persists.
+  Future<void> setType(DiceType type) async {
+    if (type == _selectedType) return;
+    _selectedType = type;
+    _lastResult = null;
+    notifyListeners();
+    await _lastDiceConfig.write(LastDiceConfig(diceType: type, count: _count));
+  }
+
+  /// Sets the dice count to [value], clamped to `1..10`.
+  ///
+  /// No-op when the clamped value already matches [count]. Otherwise clears
+  /// [lastResult], notifies listeners, and persists.
+  Future<void> setCount(int value) async {
+    final clamped = value.clamp(1, 10);
+    if (clamped == _count) return;
+    _count = clamped;
+    _lastResult = null;
+    notifyListeners();
+    await _lastDiceConfig.write(
+      LastDiceConfig(diceType: _selectedType, count: clamped),
+    );
+  }
+
+  /// Rolls [count] dice of [selectedType], applies the side effects, and
+  /// updates [lastResult].
+  Future<void> roll() async {
+    final values = rollDice(_selectedType.sides, _count, rng: _rng);
+    _lastResult = RollResult(
+      timestamp: DateTime.now(),
+      diceType: _selectedType,
+      diceCount: _count,
+      values: values,
+    );
+    notifyListeners();
+    await _history.append(_lastResult!);
+    _audio.play(SoundEvent.total);
+    _haptic.trigger();
+    await _lastDiceConfig.write(
+      LastDiceConfig(diceType: _selectedType, count: _count),
+    );
+  }
+}

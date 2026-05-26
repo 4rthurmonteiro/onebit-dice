@@ -106,6 +106,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsLanguageFollowSystem => '跟随系统';
+
+  @override
+  String get diceCountIncreaseLabel => '增加骰子数量';
+
+  @override
+  String get diceCountDecreaseLabel => '减少骰子数量';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hans`).
@@ -210,4 +216,10 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get settingsLanguageFollowSystem => '跟随系统';
+
+  @override
+  String get diceCountIncreaseLabel => '增加骰子数量';
+
+  @override
+  String get diceCountDecreaseLabel => '减少骰子数量';
 }

@@ -29,5 +29,7 @@
   "settingsSectionAnimation": "Animation",
   "settingsSectionLanguage": "Sprache",
   "settingsSectionAbout": "Über",
-  "settingsLanguageFollowSystem": "System folgen"
+  "settingsLanguageFollowSystem": "System folgen",
+  "diceCountIncreaseLabel": "Würfelanzahl erhöhen",
+  "diceCountDecreaseLabel": "Würfelanzahl verringern"
 }
