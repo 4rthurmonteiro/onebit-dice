@@ -1,0 +1,141 @@
+{
+  "@@locale": "pt_BR",
+
+  "appName": "1-Bit Dice",
+  "@appName": {
+    "description": "App name — kept untranslated across locales"
+  },
+
+  "actionRoll": "ROLAR",
+  "@actionRoll": {
+    "description": "Primary CTA on the Roll screen"
+  },
+  "actionClear": "LIMPAR",
+  "@actionClear": {
+    "description": "Generic clear action (e.g. clear history)"
+  },
+  "actionConfirm": "CONFIRMAR",
+  "@actionConfirm": {
+    "description": "Confirm action in dialogs"
+  },
+  "actionCancel": "CANCELAR",
+  "@actionCancel": {
+    "description": "Cancel action in dialogs"
+  },
+  "actionClose": "FECHAR",
+  "@actionClose": {
+    "description": "Close action in dialogs / sheets"
+  },
+
+  "tabRoll": "ROLAR",
+  "@tabRoll": {
+    "description": "Bottom tab label for the Roll screen"
+  },
+  "tabHistory": "HISTÓRICO",
+  "@tabHistory": {
+    "description": "Bottom tab label for the History screen"
+  },
+  "tabPresets": "JOGOS",
+  "@tabPresets": {
+    "description": "Bottom tab label for the Presets/Games screen"
+  },
+  "tabSettings": "AJUSTES",
+  "@tabSettings": {
+    "description": "Bottom tab label for the Settings screen"
+  },
+
+  "rollingNDice": "{count, plural, one{Rolando 1 dado} other{Rolando {count} dados}}",
+  "@rollingNDice": {
+    "description": "Status text shown while a roll is in progress",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rollResultTotal": "Total: {total}",
+  "@rollResultTotal": {
+    "description": "Final total of a roll",
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+
+  "historyEmpty": "Nenhuma rolagem ainda.",
+  "@historyEmpty": {
+    "description": "Empty state for the History screen"
+  },
+  "historyClearConfirmTitle": "Limpar histórico?",
+  "@historyClearConfirmTitle": {
+    "description": "Title of the confirm dialog when clearing history"
+  },
+  "historyClearConfirmBody": "Isso apaga todas as rolagens registradas.",
+  "@historyClearConfirmBody": {
+    "description": "Body of the confirm dialog when clearing history"
+  },
+
+  "presetsSectionClassic": "Jogos Clássicos",
+  "@presetsSectionClassic": {
+    "description": "Section header for built-in classic-game presets"
+  },
+  "presetsSectionCustom": "Personalizados",
+  "@presetsSectionCustom": {
+    "description": "Section header for user-created presets"
+  },
+  "presetLudo": "Ludo",
+  "@presetLudo": {
+    "description": "Classic game name — kept untranslated"
+  },
+  "presetWar": "War",
+  "@presetWar": {
+    "description": "Classic game name — kept untranslated"
+  },
+  "presetYahtzee": "Yahtzee",
+  "@presetYahtzee": {
+    "description": "Classic game name — kept untranslated"
+  },
+  "presetCraps": "Craps",
+  "@presetCraps": {
+    "description": "Classic game name — kept untranslated"
+  },
+  "presetBunco": "Bunco",
+  "@presetBunco": {
+    "description": "Classic game name — kept untranslated"
+  },
+  "presetFarkle": "Farkle",
+  "@presetFarkle": {
+    "description": "Classic game name — kept untranslated"
+  },
+  "presetLiarsDice": "Liar's Dice",
+  "@presetLiarsDice": {
+    "description": "Classic game name — kept untranslated"
+  },
+
+  "settingsSectionAppearance": "Aparência",
+  "@settingsSectionAppearance": {
+    "description": "Settings section: appearance"
+  },
+  "settingsSectionFeedback": "Feedback",
+  "@settingsSectionFeedback": {
+    "description": "Settings section: audio + haptic feedback"
+  },
+  "settingsSectionAnimation": "Animação",
+  "@settingsSectionAnimation": {
+    "description": "Settings section: dice animation"
+  },
+  "settingsSectionLanguage": "Idioma",
+  "@settingsSectionLanguage": {
+    "description": "Settings section: language picker"
+  },
+  "settingsSectionAbout": "Sobre",
+  "@settingsSectionAbout": {
+    "description": "Settings section: about / credits / version"
+  },
+
+  "settingsLanguageFollowSystem": "Seguir sistema",
+  "@settingsLanguageFollowSystem": {
+    "description": "Option label that clears the manual locale override"
+  }
+}

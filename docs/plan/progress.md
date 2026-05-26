@@ -150,12 +150,19 @@
 
 ## EPIC 12 — Feature: Internacionalização
 
-- [ ] 12.1 Adicionar `flutter_localizations` + `intl` ao `pubspec.yaml`
-- [ ] 12.2 Criar `l10n.yaml`
-- [ ] 12.3 Criar `lib/l10n/app_pt.arb` (PT-BR — base) com todas as strings
-- [ ] 12.4 Criar `lib/l10n/app_en.arb` (EN-US)
-- [ ] 12.5 Rodar gerador de localização
-- [ ] 12.6 Substituir todas as strings hardcoded por `context.l10n.*` em todos os features
+> Nota: a engine `synthetic-package` foi removida no Flutter 3.44, então a
+> codegen escreve em `lib/l10n/app_localizations*.dart` (excluído do gate de
+> cobertura, como `**/*.g.dart`). Decisão registrada na PR de E13.
+
+- [x] 12.1 Adicionar `flutter_localizations` + `intl` + `generate: true` + `l10n.yaml`
+- [x] 12.2 Criar `lib/l10n/app_pt_BR.arb` (template) com ~29 chaves
+- [x] 12.3 Gerar 9 ARBs traduzidos (en, es, fr, de, it, ja, zh, ko, ru) + bases `app_pt.arb` / `app_zh.arb` via MT
+- [x] 12.4 `lib/core/i18n/supported_locales.dart` (`SupportedLocale` class + const list)
+- [x] 12.5 `lib/core/i18n/locale_preference.dart` (interface + `InMemory` + `SharedPreferences`)
+- [x] 12.6 `lib/core/i18n/locale_controller.dart` (`ChangeNotifier`)
+- [x] 12.7 `lib/core/i18n/l10n_extension.dart` (`BuildContext.l10n`)
+- [x] 12.8 Wire `MultiProvider` + `MaterialApp.locale/delegates/resolutionCallback` em `lib/app.dart`
+- [x] 12.9 Testes (4 arquivos em `test/core/i18n/` + `test/widget_test.dart`) — 100% cobertura
 
 ---
 
