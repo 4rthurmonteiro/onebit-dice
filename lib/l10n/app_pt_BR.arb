@@ -171,5 +171,78 @@
   "settingsTitle": "Ajustes",
   "@settingsTitle": {
     "description": "AppBar title for the Settings tab stub"
+  },
+
+  "settingsToggleSound": "Som",
+  "@settingsToggleSound": {
+    "description": "Toggle label for SFX in Settings > Feedback"
+  },
+  "settingsToggleHaptic": "Vibração",
+  "@settingsToggleHaptic": {
+    "description": "Toggle label for haptic feedback in Settings > Feedback"
+  },
+  "settingsAnimationStyleLabel": "Estilo",
+  "@settingsAnimationStyleLabel": {
+    "description": "Group label for animation style radios in Settings > Animation"
+  },
+  "settingsAnimationStyleFast": "Rápida",
+  "@settingsAnimationStyleFast": {
+    "description": "Animation style — result appears instantly"
+  },
+  "settingsAnimationStyleDrum": "Tambor",
+  "@settingsAnimationStyleDrum": {
+    "description": "Animation style — short drum-roll-style shake"
+  },
+  "settingsAnimationStyleTabletop": "Tabuleiro",
+  "@settingsAnimationStyleTabletop": {
+    "description": "Animation style — long tabletop-style roll"
+  },
+  "settingsAnimationSpeedLabel": "Velocidade",
+  "@settingsAnimationSpeedLabel": {
+    "description": "Group label for animation speed radios in Settings > Animation"
+  },
+  "settingsAnimationSpeedFast": "Rápido",
+  "@settingsAnimationSpeedFast": {
+    "description": "Animation speed — short duration"
+  },
+  "settingsAnimationSpeedMedium": "Médio",
+  "@settingsAnimationSpeedMedium": {
+    "description": "Animation speed — medium duration"
+  },
+  "settingsAnimationSpeedSlow": "Longo",
+  "@settingsAnimationSpeedSlow": {
+    "description": "Animation speed — long duration"
+  },
+  "settingsAboutVersion": "Versão",
+  "@settingsAboutVersion": {
+    "description": "Label preceding the app version in Settings > About"
+  },
+  "paletteMacClassic": "Mac Classic",
+  "@paletteMacClassic": {
+    "description": "Palette name — Mac Classic (kept untranslated)"
+  },
+  "paletteMacBeige": "Mac Beige",
+  "@paletteMacBeige": {
+    "description": "Palette name — Mac Beige (kept untranslated)"
+  },
+  "paletteGameBoy": "Game Boy DMG",
+  "@paletteGameBoy": {
+    "description": "Palette name — Game Boy DMG (kept untranslated)"
+  },
+  "paletteC64": "Commodore 64",
+  "@paletteC64": {
+    "description": "Palette name — Commodore 64 (kept untranslated)"
+  },
+  "paletteZxSpectrum": "ZX Spectrum",
+  "@paletteZxSpectrum": {
+    "description": "Palette name — ZX Spectrum (kept untranslated)"
+  },
+  "paletteAppleIIGreen": "Apple II Green",
+  "@paletteAppleIIGreen": {
+    "description": "Palette name — Apple II Green (kept untranslated)"
+  },
+  "paletteAppleIIeAmber": "Apple //e Amber",
+  "@paletteAppleIIeAmber": {
+    "description": "Palette name — Apple //e Amber (kept untranslated)"
   }
 }
