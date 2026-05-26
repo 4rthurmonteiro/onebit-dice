@@ -31,5 +31,11 @@
   "settingsSectionAbout": "À propos",
   "settingsLanguageFollowSystem": "Suivre le système",
   "diceCountIncreaseLabel": "Augmenter le nombre de dés",
-  "diceCountDecreaseLabel": "Diminuer le nombre de dés"
+  "diceCountDecreaseLabel": "Diminuer le nombre de dés",
+  "appTagline": "Des dés pour chaque jeu",
+  "commonComingSoon": "BIENTÔT",
+  "splashUniverseTagline": "partie de l'univers call of old chico",
+  "historyTitle": "Historique",
+  "presetsTitle": "Jeux",
+  "settingsTitle": "Paramètres"
 }

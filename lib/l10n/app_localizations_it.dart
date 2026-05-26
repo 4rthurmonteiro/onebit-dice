@@ -114,4 +114,22 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get diceCountDecreaseLabel => 'Diminuisci numero di dadi';
+
+  @override
+  String get appTagline => 'Dadi per ogni gioco';
+
+  @override
+  String get commonComingSoon => 'IN ARRIVO';
+
+  @override
+  String get splashUniverseTagline => 'parte dell\'universo call of old chico';
+
+  @override
+  String get historyTitle => 'Cronologia';
+
+  @override
+  String get presetsTitle => 'Giochi';
+
+  @override
+  String get settingsTitle => 'Impostazioni';
 }

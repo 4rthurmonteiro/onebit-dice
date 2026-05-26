@@ -112,4 +112,22 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get diceCountDecreaseLabel => 'サイコロを減らす';
+
+  @override
+  String get appTagline => 'あらゆるゲームにサイコロを';
+
+  @override
+  String get commonComingSoon => '近日公開';
+
+  @override
+  String get splashUniverseTagline => 'call of old chico ユニバースの一部';
+
+  @override
+  String get historyTitle => '履歴';
+
+  @override
+  String get presetsTitle => 'ゲーム';
+
+  @override
+  String get settingsTitle => '設定';
 }

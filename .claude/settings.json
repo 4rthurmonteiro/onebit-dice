@@ -29,7 +29,15 @@
       "Bash(gh pr create --title 'feat: e10 audio and haptic' --body ' *)",
       "Bash(git symbolic-ref *)",
       "Bash(gh run *)",
-      "Bash(fvm flutter *)"
+      "Bash(fvm flutter *)",
+      "Bash(git checkout *)",
+      "Bash(git pull *)",
+      "Bash(git stash *)",
+      "Read(//Users/arthurmonteiroalvesmelo/.claude/plugins/cache/very-good-claude-code-marketplace/vgv-wingspan/0.0.1/skills/brainstorm/references/**)",
+      "mcp__plugin_vgv-ai-flutter-plugin_dart__pub_dev_search",
+      "Bash(find ~/.claude/plugins/cache/very-good-claude-code-marketplace/vgv-wingspan -path \"*skills/plan/references*\" -name \"*.md\" 2>&1 | head; echo \"---\"; ls ~/.claude/plugins/cache/very-good-claude-code-marketplace/vgv-wingspan/0.0.1/skills/plan/references/ 2>&1)",
+      "Read(//Users/arthurmonteiroalvesmelo/.claude/plugins/cache/very-good-claude-code-marketplace/vgv-wingspan/**)",
+      "Bash(awk -F: 'BEGIN{f=\"\"} /^SF/{f=$2} /^LF/{lf=$2} /^LH/{lh=$2; if \\(f !~ /\\\\.g\\\\.dart$/ && f !~ /app_localizations/ && f !~ /main\\\\.dart$/\\) { pct=\\(lf>0?lh*100/lf:100\\); if\\(pct<100\\) printf \"%s  %d/%d  %.1f%%\\\\n\", f, lh, lf, pct } }')"
     ]
   }
 }

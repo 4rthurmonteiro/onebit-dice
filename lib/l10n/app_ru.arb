@@ -31,5 +31,11 @@
   "settingsSectionAbout": "О приложении",
   "settingsLanguageFollowSystem": "Как в системе",
   "diceCountIncreaseLabel": "Увеличить количество кубиков",
-  "diceCountDecreaseLabel": "Уменьшить количество кубиков"
+  "diceCountDecreaseLabel": "Уменьшить количество кубиков",
+  "appTagline": "Кубики для любой игры",
+  "commonComingSoon": "СКОРО",
+  "splashUniverseTagline": "часть вселенной call of old chico",
+  "historyTitle": "История",
+  "presetsTitle": "Игры",
+  "settingsTitle": "Настройки"
 }

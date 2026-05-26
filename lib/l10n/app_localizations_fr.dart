@@ -114,4 +114,22 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get diceCountDecreaseLabel => 'Diminuer le nombre de dés';
+
+  @override
+  String get appTagline => 'Des dés pour chaque jeu';
+
+  @override
+  String get commonComingSoon => 'BIENTÔT';
+
+  @override
+  String get splashUniverseTagline => 'partie de l\'univers call of old chico';
+
+  @override
+  String get historyTitle => 'Historique';
+
+  @override
+  String get presetsTitle => 'Jeux';
+
+  @override
+  String get settingsTitle => 'Paramètres';
 }

@@ -112,6 +112,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get diceCountDecreaseLabel => '减少骰子数量';
+
+  @override
+  String get appTagline => '每个游戏都有骰子';
+
+  @override
+  String get commonComingSoon => '即将推出';
+
+  @override
+  String get splashUniverseTagline => 'call of old chico 宇宙的一部分';
+
+  @override
+  String get historyTitle => '历史';
+
+  @override
+  String get presetsTitle => '游戏';
+
+  @override
+  String get settingsTitle => '设置';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hans`).
@@ -222,4 +240,22 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get diceCountDecreaseLabel => '减少骰子数量';
+
+  @override
+  String get appTagline => '每个游戏都有骰子';
+
+  @override
+  String get commonComingSoon => '即将推出';
+
+  @override
+  String get splashUniverseTagline => 'call of old chico 宇宙的一部分';
+
+  @override
+  String get historyTitle => '历史';
+
+  @override
+  String get presetsTitle => '游戏';
+
+  @override
+  String get settingsTitle => '设置';
 }

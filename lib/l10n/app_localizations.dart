@@ -307,6 +307,42 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Diminuir quantidade de dados'**
   String get diceCountDecreaseLabel;
+
+  /// Tagline shown under the wordmark on the splash screen
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Dado para todo jogo'**
+  String get appTagline;
+
+  /// Placeholder body text for screens not yet implemented
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'EM BREVE'**
+  String get commonComingSoon;
+
+  /// Italic microcopy in the splash footer linking to the COCU universe
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'parte do universo call of old chico'**
+  String get splashUniverseTagline;
+
+  /// AppBar title for the History tab stub
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Histórico'**
+  String get historyTitle;
+
+  /// AppBar title for the Presets/Games tab stub
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Jogos'**
+  String get presetsTitle;
+
+  /// AppBar title for the Settings tab stub
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ajustes'**
+  String get settingsTitle;
 }
 
 class _AppLocalizationsDelegate

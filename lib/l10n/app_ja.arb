@@ -31,5 +31,11 @@
   "settingsSectionAbout": "アプリについて",
   "settingsLanguageFollowSystem": "システムに従う",
   "diceCountIncreaseLabel": "サイコロを増やす",
-  "diceCountDecreaseLabel": "サイコロを減らす"
+  "diceCountDecreaseLabel": "サイコロを減らす",
+  "appTagline": "あらゆるゲームにサイコロを",
+  "commonComingSoon": "近日公開",
+  "splashUniverseTagline": "call of old chico ユニバースの一部",
+  "historyTitle": "履歴",
+  "presetsTitle": "ゲーム",
+  "settingsTitle": "設定"
 }

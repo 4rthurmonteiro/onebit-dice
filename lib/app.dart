@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:onebit_dice/app_router.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
 import 'package:onebit_dice/core/i18n/locale_controller.dart';
@@ -8,7 +10,6 @@ import 'package:onebit_dice/core/storage/last_dice_config_preference.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/theme_provider.dart';
 import 'package:onebit_dice/features/dice/dice_controller.dart';
-import 'package:onebit_dice/features/dice/dice_screen.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -75,21 +76,32 @@ class App extends StatelessWidget {
   }
 }
 
-class _AppView extends StatelessWidget {
+class _AppView extends StatefulWidget {
   const _AppView();
+
+  @override
+  State<_AppView> createState() => _AppViewState();
+}
+
+class _AppViewState extends State<_AppView> {
+  // The router owns the navigation stack and must outlive every
+  // `notifyListeners` of `ThemeProvider` / `LocaleController` — rebuilding it
+  // here in `initState` (instead of inside `build`) is what keeps the tab
+  // selection from resetting when the user changes palette or language.
+  late final GoRouter _router = buildAppRouter();
 
   @override
   Widget build(BuildContext context) {
     final palette = context.watch<ThemeProvider>().current;
     final locale = context.watch<LocaleController>().override;
-    return MaterialApp(
+    return MaterialApp.router(
       title: '1-Bit Dice',
       theme: buildThemeData(palette),
       locale: locale,
       supportedLocales: [for (final entry in supportedLocales) entry.locale],
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       localeResolutionCallback: resolveLocale,
-      home: const DiceScreen(),
+      routerConfig: _router,
     );
   }
 }

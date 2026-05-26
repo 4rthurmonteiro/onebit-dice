@@ -30,7 +30,7 @@
 - [x] 1.9 `lib/core/theme/app_theme.dart` — `OneBitColors` ThemeExtension + `buildThemeData(palette)`
 - [x] 1.10 `lib/core/theme/palette_preference.dart` — interface + `InMemoryPalettePreference`
 - [x] 1.11 `lib/features/_dev/design_system_preview.dart` — preview manual (smoke-test)
-  - **Remover em E09** (Navegação) quando o app shell real entrar
+  - **Removido em E09** quando o app shell real entrou
 
 ---
 
@@ -89,19 +89,28 @@
 
 ---
 
-## EPIC 6 — Feature: Splash Screen
+## EPIC 6/7 — Navegação (Splash + App Shell) — E09
 
-- [ ] 6.1 `lib/features/splash/splash_screen.dart` — wordmark + tagline + microtexto + delay 1.5s
-- [ ] 6.2 `flutter_native_splash.yaml` — bg branco + ícone
-- [ ] 6.3 Rodar `dart run flutter_native_splash:create`
+> Nota: EPIC 6 (Splash) e EPIC 7 (Navegação) foram fundidos em um único
+> entregável (E09), conforme o roadmap (`docs/roadmap/08-epics-m1.md`) e o
+> precedente da fusão EPIC 4/E10. O shell usa `go_router` +
+> `go_router_builder` + `StatefulShellRoute.indexedStack` (memória do
+> projeto: `IndexedStack` manual é proibido). Detalhes:
+> [docs/plan/2026-05-26-feat-e09-app-shell-and-splash-plan.md](2026-05-26-feat-e09-app-shell-and-splash-plan.md).
 
----
-
-## EPIC 7 — Feature: Navegação
-
-- [ ] 7.1 `lib/features/shell/app_shell.dart` — `IndexedStack` + `RetroTabBar`
-- [ ] 7.2 `lib/shared/widgets/retro_tab_bar.dart` — 4 tabs pixel art + label VT323
-- [ ] 7.3 `test/features/shell/app_shell_test.dart` — troca de tab funciona
+- [x] 6/7.1 `lib/features/splash/splash_screen.dart` — wordmark + tagline + microtexto COCU + d6 pixel art + delay 1.5s (cores hard-coded `#000`/`#FFF`)
+- [x] 6/7.2 `flutter_native_splash.yaml` — bg `#FFFFFF` + ícone + bloco `android_12`
+- [x] 6/7.3 `dart run flutter_native_splash:create` rodado; arquivos nativos commitados
+- [x] 6/7.4 `assets/icon/icon.png` 1024×1024 placeholder (d6 derivado do protótipo); E14 substitui
+- [x] 6/7.5 `lib/app_router.dart` — `GoRouter` com `SplashRoute` + `MainShellRoute` (4 branches), rotas type-safe via `go_router_builder`, todas com `NoTransitionPage`
+- [x] 6/7.6 `lib/features/shell/app_shell.dart` — `Scaffold` + `RetroTabBar` montado pelo `StatefulShellRoute.indexedStack`
+- [x] 6/7.7 `lib/shared/widgets/retro_tab_bar.dart` — 4 tabs com `PixelIcon` + label, inversão de cor na ativa, `Semantics(button, selected, label)`
+- [x] 6/7.8 `lib/shared/widgets/pixel_icon.dart` — `CustomPaint` que lê `OneBitColors`; suporta `inverted`
+- [x] 6/7.9 Stubs `HistoryScreen` / `PresetsScreen` / `SettingsScreen` em `lib/features/*/` (renderizam título localizado + "EM BREVE")
+- [x] 6/7.10 `lib/core/app_info.dart` — `kAppVersion`/`kStudioName` (única fonte da versão exibida no splash)
+- [x] 6/7.11 `lib/app.dart` — `_AppView` agora é `StatefulWidget`; usa `MaterialApp.router(routerConfig: ...)`; provider stack preservado
+- [x] 6/7.12 i18n: 6 chaves novas em 11 ARBs (`appTagline`, `commonComingSoon`, `splashUniverseTagline`, `historyTitle`, `presetsTitle`, `settingsTitle`)
+- [x] 6/7.13 Testes 100% cobertura: `app_router_test.dart`, `shell/app_shell_test.dart`, `splash/splash_screen_test.dart`, `history/`/`presets/`/`settings/`, `shared/widgets/retro_tab_bar_test.dart`, `shared/widgets/pixel_icon_test.dart`; `widget_test.dart` atualizado para o fluxo splash → shell
 
 ---
 
