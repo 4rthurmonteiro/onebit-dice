@@ -29,5 +29,7 @@
   "settingsSectionAnimation": "アニメーション",
   "settingsSectionLanguage": "言語",
   "settingsSectionAbout": "アプリについて",
-  "settingsLanguageFollowSystem": "システムに従う"
+  "settingsLanguageFollowSystem": "システムに従う",
+  "diceCountIncreaseLabel": "サイコロを増やす",
+  "diceCountDecreaseLabel": "サイコロを減らす"
 }

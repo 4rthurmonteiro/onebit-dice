@@ -108,4 +108,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsLanguageFollowSystem => 'System folgen';
+
+  @override
+  String get diceCountIncreaseLabel => 'Würfelanzahl erhöhen';
+
+  @override
+  String get diceCountDecreaseLabel => 'Würfelanzahl verringern';
 }

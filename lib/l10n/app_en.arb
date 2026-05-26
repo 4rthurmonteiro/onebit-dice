@@ -29,5 +29,7 @@
   "settingsSectionAnimation": "Animation",
   "settingsSectionLanguage": "Language",
   "settingsSectionAbout": "About",
-  "settingsLanguageFollowSystem": "Follow system"
+  "settingsLanguageFollowSystem": "Follow system",
+  "diceCountIncreaseLabel": "Increase dice count",
+  "diceCountDecreaseLabel": "Decrease dice count"
 }

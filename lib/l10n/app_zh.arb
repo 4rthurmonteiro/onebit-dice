@@ -29,5 +29,7 @@
   "settingsSectionAnimation": "动画",
   "settingsSectionLanguage": "语言",
   "settingsSectionAbout": "关于",
-  "settingsLanguageFollowSystem": "跟随系统"
+  "settingsLanguageFollowSystem": "跟随系统",
+  "diceCountIncreaseLabel": "增加骰子数量",
+  "diceCountDecreaseLabel": "减少骰子数量"
 }

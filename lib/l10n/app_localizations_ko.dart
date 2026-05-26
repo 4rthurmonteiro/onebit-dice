@@ -106,4 +106,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsLanguageFollowSystem => '시스템 설정 따르기';
+
+  @override
+  String get diceCountIncreaseLabel => '주사위 개수 늘리기';
+
+  @override
+  String get diceCountDecreaseLabel => '주사위 개수 줄이기';
 }

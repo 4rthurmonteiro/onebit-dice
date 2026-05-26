@@ -106,4 +106,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settingsLanguageFollowSystem => 'システムに従う';
+
+  @override
+  String get diceCountIncreaseLabel => 'サイコロを増やす';
+
+  @override
+  String get diceCountDecreaseLabel => 'サイコロを減らす';
 }

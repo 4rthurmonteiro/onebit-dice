@@ -295,6 +295,18 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Seguir sistema'**
   String get settingsLanguageFollowSystem;
+
+  /// Semantic label for the + button in the dice quantity stepper
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aumentar quantidade de dados'**
+  String get diceCountIncreaseLabel;
+
+  /// Semantic label for the − button in the dice quantity stepper
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Diminuir quantidade de dados'**
+  String get diceCountDecreaseLabel;
 }
 
 class _AppLocalizationsDelegate

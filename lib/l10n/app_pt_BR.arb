@@ -137,5 +137,14 @@
   "settingsLanguageFollowSystem": "Seguir sistema",
   "@settingsLanguageFollowSystem": {
     "description": "Option label that clears the manual locale override"
+  },
+
+  "diceCountIncreaseLabel": "Aumentar quantidade de dados",
+  "@diceCountIncreaseLabel": {
+    "description": "Semantic label for the + button in the dice quantity stepper"
+  },
+  "diceCountDecreaseLabel": "Diminuir quantidade de dados",
+  "@diceCountDecreaseLabel": {
+    "description": "Semantic label for the − button in the dice quantity stepper"
   }
 }

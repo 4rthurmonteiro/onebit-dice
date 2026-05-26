@@ -108,4 +108,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsLanguageFollowSystem => 'Suivre le système';
+
+  @override
+  String get diceCountIncreaseLabel => 'Augmenter le nombre de dés';
+
+  @override
+  String get diceCountDecreaseLabel => 'Diminuer le nombre de dés';
 }

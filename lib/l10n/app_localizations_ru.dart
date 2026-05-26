@@ -109,4 +109,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsLanguageFollowSystem => 'Как в системе';
+
+  @override
+  String get diceCountIncreaseLabel => 'Увеличить количество кубиков';
+
+  @override
+  String get diceCountDecreaseLabel => 'Уменьшить количество кубиков';
 }

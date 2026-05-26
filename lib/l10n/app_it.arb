@@ -29,5 +29,7 @@
   "settingsSectionAnimation": "Animazione",
   "settingsSectionLanguage": "Lingua",
   "settingsSectionAbout": "Informazioni",
-  "settingsLanguageFollowSystem": "Segui sistema"
+  "settingsLanguageFollowSystem": "Segui sistema",
+  "diceCountIncreaseLabel": "Aumenta numero di dadi",
+  "diceCountDecreaseLabel": "Diminuisci numero di dadi"
 }

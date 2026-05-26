@@ -108,6 +108,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsLanguageFollowSystem => 'Seguir sistema';
+
+  @override
+  String get diceCountIncreaseLabel => 'Aumentar quantidade de dados';
+
+  @override
+  String get diceCountDecreaseLabel => 'Diminuir quantidade de dados';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -214,4 +220,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get settingsLanguageFollowSystem => 'Seguir sistema';
+
+  @override
+  String get diceCountIncreaseLabel => 'Aumentar quantidade de dados';
+
+  @override
+  String get diceCountDecreaseLabel => 'Diminuir quantidade de dados';
 }

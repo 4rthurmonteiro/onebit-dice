@@ -29,5 +29,7 @@
   "settingsSectionAnimation": "Animation",
   "settingsSectionLanguage": "Langue",
   "settingsSectionAbout": "À propos",
-  "settingsLanguageFollowSystem": "Suivre le système"
+  "settingsLanguageFollowSystem": "Suivre le système",
+  "diceCountIncreaseLabel": "Augmenter le nombre de dés",
+  "diceCountDecreaseLabel": "Diminuer le nombre de dés"
 }
