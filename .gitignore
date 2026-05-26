@@ -46,3 +46,6 @@ app.*.map.json
 
 # Ralph autonomous coding loop (session state)
 .ralph/
+
+# VGV review agent reports (transient, generated per Ralph iteration / /build run)
+docs/reviews/

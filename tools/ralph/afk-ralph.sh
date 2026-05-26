@@ -2,6 +2,14 @@
 # Description: Run the Ralph loop unsupervised, up to N iterations or until done.
 # Usage: ./tools/ralph/afk-ralph.sh <max-iterations> [--sleep <secs>]
 #
+# Workflow:
+#   - Creates an integration branch ralph/batch/<UTC-timestamp> from the current
+#     branch and pushes it to origin. All per-task branches gh-NNN-* are created
+#     from this batch branch and each PR targets it (gh pr create --base ...).
+#   - Once the loop finishes, the dev opens a single release-candidate PR from
+#     ralph/batch/<ts> to the original branch (usually main). The command is
+#     printed at startup and logged for convenience.
+#
 # Each iteration:
 #   - Verifies a clean working tree (no leftover diff).
 #   - Invokes claude against tools/ralph/prompt.md and captures its output.
@@ -59,7 +67,6 @@ fi
 
 cd "$REPO_ROOT"
 current_branch="$(git rev-parse --abbrev-ref HEAD)"
-base_branch="$current_branch"
 
 if [[ ! -s "$PRD_FILE" ]]; then
   echo "afk-ralph.sh: $PRD_FILE missing/empty. Run ./tools/ralph/sync-github.sh first." >&2
@@ -72,11 +79,33 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
   exit 1
 fi
 
-mkdir -p "$RUN_DIR"
+# ---------------------------------------------------------------------------
+# Integration (batch) branch: all per-task branches and PRs target this branch.
+# The dev opens a single release-candidate PR from this branch to main at the
+# end of the AFK run. ralph/batch/<UTC-timestamp> from current branch.
+# ---------------------------------------------------------------------------
 ts="$(date -u +%Y%m%dT%H%M%SZ)"
+batch_branch="ralph/batch/$ts"
+
+echo "[afk-ralph] Creating integration branch $batch_branch from $current_branch" >&2
+if ! git checkout -b "$batch_branch" "$current_branch"; then
+  echo "afk-ralph.sh: failed to create $batch_branch" >&2
+  exit 1
+fi
+
+if ! git push -u origin "$batch_branch"; then
+  echo "afk-ralph.sh: failed to push $batch_branch to origin" >&2
+  exit 1
+fi
+
+base_branch="$batch_branch"
+
+mkdir -p "$RUN_DIR"
 log_file="$RUN_DIR/$ts.log"
 
 echo "[afk-ralph] base=$base_branch  max_iter=$max_iter  log=$log_file" | tee -a "$log_file"
+echo "[afk-ralph] When the loop finishes, open the release-candidate PR with:" | tee -a "$log_file"
+echo "[afk-ralph]   gh pr create --base $current_branch --head $batch_branch --title 'feat: ralph batch $ts (release candidate)'" | tee -a "$log_file"
 
 # ---------------------------------------------------------------------------
 # Loop

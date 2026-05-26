@@ -141,6 +141,13 @@ Use this until you trust the prompt and the loops on your machine.
 ./tools/ralph/afk-ralph.sh 30 --sleep 5 # up to 30, 5s between iterations
 ```
 
+**Batch (integration) branch.** At startup `afk-ralph.sh` creates
+`ralph/batch/<UTC-timestamp>` from the current branch and pushes it to origin. Every
+per-task PR Ralph opens targets that integration branch (not `main`). When the loop
+finishes you review the stack of small PRs, then open a single release-candidate PR
+from `ralph/batch/<ts>` → original branch. The exact `gh pr create --base ...` command
+for the release-candidate PR is printed at startup and tee'd to the run log.
+
 Each iteration's full output is tee'd to `.ralph/runs/<timestamp>.log`. The driver stops
 on any of:
 
@@ -180,6 +187,20 @@ Manual invocations:
 ./tools/ralph/feedback.sh --base main   # everything since main
 ./tools/ralph/feedback.sh --all         # full suite at repo root
 ```
+
+## VGV review pass
+
+After `feedback.sh` is green and before committing, Ralph mirrors `/build` Phase 3 and
+dispatches five VGV review agents in parallel — `@vgv-review-agent`,
+`@code-simplicity-review-agent`, `@test-quality-review-agent`, `@architecture-review-agent`,
+`@pr-readiness-review-agent`. Each writes a report under `docs/reviews/` (gitignored,
+deleted at end of iteration). Findings are bucketed Critical / Important / Suggestions;
+Critical is fixed in the same commit; Important and Suggestions surface in the PR body
+under "Review notes". See `tools/ralph/AGENTS.md` for the full contract.
+
+After the per-task PR is opened, Ralph also runs the `/review` skill against the new PR
+number as a defensive pass on the diff a human would see. Blocking findings are fixed
+on the same branch and pushed; non-blocking ones are appended to the PR body.
 
 ## Troubleshooting
 

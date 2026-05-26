@@ -68,6 +68,34 @@ disable a check to make it pass. Never lower `--min-coverage`.
   line-coverage rule on the changed package, excluding `lib/main.dart`.
 - **No Dart formatter** — formatting is owned by the developer. Never run `dart format`.
 
+## VGV review agents (post-feedback, pre-commit)
+
+After `feedback.sh` is green and BEFORE committing, Ralph dispatches the same five review
+agents that `/build` runs in Phase 3. All five are launched **in a single message with
+parallel tool calls** so they execute concurrently. Each writes a markdown report under
+`docs/reviews/`:
+
+| Agent | Report file | Focus |
+|-------|-------------|-------|
+| `@vgv-review-agent` | `docs/reviews/vgv-review.md` | VGV engineering standards (architecture, state, tests, simplicity) |
+| `@code-simplicity-review-agent` | `docs/reviews/code-simplicity-review.md` | YAGNI, premature abstraction, dead code |
+| `@test-quality-review-agent` | `docs/reviews/test-quality-review.md` | Coverage gaps, tautological assertions, mocking misuse |
+| `@architecture-review-agent` | `docs/reviews/architecture-review.md` | Layer separation, dependency direction, provider wiring |
+| `@pr-readiness-review-agent` | `docs/reviews/pr-readiness-review.md` | Formatting, static analysis, debug artifacts, commit hygiene |
+
+After all five complete, consolidate into three buckets:
+
+- **Critical** (must fix this iteration) — bugs, missing tests, layer violations, broken
+  analysis. Read the specific report file for details, fix, re-run `feedback.sh`, then
+  commit the fixes alongside the implementation.
+- **Important** (should fix) — convention deviations, naming, test gaps. Fix if cheap;
+  otherwise capture in the PR body under "Review notes".
+- **Suggestions** — record in the PR body only.
+
+Only read a review report when it contains Critical findings — do not load all five into
+context. After fixes are committed, delete `docs/reviews/` (it is transient workspace
+state and never committed).
+
 ## Commit conventions
 
 Required format (from CLAUDE.md):
@@ -100,20 +128,32 @@ Never `--amend`, never `--no-verify`, never `--force` push.
 
 ## Branch hygiene
 
-Ralph creates **one branch per task** from the base branch (usually `main`).
-Branch name format: `gh-NNN-short-description`.
+Ralph creates **one branch per task** from the base branch. Branch name format:
+`gh-NNN-short-description`. The base branch is supplied in the iteration prompt as
+`Base branch:` and is **never `main` directly**:
+
+- **AFK mode (`afk-ralph.sh`)** — the driver creates an integration branch
+  `ralph/batch/<UTC-timestamp>` from the current branch and pushes it to origin
+  before the first iteration. All per-task branches are `gh-NNN-*` off the batch
+  branch, and each PR targets the batch branch via `gh pr create --base`. After the
+  loop finishes the dev opens **one** release-candidate PR from the batch branch to
+  the original branch (usually `main`) — the command is printed at startup and logged.
+- **HITL mode (`ralph-once.sh`)** — the base branch is whatever branch the dev was
+  on when invoking the script. The single per-task PR targets that branch.
 
 Per-iteration flow:
 1. Pick task (`GH-NNN`).
-2. `git checkout -b gh-NNN-short-description` from the base branch.
+2. `git checkout "$BASE_BRANCH" && git checkout -b gh-NNN-short-description`.
    - If the branch already exists (retry): `git checkout gh-NNN-short-description`
 3. Implement + run feedback loops.
-4. Commit.
-5. `git push -u origin gh-NNN-short-description`
-6. `gh pr create ...` (links to `Closes #NNN`)
-7. `git checkout <base-branch>` — return to base before the next iteration.
+4. Run the five VGV review agents in parallel. Fix Critical findings. Delete `docs/reviews/`.
+5. Commit.
+6. `git push -u origin gh-NNN-short-description`
+7. `gh pr create --base "$BASE_BRANCH" ...` (links to `Closes #NNN`)
+8. **`/review`** the freshly opened PR. Fix blockers; push fixes. Edit PR body for non-blockers.
+9. `git checkout "$BASE_BRANCH"` — return to base before the next iteration.
 
-Never commit directly to `main`.
+Never commit directly to `main`. Never open a PR with `--base main` from inside an iteration.
 
 ## Session state
 
