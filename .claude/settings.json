@@ -42,7 +42,12 @@
       "Read(//Users/arthurmonteiroalvesmelo/.claude/plugins/cache/**)",
       "Bash(bash -n tools/ralph/afk-ralph.sh)",
       "Bash(command -v shellcheck)",
-      "Bash(shellcheck tools/ralph/afk-ralph.sh)"
+      "Bash(shellcheck tools/ralph/afk-ralph.sh)",
+      "Bash(gh issue create --repo 4rthurmonteiro/onebit-dice --title 'feat: e07 presets screen' --label ready-for-agent --label priority:high --body ' *)",
+      "Bash(gh issue create --repo 4rthurmonteiro/onebit-dice --title 'feat: e12 dice roll animations' --label ready-for-agent --label priority:normal --body ' *)",
+      "Bash(gh issue create --repo 4rthurmonteiro/onebit-dice --title 'feat: e06 history screen' --label ready-for-agent --label priority:low --body ' *)",
+      "Bash(gh issue *)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }
