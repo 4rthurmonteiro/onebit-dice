@@ -83,9 +83,14 @@
 
 ## EPIC 5 — Core: Analytics & Crash Reporting
 
-- [ ] 5.1 `lib/core/analytics/analytics_service.dart` — todos os 9 eventos do roadmap
-- [ ] 5.2 Atualizar `lib/main.dart` — `Firebase.initializeApp` + Crashlytics `FlutterError.onError`
-- [ ] 5.3 `test/core/analytics/analytics_service_test.dart` — mock `FirebaseAnalytics`
+> Nota: bundled com **0.6 Firebase setup** (`[!]` BLOCKED). Faz pouco sentido
+> implementar a `AnalyticsService` antes de o Firebase estar configurado —
+> o plano completo (interfaces No-Op/Firebase, 9 call sites, hooks de
+> Crashlytics) deve ser elaborado e executado quando 0.6 desbloquear.
+
+- [!] 5.1 `lib/core/analytics/analytics_service.dart` — bundled com 0.6
+- [!] 5.2 Atualizar `lib/main.dart` — `Firebase.initializeApp` + Crashlytics `FlutterError.onError`
+- [!] 5.3 `test/core/analytics/analytics_service_test.dart` — bundled com 0.6
 
 ---
 
