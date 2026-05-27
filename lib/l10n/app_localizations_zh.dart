@@ -63,31 +63,49 @@ class AppLocalizationsZh extends AppLocalizations {
   String get historyClearConfirmBody => '这将删除所有已记录的投掷。';
 
   @override
-  String get presetsSectionClassic => '经典游戏';
+  String get presetsSectionBuiltIn => '游戏';
 
   @override
-  String get presetsSectionCustom => '自定义';
+  String get presetsSectionCustom => '我的预设';
 
   @override
-  String get presetLudo => 'Ludo';
+  String get presetsAddNew => '+ 新建';
 
   @override
-  String get presetWar => 'War';
+  String get presetsSheetTitle => '新建预设';
 
   @override
-  String get presetYahtzee => 'Yahtzee';
+  String get presetsSheetNameLabel => '名称';
 
   @override
-  String get presetCraps => 'Craps';
+  String get presetsSheetDiceLabel => '骰子';
 
   @override
-  String get presetBunco => 'Bunco';
+  String get presetsSheetCountLabel => '数量';
 
   @override
-  String get presetFarkle => 'Farkle';
+  String get presetsSheetSave => '保存';
 
   @override
-  String get presetLiarsDice => 'Liar\'s Dice';
+  String get presetBuiltInLudo => 'Ludo';
+
+  @override
+  String get presetBuiltInBancoImobiliario => 'Banco Imobiliário';
+
+  @override
+  String get presetBuiltInWar => 'War';
+
+  @override
+  String get presetBuiltInYahtzee => 'Yahtzee';
+
+  @override
+  String get presetBuiltInDndAtaque => 'D&D 攻击';
+
+  @override
+  String get presetBuiltInMagicVida => '万智牌 生命';
+
+  @override
+  String get presetBuiltInPercentil => '百分位';
 
   @override
   String get settingsSectionAppearance => '外观';
@@ -245,31 +263,49 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   String get historyClearConfirmBody => '这将删除所有已记录的投掷。';
 
   @override
-  String get presetsSectionClassic => '经典游戏';
+  String get presetsSectionBuiltIn => '游戏';
 
   @override
-  String get presetsSectionCustom => '自定义';
+  String get presetsSectionCustom => '我的预设';
 
   @override
-  String get presetLudo => 'Ludo';
+  String get presetsAddNew => '+ 新建';
 
   @override
-  String get presetWar => 'War';
+  String get presetsSheetTitle => '新建预设';
 
   @override
-  String get presetYahtzee => 'Yahtzee';
+  String get presetsSheetNameLabel => '名称';
 
   @override
-  String get presetCraps => 'Craps';
+  String get presetsSheetDiceLabel => '骰子';
 
   @override
-  String get presetBunco => 'Bunco';
+  String get presetsSheetCountLabel => '数量';
 
   @override
-  String get presetFarkle => 'Farkle';
+  String get presetsSheetSave => '保存';
 
   @override
-  String get presetLiarsDice => 'Liar\'s Dice';
+  String get presetBuiltInLudo => 'Ludo';
+
+  @override
+  String get presetBuiltInBancoImobiliario => 'Banco Imobiliário';
+
+  @override
+  String get presetBuiltInWar => 'War';
+
+  @override
+  String get presetBuiltInYahtzee => 'Yahtzee';
+
+  @override
+  String get presetBuiltInDndAtaque => 'D&D 攻击';
+
+  @override
+  String get presetBuiltInMagicVida => '万智牌 生命';
+
+  @override
+  String get presetBuiltInPercentil => '百分位';
 
   @override
   String get settingsSectionAppearance => '外观';

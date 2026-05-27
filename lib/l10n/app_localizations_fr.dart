@@ -65,31 +65,49 @@ class AppLocalizationsFr extends AppLocalizations {
       'Cela supprime tous les lancers enregistrés.';
 
   @override
-  String get presetsSectionClassic => 'Jeux Classiques';
+  String get presetsSectionBuiltIn => 'Jeux';
 
   @override
-  String get presetsSectionCustom => 'Personnalisés';
+  String get presetsSectionCustom => 'Mes presets';
 
   @override
-  String get presetLudo => 'Ludo';
+  String get presetsAddNew => '+ NOUVEAU';
 
   @override
-  String get presetWar => 'War';
+  String get presetsSheetTitle => 'Nouveau preset';
 
   @override
-  String get presetYahtzee => 'Yahtzee';
+  String get presetsSheetNameLabel => 'Nom';
 
   @override
-  String get presetCraps => 'Craps';
+  String get presetsSheetDiceLabel => 'Dé';
 
   @override
-  String get presetBunco => 'Bunco';
+  String get presetsSheetCountLabel => 'Quantité';
 
   @override
-  String get presetFarkle => 'Farkle';
+  String get presetsSheetSave => 'Enregistrer';
 
   @override
-  String get presetLiarsDice => 'Liar\'s Dice';
+  String get presetBuiltInLudo => 'Ludo';
+
+  @override
+  String get presetBuiltInBancoImobiliario => 'Banco Imobiliário';
+
+  @override
+  String get presetBuiltInWar => 'War';
+
+  @override
+  String get presetBuiltInYahtzee => 'Yahtzee';
+
+  @override
+  String get presetBuiltInDndAtaque => 'D&D Attaque';
+
+  @override
+  String get presetBuiltInMagicVida => 'Magic Vie';
+
+  @override
+  String get presetBuiltInPercentil => 'Percentile';
 
   @override
   String get settingsSectionAppearance => 'Apparence';

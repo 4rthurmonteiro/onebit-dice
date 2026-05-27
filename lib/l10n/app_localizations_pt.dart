@@ -65,31 +65,49 @@ class AppLocalizationsPt extends AppLocalizations {
       'Isso apaga todas as rolagens registradas.';
 
   @override
-  String get presetsSectionClassic => 'Jogos Clássicos';
+  String get presetsSectionBuiltIn => 'Jogos';
 
   @override
-  String get presetsSectionCustom => 'Personalizados';
+  String get presetsSectionCustom => 'Meus presets';
 
   @override
-  String get presetLudo => 'Ludo';
+  String get presetsAddNew => '+ NOVO';
 
   @override
-  String get presetWar => 'War';
+  String get presetsSheetTitle => 'Novo preset';
 
   @override
-  String get presetYahtzee => 'Yahtzee';
+  String get presetsSheetNameLabel => 'Nome';
 
   @override
-  String get presetCraps => 'Craps';
+  String get presetsSheetDiceLabel => 'Dado';
 
   @override
-  String get presetBunco => 'Bunco';
+  String get presetsSheetCountLabel => 'Quantidade';
 
   @override
-  String get presetFarkle => 'Farkle';
+  String get presetsSheetSave => 'Salvar';
 
   @override
-  String get presetLiarsDice => 'Liar\'s Dice';
+  String get presetBuiltInLudo => 'Ludo';
+
+  @override
+  String get presetBuiltInBancoImobiliario => 'Banco Imobiliário';
+
+  @override
+  String get presetBuiltInWar => 'War';
+
+  @override
+  String get presetBuiltInYahtzee => 'Yahtzee';
+
+  @override
+  String get presetBuiltInDndAtaque => 'D&D Ataque';
+
+  @override
+  String get presetBuiltInMagicVida => 'Magic Vida';
+
+  @override
+  String get presetBuiltInPercentil => 'Percentil';
 
   @override
   String get settingsSectionAppearance => 'Aparência';
@@ -249,31 +267,49 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Isso apaga todas as rolagens registradas.';
 
   @override
-  String get presetsSectionClassic => 'Jogos Clássicos';
+  String get presetsSectionBuiltIn => 'Jogos';
 
   @override
-  String get presetsSectionCustom => 'Personalizados';
+  String get presetsSectionCustom => 'Meus presets';
 
   @override
-  String get presetLudo => 'Ludo';
+  String get presetsAddNew => '+ NOVO';
 
   @override
-  String get presetWar => 'War';
+  String get presetsSheetTitle => 'Novo preset';
 
   @override
-  String get presetYahtzee => 'Yahtzee';
+  String get presetsSheetNameLabel => 'Nome';
 
   @override
-  String get presetCraps => 'Craps';
+  String get presetsSheetDiceLabel => 'Dado';
 
   @override
-  String get presetBunco => 'Bunco';
+  String get presetsSheetCountLabel => 'Quantidade';
 
   @override
-  String get presetFarkle => 'Farkle';
+  String get presetsSheetSave => 'Salvar';
 
   @override
-  String get presetLiarsDice => 'Liar\'s Dice';
+  String get presetBuiltInLudo => 'Ludo';
+
+  @override
+  String get presetBuiltInBancoImobiliario => 'Banco Imobiliário';
+
+  @override
+  String get presetBuiltInWar => 'War';
+
+  @override
+  String get presetBuiltInYahtzee => 'Yahtzee';
+
+  @override
+  String get presetBuiltInDndAtaque => 'D&D Ataque';
+
+  @override
+  String get presetBuiltInMagicVida => 'Magic Vida';
+
+  @override
+  String get presetBuiltInPercentil => 'Percentil';
 
   @override
   String get settingsSectionAppearance => 'Aparência';
