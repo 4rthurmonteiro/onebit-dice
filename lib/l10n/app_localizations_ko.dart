@@ -130,4 +130,58 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsTitle => '설정';
+
+  @override
+  String get settingsToggleSound => '소리';
+
+  @override
+  String get settingsToggleHaptic => '진동';
+
+  @override
+  String get settingsAnimationStyleLabel => '스타일';
+
+  @override
+  String get settingsAnimationStyleFast => '빠름';
+
+  @override
+  String get settingsAnimationStyleDrum => '드럼';
+
+  @override
+  String get settingsAnimationStyleTabletop => '테이블';
+
+  @override
+  String get settingsAnimationSpeedLabel => '속도';
+
+  @override
+  String get settingsAnimationSpeedFast => '빠름';
+
+  @override
+  String get settingsAnimationSpeedMedium => '중간';
+
+  @override
+  String get settingsAnimationSpeedSlow => '느림';
+
+  @override
+  String get settingsAboutVersion => '버전';
+
+  @override
+  String get paletteMacClassic => 'Mac Classic';
+
+  @override
+  String get paletteMacBeige => 'Mac Beige';
+
+  @override
+  String get paletteGameBoy => 'Game Boy DMG';
+
+  @override
+  String get paletteC64 => 'Commodore 64';
+
+  @override
+  String get paletteZxSpectrum => 'ZX Spectrum';
+
+  @override
+  String get paletteAppleIIGreen => 'Apple II Green';
+
+  @override
+  String get paletteAppleIIeAmber => 'Apple //e Amber';
 }

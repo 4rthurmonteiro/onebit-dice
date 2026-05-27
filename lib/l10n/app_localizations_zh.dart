@@ -130,6 +130,60 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsTitle => '设置';
+
+  @override
+  String get settingsToggleSound => '声音';
+
+  @override
+  String get settingsToggleHaptic => '振动';
+
+  @override
+  String get settingsAnimationStyleLabel => '风格';
+
+  @override
+  String get settingsAnimationStyleFast => '快速';
+
+  @override
+  String get settingsAnimationStyleDrum => '鼓动';
+
+  @override
+  String get settingsAnimationStyleTabletop => '桌面';
+
+  @override
+  String get settingsAnimationSpeedLabel => '速度';
+
+  @override
+  String get settingsAnimationSpeedFast => '快';
+
+  @override
+  String get settingsAnimationSpeedMedium => '中';
+
+  @override
+  String get settingsAnimationSpeedSlow => '慢';
+
+  @override
+  String get settingsAboutVersion => '版本';
+
+  @override
+  String get paletteMacClassic => 'Mac Classic';
+
+  @override
+  String get paletteMacBeige => 'Mac Beige';
+
+  @override
+  String get paletteGameBoy => 'Game Boy DMG';
+
+  @override
+  String get paletteC64 => 'Commodore 64';
+
+  @override
+  String get paletteZxSpectrum => 'ZX Spectrum';
+
+  @override
+  String get paletteAppleIIGreen => 'Apple II Green';
+
+  @override
+  String get paletteAppleIIeAmber => 'Apple //e Amber';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hans`).
@@ -258,4 +312,58 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
 
   @override
   String get settingsTitle => '设置';
+
+  @override
+  String get settingsToggleSound => '声音';
+
+  @override
+  String get settingsToggleHaptic => '振动';
+
+  @override
+  String get settingsAnimationStyleLabel => '风格';
+
+  @override
+  String get settingsAnimationStyleFast => '快速';
+
+  @override
+  String get settingsAnimationStyleDrum => '鼓动';
+
+  @override
+  String get settingsAnimationStyleTabletop => '桌面';
+
+  @override
+  String get settingsAnimationSpeedLabel => '速度';
+
+  @override
+  String get settingsAnimationSpeedFast => '快';
+
+  @override
+  String get settingsAnimationSpeedMedium => '中';
+
+  @override
+  String get settingsAnimationSpeedSlow => '慢';
+
+  @override
+  String get settingsAboutVersion => '版本';
+
+  @override
+  String get paletteMacClassic => 'Mac Classic';
+
+  @override
+  String get paletteMacBeige => 'Mac Beige';
+
+  @override
+  String get paletteGameBoy => 'Game Boy DMG';
+
+  @override
+  String get paletteC64 => 'Commodore 64';
+
+  @override
+  String get paletteZxSpectrum => 'ZX Spectrum';
+
+  @override
+  String get paletteAppleIIGreen => 'Apple II Green';
+
+  @override
+  String get paletteAppleIIeAmber => 'Apple //e Amber';
 }

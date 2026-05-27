@@ -343,6 +343,114 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Ajustes'**
   String get settingsTitle;
+
+  /// Toggle label for SFX in Settings > Feedback
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Som'**
+  String get settingsToggleSound;
+
+  /// Toggle label for haptic feedback in Settings > Feedback
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Vibração'**
+  String get settingsToggleHaptic;
+
+  /// Group label for animation style radios in Settings > Animation
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Estilo'**
+  String get settingsAnimationStyleLabel;
+
+  /// Animation style — result appears instantly
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Rápida'**
+  String get settingsAnimationStyleFast;
+
+  /// Animation style — short drum-roll-style shake
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Tambor'**
+  String get settingsAnimationStyleDrum;
+
+  /// Animation style — long tabletop-style roll
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Tabuleiro'**
+  String get settingsAnimationStyleTabletop;
+
+  /// Group label for animation speed radios in Settings > Animation
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Velocidade'**
+  String get settingsAnimationSpeedLabel;
+
+  /// Animation speed — short duration
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Rápido'**
+  String get settingsAnimationSpeedFast;
+
+  /// Animation speed — medium duration
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Médio'**
+  String get settingsAnimationSpeedMedium;
+
+  /// Animation speed — long duration
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Longo'**
+  String get settingsAnimationSpeedSlow;
+
+  /// Label preceding the app version in Settings > About
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Versão'**
+  String get settingsAboutVersion;
+
+  /// Palette name — Mac Classic (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Mac Classic'**
+  String get paletteMacClassic;
+
+  /// Palette name — Mac Beige (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Mac Beige'**
+  String get paletteMacBeige;
+
+  /// Palette name — Game Boy DMG (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Game Boy DMG'**
+  String get paletteGameBoy;
+
+  /// Palette name — Commodore 64 (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Commodore 64'**
+  String get paletteC64;
+
+  /// Palette name — ZX Spectrum (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'ZX Spectrum'**
+  String get paletteZxSpectrum;
+
+  /// Palette name — Apple II Green (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Apple II Green'**
+  String get paletteAppleIIGreen;
+
+  /// Palette name — Apple //e Amber (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Apple //e Amber'**
+  String get paletteAppleIIeAmber;
 }
 
 class _AppLocalizationsDelegate
