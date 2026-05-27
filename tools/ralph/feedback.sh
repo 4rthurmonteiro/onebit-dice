@@ -58,7 +58,7 @@ flutter_cmd() {
 }
 
 # Coverage exclusions per CLAUDE.md: lib/main.dart is excluded; any future *.g.dart too.
-coverage_excludes='lib/main.dart,**/*.g.dart'
+coverage_excludes='{lib/main.dart,**/*.g.dart,lib/l10n/app_localizations*.dart}'
 
 run_flutter_analyze() {
   local flutter
@@ -83,8 +83,13 @@ run_coverage_tests() {
     record_failure "very_good:missing"
     return 1
   fi
-  log "very_good test --coverage --min-coverage 100 (excludes: $coverage_excludes)"
-  if ! (cd "$REPO_ROOT" && very_good test --coverage --min-coverage 100 --exclude-coverage "$coverage_excludes"); then
+  log "very_good test --no-optimization --coverage --min-coverage 100 (excludes: $coverage_excludes)"
+  # --no-optimization avoids a flake where the bundled test optimizer leaks
+  # global state (SharedPreferences mock messenger handlers etc.) between
+  # tests, breaking the first MaterialApp pump that uses
+  # AppLocalizations.localizationsDelegates after the locale-preference tests
+  # run. Each test file runs in its own isolate, which is slower but reliable.
+  if ! (cd "$REPO_ROOT" && very_good test --no-optimization --coverage --min-coverage 100 --exclude-coverage "$coverage_excludes"); then
     fail "very_good test failed (analyze or coverage gate)"
     record_failure "very-good-test"
   else

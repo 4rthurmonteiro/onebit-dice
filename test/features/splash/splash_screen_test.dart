@@ -174,12 +174,15 @@ void main() {
       );
       await _pump(
         tester,
-        MaterialApp.router(
-          locale: const Locale('en'),
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          theme: buildThemeData(Palette.of(PaletteId.macClassic)),
-          routerConfig: router,
+        Provider<HistoryRepository>(
+          create: (_) => InMemoryHistoryRepository(),
+          child: MaterialApp.router(
+            locale: const Locale('en'),
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            theme: buildThemeData(Palette.of(PaletteId.macClassic)),
+            routerConfig: router,
+          ),
         ),
       );
       await tester.pumpAndSettle();
