@@ -65,31 +65,49 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dies löscht alle aufgezeichneten Würfe.';
 
   @override
-  String get presetsSectionClassic => 'Klassische Spiele';
+  String get presetsSectionBuiltIn => 'Spiele';
 
   @override
-  String get presetsSectionCustom => 'Benutzerdefiniert';
+  String get presetsSectionCustom => 'Meine Presets';
 
   @override
-  String get presetLudo => 'Ludo';
+  String get presetsAddNew => '+ NEU';
 
   @override
-  String get presetWar => 'War';
+  String get presetsSheetTitle => 'Neues Preset';
 
   @override
-  String get presetYahtzee => 'Yahtzee';
+  String get presetsSheetNameLabel => 'Name';
 
   @override
-  String get presetCraps => 'Craps';
+  String get presetsSheetDiceLabel => 'Würfel';
 
   @override
-  String get presetBunco => 'Bunco';
+  String get presetsSheetCountLabel => 'Anzahl';
 
   @override
-  String get presetFarkle => 'Farkle';
+  String get presetsSheetSave => 'Speichern';
 
   @override
-  String get presetLiarsDice => 'Liar\'s Dice';
+  String get presetBuiltInLudo => 'Ludo';
+
+  @override
+  String get presetBuiltInBancoImobiliario => 'Banco Imobiliário';
+
+  @override
+  String get presetBuiltInWar => 'War';
+
+  @override
+  String get presetBuiltInYahtzee => 'Yahtzee';
+
+  @override
+  String get presetBuiltInDndAtaque => 'D&D Attacke';
+
+  @override
+  String get presetBuiltInMagicVida => 'Magic Leben';
+
+  @override
+  String get presetBuiltInPercentil => 'Perzentil';
 
   @override
   String get settingsSectionAppearance => 'Darstellung';

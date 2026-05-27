@@ -63,31 +63,49 @@ class AppLocalizationsKo extends AppLocalizations {
   String get historyClearConfirmBody => '기록된 모든 굴림이 삭제됩니다.';
 
   @override
-  String get presetsSectionClassic => '클래식 게임';
+  String get presetsSectionBuiltIn => '게임';
 
   @override
-  String get presetsSectionCustom => '사용자 지정';
+  String get presetsSectionCustom => '내 프리셋';
 
   @override
-  String get presetLudo => 'Ludo';
+  String get presetsAddNew => '+ 새로 만들기';
 
   @override
-  String get presetWar => 'War';
+  String get presetsSheetTitle => '새 프리셋';
 
   @override
-  String get presetYahtzee => 'Yahtzee';
+  String get presetsSheetNameLabel => '이름';
 
   @override
-  String get presetCraps => 'Craps';
+  String get presetsSheetDiceLabel => '주사위';
 
   @override
-  String get presetBunco => 'Bunco';
+  String get presetsSheetCountLabel => '개수';
 
   @override
-  String get presetFarkle => 'Farkle';
+  String get presetsSheetSave => '저장';
 
   @override
-  String get presetLiarsDice => 'Liar\'s Dice';
+  String get presetBuiltInLudo => 'Ludo';
+
+  @override
+  String get presetBuiltInBancoImobiliario => 'Banco Imobiliário';
+
+  @override
+  String get presetBuiltInWar => 'War';
+
+  @override
+  String get presetBuiltInYahtzee => 'Yahtzee';
+
+  @override
+  String get presetBuiltInDndAtaque => 'D&D 공격';
+
+  @override
+  String get presetBuiltInMagicVida => 'Magic 라이프';
+
+  @override
+  String get presetBuiltInPercentil => '퍼센타일';
 
   @override
   String get settingsSectionAppearance => '테마';

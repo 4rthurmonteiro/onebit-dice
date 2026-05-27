@@ -111,6 +111,26 @@ class DiceController extends ChangeNotifier {
     );
   }
 
+  /// Applies an external config atomically — used by the preset tap flow so
+  /// the type/count change is a single [notifyListeners] + a single
+  /// [LastDiceConfigPreference.write].
+  ///
+  /// [count] is clamped to `1..10`. No-op when both fields already match.
+  Future<void> applyConfig({
+    required DiceType diceType,
+    required int count,
+  }) async {
+    final clamped = count.clamp(1, 10);
+    if (diceType == _selectedType && clamped == _count) return;
+    _selectedType = diceType;
+    _count = clamped;
+    _lastResult = null;
+    notifyListeners();
+    await _lastDiceConfig.write(
+      LastDiceConfig(diceType: diceType, count: clamped),
+    );
+  }
+
   /// Rolls [count] dice of [selectedType], applies the side effects, and
   /// updates [lastResult].
   Future<void> roll() async {

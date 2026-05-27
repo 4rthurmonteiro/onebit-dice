@@ -63,31 +63,49 @@ class AppLocalizationsJa extends AppLocalizations {
   String get historyClearConfirmBody => '記録されたすべてのダイスのりれきが削除されます。';
 
   @override
-  String get presetsSectionClassic => 'クラシックゲーム';
+  String get presetsSectionBuiltIn => 'ゲーム';
 
   @override
-  String get presetsSectionCustom => 'カスタム';
+  String get presetsSectionCustom => 'マイプリセット';
 
   @override
-  String get presetLudo => 'Ludo';
+  String get presetsAddNew => '+ 新規';
 
   @override
-  String get presetWar => 'War';
+  String get presetsSheetTitle => '新しいプリセット';
 
   @override
-  String get presetYahtzee => 'Yahtzee';
+  String get presetsSheetNameLabel => '名前';
 
   @override
-  String get presetCraps => 'Craps';
+  String get presetsSheetDiceLabel => 'ダイス';
 
   @override
-  String get presetBunco => 'Bunco';
+  String get presetsSheetCountLabel => '数';
 
   @override
-  String get presetFarkle => 'Farkle';
+  String get presetsSheetSave => '保存';
 
   @override
-  String get presetLiarsDice => 'Liar\'s Dice';
+  String get presetBuiltInLudo => 'Ludo';
+
+  @override
+  String get presetBuiltInBancoImobiliario => 'Banco Imobiliário';
+
+  @override
+  String get presetBuiltInWar => 'War';
+
+  @override
+  String get presetBuiltInYahtzee => 'Yahtzee';
+
+  @override
+  String get presetBuiltInDndAtaque => 'D&D アタック';
+
+  @override
+  String get presetBuiltInMagicVida => 'Magic ライフ';
+
+  @override
+  String get presetBuiltInPercentil => 'パーセンタイル';
 
   @override
   String get settingsSectionAppearance => '外観';

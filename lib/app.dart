@@ -7,6 +7,7 @@ import 'package:onebit_dice/core/i18n/locale_controller.dart';
 import 'package:onebit_dice/core/i18n/supported_locales.dart';
 import 'package:onebit_dice/core/storage/history_repository.dart';
 import 'package:onebit_dice/core/storage/last_dice_config_preference.dart';
+import 'package:onebit_dice/core/storage/presets_repository.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/theme_provider.dart';
 import 'package:onebit_dice/features/dice/dice_controller.dart';
@@ -59,6 +60,7 @@ class App extends StatelessWidget {
           create: (_) => LocaleController(),
         ),
         Provider<HistoryRepository>(create: (_) => InMemoryHistoryRepository()),
+        Provider<PresetsRepository>(create: (_) => InMemoryPresetsRepository()),
         Provider<LastDiceConfigPreference>(
           create: (_) => InMemoryLastDiceConfigPreference(),
         ),

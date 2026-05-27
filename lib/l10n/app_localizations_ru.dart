@@ -66,31 +66,49 @@ class AppLocalizationsRu extends AppLocalizations {
   String get historyClearConfirmBody => 'Это удалит все записанные броски.';
 
   @override
-  String get presetsSectionClassic => 'Классические игры';
+  String get presetsSectionBuiltIn => 'Игры';
 
   @override
-  String get presetsSectionCustom => 'Пользовательские';
+  String get presetsSectionCustom => 'Мои пресеты';
 
   @override
-  String get presetLudo => 'Ludo';
+  String get presetsAddNew => '+ НОВЫЙ';
 
   @override
-  String get presetWar => 'War';
+  String get presetsSheetTitle => 'Новый пресет';
 
   @override
-  String get presetYahtzee => 'Yahtzee';
+  String get presetsSheetNameLabel => 'Имя';
 
   @override
-  String get presetCraps => 'Craps';
+  String get presetsSheetDiceLabel => 'Кубик';
 
   @override
-  String get presetBunco => 'Bunco';
+  String get presetsSheetCountLabel => 'Количество';
 
   @override
-  String get presetFarkle => 'Farkle';
+  String get presetsSheetSave => 'Сохранить';
 
   @override
-  String get presetLiarsDice => 'Liar\'s Dice';
+  String get presetBuiltInLudo => 'Ludo';
+
+  @override
+  String get presetBuiltInBancoImobiliario => 'Banco Imobiliário';
+
+  @override
+  String get presetBuiltInWar => 'War';
+
+  @override
+  String get presetBuiltInYahtzee => 'Yahtzee';
+
+  @override
+  String get presetBuiltInDndAtaque => 'D&D Атака';
+
+  @override
+  String get presetBuiltInMagicVida => 'Magic Жизнь';
+
+  @override
+  String get presetBuiltInPercentil => 'Процентиль';
 
   @override
   String get settingsSectionAppearance => 'Оформление';

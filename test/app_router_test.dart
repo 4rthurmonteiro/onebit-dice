@@ -8,6 +8,7 @@ import 'package:onebit_dice/core/haptic/haptic_controller.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/storage/history_repository.dart';
 import 'package:onebit_dice/core/storage/last_dice_config_preference.dart';
+import 'package:onebit_dice/core/storage/presets_repository.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
 import 'package:onebit_dice/features/dice/dice_controller.dart';
@@ -36,6 +37,7 @@ Widget _harness(GoRouter router) {
   return MultiProvider(
     providers: [
       Provider<HistoryRepository>(create: (_) => InMemoryHistoryRepository()),
+      Provider<PresetsRepository>(create: (_) => InMemoryPresetsRepository()),
       Provider<LastDiceConfigPreference>(
         create: (_) => InMemoryLastDiceConfigPreference(),
       ),

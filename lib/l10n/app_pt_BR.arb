@@ -76,41 +76,65 @@
     "description": "Body of the confirm dialog when clearing history"
   },
 
-  "presetsSectionClassic": "Jogos Clássicos",
-  "@presetsSectionClassic": {
-    "description": "Section header for built-in classic-game presets"
+  "presetsSectionBuiltIn": "Jogos",
+  "@presetsSectionBuiltIn": {
+    "description": "Section header for the 7 built-in dice presets"
   },
-  "presetsSectionCustom": "Personalizados",
+  "presetsSectionCustom": "Meus presets",
   "@presetsSectionCustom": {
     "description": "Section header for user-created presets"
   },
-  "presetLudo": "Ludo",
-  "@presetLudo": {
-    "description": "Classic game name — kept untranslated"
+  "presetsAddNew": "+ NOVO",
+  "@presetsAddNew": {
+    "description": "Label for the button that opens the create-preset sheet"
   },
-  "presetWar": "War",
-  "@presetWar": {
-    "description": "Classic game name — kept untranslated"
+  "presetsSheetTitle": "Novo preset",
+  "@presetsSheetTitle": {
+    "description": "Title of the create-preset bottom sheet"
   },
-  "presetYahtzee": "Yahtzee",
-  "@presetYahtzee": {
-    "description": "Classic game name — kept untranslated"
+  "presetsSheetNameLabel": "Nome",
+  "@presetsSheetNameLabel": {
+    "description": "Field label for the preset name input"
   },
-  "presetCraps": "Craps",
-  "@presetCraps": {
-    "description": "Classic game name — kept untranslated"
+  "presetsSheetDiceLabel": "Dado",
+  "@presetsSheetDiceLabel": {
+    "description": "Field label for the dice-type chip group"
   },
-  "presetBunco": "Bunco",
-  "@presetBunco": {
-    "description": "Classic game name — kept untranslated"
+  "presetsSheetCountLabel": "Quantidade",
+  "@presetsSheetCountLabel": {
+    "description": "Field label for the dice-count stepper"
   },
-  "presetFarkle": "Farkle",
-  "@presetFarkle": {
-    "description": "Classic game name — kept untranslated"
+  "presetsSheetSave": "Salvar",
+  "@presetsSheetSave": {
+    "description": "Save action in the create-preset sheet"
   },
-  "presetLiarsDice": "Liar's Dice",
-  "@presetLiarsDice": {
-    "description": "Classic game name — kept untranslated"
+  "presetBuiltInLudo": "Ludo",
+  "@presetBuiltInLudo": {
+    "description": "Built-in preset name — Ludo (1×D6)"
+  },
+  "presetBuiltInBancoImobiliario": "Banco Imobiliário",
+  "@presetBuiltInBancoImobiliario": {
+    "description": "Built-in preset name — Banco Imobiliário (2×D6)"
+  },
+  "presetBuiltInWar": "War",
+  "@presetBuiltInWar": {
+    "description": "Built-in preset name — War (3×D6)"
+  },
+  "presetBuiltInYahtzee": "Yahtzee",
+  "@presetBuiltInYahtzee": {
+    "description": "Built-in preset name — Yahtzee (5×D6)"
+  },
+  "presetBuiltInDndAtaque": "D&D Ataque",
+  "@presetBuiltInDndAtaque": {
+    "description": "Built-in preset name — D&D Ataque (1×D20)"
+  },
+  "presetBuiltInMagicVida": "Magic Vida",
+  "@presetBuiltInMagicVida": {
+    "description": "Built-in preset name — Magic Vida (1×D20)"
+  },
+  "presetBuiltInPercentil": "Percentil",
+  "@presetBuiltInPercentil": {
+    "description": "Built-in preset name — Percentil (1×D100)"
   },
 
   "settingsSectionAppearance": "Aparência",

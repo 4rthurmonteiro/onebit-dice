@@ -206,59 +206,95 @@ abstract class AppLocalizations {
   /// **'Isso apaga todas as rolagens registradas.'**
   String get historyClearConfirmBody;
 
-  /// Section header for built-in classic-game presets
+  /// Section header for the 7 built-in dice presets
   ///
   /// In pt_BR, this message translates to:
-  /// **'Jogos Clássicos'**
-  String get presetsSectionClassic;
+  /// **'Jogos'**
+  String get presetsSectionBuiltIn;
 
   /// Section header for user-created presets
   ///
   /// In pt_BR, this message translates to:
-  /// **'Personalizados'**
+  /// **'Meus presets'**
   String get presetsSectionCustom;
 
-  /// Classic game name — kept untranslated
+  /// Label for the button that opens the create-preset sheet
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'+ NOVO'**
+  String get presetsAddNew;
+
+  /// Title of the create-preset bottom sheet
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Novo preset'**
+  String get presetsSheetTitle;
+
+  /// Field label for the preset name input
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nome'**
+  String get presetsSheetNameLabel;
+
+  /// Field label for the dice-type chip group
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Dado'**
+  String get presetsSheetDiceLabel;
+
+  /// Field label for the dice-count stepper
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Quantidade'**
+  String get presetsSheetCountLabel;
+
+  /// Save action in the create-preset sheet
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Salvar'**
+  String get presetsSheetSave;
+
+  /// Built-in preset name — Ludo (1×D6)
   ///
   /// In pt_BR, this message translates to:
   /// **'Ludo'**
-  String get presetLudo;
+  String get presetBuiltInLudo;
 
-  /// Classic game name — kept untranslated
+  /// Built-in preset name — Banco Imobiliário (2×D6)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Banco Imobiliário'**
+  String get presetBuiltInBancoImobiliario;
+
+  /// Built-in preset name — War (3×D6)
   ///
   /// In pt_BR, this message translates to:
   /// **'War'**
-  String get presetWar;
+  String get presetBuiltInWar;
 
-  /// Classic game name — kept untranslated
+  /// Built-in preset name — Yahtzee (5×D6)
   ///
   /// In pt_BR, this message translates to:
   /// **'Yahtzee'**
-  String get presetYahtzee;
+  String get presetBuiltInYahtzee;
 
-  /// Classic game name — kept untranslated
+  /// Built-in preset name — D&D Ataque (1×D20)
   ///
   /// In pt_BR, this message translates to:
-  /// **'Craps'**
-  String get presetCraps;
+  /// **'D&D Ataque'**
+  String get presetBuiltInDndAtaque;
 
-  /// Classic game name — kept untranslated
+  /// Built-in preset name — Magic Vida (1×D20)
   ///
   /// In pt_BR, this message translates to:
-  /// **'Bunco'**
-  String get presetBunco;
+  /// **'Magic Vida'**
+  String get presetBuiltInMagicVida;
 
-  /// Classic game name — kept untranslated
+  /// Built-in preset name — Percentil (1×D100)
   ///
   /// In pt_BR, this message translates to:
-  /// **'Farkle'**
-  String get presetFarkle;
-
-  /// Classic game name — kept untranslated
-  ///
-  /// In pt_BR, this message translates to:
-  /// **'Liar\'s Dice'**
-  String get presetLiarsDice;
+  /// **'Percentil'**
+  String get presetBuiltInPercentil;
 
   /// Settings section: appearance
   ///
