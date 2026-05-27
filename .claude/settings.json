@@ -47,7 +47,17 @@
       "Bash(gh issue create --repo 4rthurmonteiro/onebit-dice --title 'feat: e12 dice roll animations' --label ready-for-agent --label priority:normal --body ' *)",
       "Bash(gh issue create --repo 4rthurmonteiro/onebit-dice --title 'feat: e06 history screen' --label ready-for-agent --label priority:low --body ' *)",
       "Bash(gh issue *)",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(bash tools/ralph/feedback.sh --all)",
+      "Bash(awk 'BEGIN{file=\"\"} /^SF:/{file=$0} /^LF:/{lf=$0} /^LH:/{lh=$0; print file, lh, lf}')",
+      "Bash(awk -F'[: ]' '{ratio = \\($4>0\\) ? $6*100/$4 : 100; printf \"%-80s %d/%d \\(%.1f%%\\)\\\\n\", $2, $6, $4, ratio}')",
+      "Bash(sort -k2 -t'\\(' -n)",
+      "Bash(awk '{split\\($2, a, \"/\"\\); if \\(a[1] != a[2]\\) print}')",
+      "Bash(find ~/.pub-cache -path \"*very_good_cli*\" -name \"*.dart\" 2>/dev/null | xargs grep -l \"exclude-coverage\\\\|excludeCoverage\" 2>/dev/null | head -3)",
+      "Read(//Users/arthurmonteiroalvesmelo/.pub-cache/**)",
+      "Bash(find /var/folders -name \".test_runner.dart\" 2>/dev/null | head -3; find /tmp -name \".test_runner.dart\" 2>/dev/null | head -3; find . -name \".test_runner.dart\" 2>/dev/null | head -3)",
+      "Read(//private/var/folders/**)",
+      "Read(//private/tmp/**)"
     ]
   }
 }

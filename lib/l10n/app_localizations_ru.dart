@@ -66,31 +66,49 @@ class AppLocalizationsRu extends AppLocalizations {
   String get historyClearConfirmBody => 'Это удалит все записанные броски.';
 
   @override
-  String get presetsSectionClassic => 'Классические игры';
+  String get presetsSectionBuiltIn => 'Игры';
 
   @override
-  String get presetsSectionCustom => 'Пользовательские';
+  String get presetsSectionCustom => 'Мои пресеты';
 
   @override
-  String get presetLudo => 'Ludo';
+  String get presetsAddNew => '+ НОВЫЙ';
 
   @override
-  String get presetWar => 'War';
+  String get presetsSheetTitle => 'Новый пресет';
 
   @override
-  String get presetYahtzee => 'Yahtzee';
+  String get presetsSheetNameLabel => 'Имя';
 
   @override
-  String get presetCraps => 'Craps';
+  String get presetsSheetDiceLabel => 'Кубик';
 
   @override
-  String get presetBunco => 'Bunco';
+  String get presetsSheetCountLabel => 'Количество';
 
   @override
-  String get presetFarkle => 'Farkle';
+  String get presetsSheetSave => 'Сохранить';
 
   @override
-  String get presetLiarsDice => 'Liar\'s Dice';
+  String get presetBuiltInLudo => 'Ludo';
+
+  @override
+  String get presetBuiltInBancoImobiliario => 'Banco Imobiliário';
+
+  @override
+  String get presetBuiltInWar => 'War';
+
+  @override
+  String get presetBuiltInYahtzee => 'Yahtzee';
+
+  @override
+  String get presetBuiltInDndAtaque => 'D&D Атака';
+
+  @override
+  String get presetBuiltInMagicVida => 'Magic Жизнь';
+
+  @override
+  String get presetBuiltInPercentil => 'Процентиль';
 
   @override
   String get settingsSectionAppearance => 'Оформление';
@@ -133,4 +151,58 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsTitle => 'Настройки';
+
+  @override
+  String get settingsToggleSound => 'Звук';
+
+  @override
+  String get settingsToggleHaptic => 'Вибрация';
+
+  @override
+  String get settingsAnimationStyleLabel => 'Стиль';
+
+  @override
+  String get settingsAnimationStyleFast => 'Быстрая';
+
+  @override
+  String get settingsAnimationStyleDrum => 'Барабан';
+
+  @override
+  String get settingsAnimationStyleTabletop => 'Стол';
+
+  @override
+  String get settingsAnimationSpeedLabel => 'Скорость';
+
+  @override
+  String get settingsAnimationSpeedFast => 'Быстро';
+
+  @override
+  String get settingsAnimationSpeedMedium => 'Средне';
+
+  @override
+  String get settingsAnimationSpeedSlow => 'Медленно';
+
+  @override
+  String get settingsAboutVersion => 'Версия';
+
+  @override
+  String get paletteMacClassic => 'Mac Classic';
+
+  @override
+  String get paletteMacBeige => 'Mac Beige';
+
+  @override
+  String get paletteGameBoy => 'Game Boy DMG';
+
+  @override
+  String get paletteC64 => 'Commodore 64';
+
+  @override
+  String get paletteZxSpectrum => 'ZX Spectrum';
+
+  @override
+  String get paletteAppleIIGreen => 'Apple II Green';
+
+  @override
+  String get paletteAppleIIeAmber => 'Apple //e Amber';
 }

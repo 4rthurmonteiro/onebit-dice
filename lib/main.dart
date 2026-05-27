@@ -3,6 +3,7 @@ import 'package:onebit_dice/app.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
+import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -12,7 +13,14 @@ Future<void> main() async {
   final audioController = AudioController(preference: appSettings);
   await audioController.init();
   final hapticController = HapticController(preference: appSettings);
+  final animationSettingsController = AnimationSettingsController(
+    preference: appSettings,
+  );
   runApp(
-    App(audioController: audioController, hapticController: hapticController),
+    App(
+      audioController: audioController,
+      hapticController: hapticController,
+      animationSettingsController: animationSettingsController,
+    ),
   );
 }

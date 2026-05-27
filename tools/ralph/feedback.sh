@@ -57,8 +57,10 @@ flutter_cmd() {
   fi
 }
 
-# Coverage exclusions per CLAUDE.md: lib/main.dart is excluded; any future *.g.dart too.
-coverage_excludes='lib/main.dart,**/*.g.dart'
+# Coverage exclusions per CLAUDE.md: lib/main.dart is excluded; any future *.g.dart
+# too. Generated AppLocalizations* files mirror the CI workflow exclusion.
+# `very_good test --exclude-coverage` takes ONE glob: use brace expansion to OR.
+coverage_excludes='{lib/main.dart,**/*.g.dart,lib/l10n/app_localizations*.dart}'
 
 run_flutter_analyze() {
   local flutter
@@ -84,7 +86,10 @@ run_coverage_tests() {
     return 1
   fi
   log "very_good test --coverage --min-coverage 100 (excludes: $coverage_excludes)"
-  if ! (cd "$REPO_ROOT" && very_good test --coverage --min-coverage 100 --exclude-coverage "$coverage_excludes"); then
+  # --no-optimization avoids a pre-existing test-ordering flake in
+  # `test/core/i18n/l10n_extension_test.dart` (the EN locale assertion fails
+  # when later tests reorder it inside the bundled optimized entrypoint).
+  if ! (cd "$REPO_ROOT" && very_good test --no-optimization --coverage --min-coverage 100 --exclude-coverage "$coverage_excludes"); then
     fail "very_good test failed (analyze or coverage gate)"
     record_failure "very-good-test"
   else

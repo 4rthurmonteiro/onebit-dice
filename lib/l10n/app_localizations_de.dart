@@ -65,31 +65,49 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dies löscht alle aufgezeichneten Würfe.';
 
   @override
-  String get presetsSectionClassic => 'Klassische Spiele';
+  String get presetsSectionBuiltIn => 'Spiele';
 
   @override
-  String get presetsSectionCustom => 'Benutzerdefiniert';
+  String get presetsSectionCustom => 'Meine Presets';
 
   @override
-  String get presetLudo => 'Ludo';
+  String get presetsAddNew => '+ NEU';
 
   @override
-  String get presetWar => 'War';
+  String get presetsSheetTitle => 'Neues Preset';
 
   @override
-  String get presetYahtzee => 'Yahtzee';
+  String get presetsSheetNameLabel => 'Name';
 
   @override
-  String get presetCraps => 'Craps';
+  String get presetsSheetDiceLabel => 'Würfel';
 
   @override
-  String get presetBunco => 'Bunco';
+  String get presetsSheetCountLabel => 'Anzahl';
 
   @override
-  String get presetFarkle => 'Farkle';
+  String get presetsSheetSave => 'Speichern';
 
   @override
-  String get presetLiarsDice => 'Liar\'s Dice';
+  String get presetBuiltInLudo => 'Ludo';
+
+  @override
+  String get presetBuiltInBancoImobiliario => 'Banco Imobiliário';
+
+  @override
+  String get presetBuiltInWar => 'War';
+
+  @override
+  String get presetBuiltInYahtzee => 'Yahtzee';
+
+  @override
+  String get presetBuiltInDndAtaque => 'D&D Attacke';
+
+  @override
+  String get presetBuiltInMagicVida => 'Magic Leben';
+
+  @override
+  String get presetBuiltInPercentil => 'Perzentil';
 
   @override
   String get settingsSectionAppearance => 'Darstellung';
@@ -132,4 +150,58 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsTitle => 'Einstellungen';
+
+  @override
+  String get settingsToggleSound => 'Ton';
+
+  @override
+  String get settingsToggleHaptic => 'Vibration';
+
+  @override
+  String get settingsAnimationStyleLabel => 'Stil';
+
+  @override
+  String get settingsAnimationStyleFast => 'Schnell';
+
+  @override
+  String get settingsAnimationStyleDrum => 'Trommel';
+
+  @override
+  String get settingsAnimationStyleTabletop => 'Spieltisch';
+
+  @override
+  String get settingsAnimationSpeedLabel => 'Geschwindigkeit';
+
+  @override
+  String get settingsAnimationSpeedFast => 'Schnell';
+
+  @override
+  String get settingsAnimationSpeedMedium => 'Mittel';
+
+  @override
+  String get settingsAnimationSpeedSlow => 'Langsam';
+
+  @override
+  String get settingsAboutVersion => 'Version';
+
+  @override
+  String get paletteMacClassic => 'Mac Classic';
+
+  @override
+  String get paletteMacBeige => 'Mac Beige';
+
+  @override
+  String get paletteGameBoy => 'Game Boy DMG';
+
+  @override
+  String get paletteC64 => 'Commodore 64';
+
+  @override
+  String get paletteZxSpectrum => 'ZX Spectrum';
+
+  @override
+  String get paletteAppleIIGreen => 'Apple II Green';
+
+  @override
+  String get paletteAppleIIeAmber => 'Apple //e Amber';
 }

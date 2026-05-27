@@ -135,10 +135,10 @@
 
 ## EPIC 9 — Feature: Histórico
 
-- [ ] 9.1 `lib/features/history/widgets/history_entry.dart` — data/hora + dados + resultados + total
-- [ ] 9.2 `lib/features/history/history_screen.dart` — `ValueListenableBuilder` do Hive box
-- [ ] 9.3 Botão "LIMPAR HISTÓRICO" com `AlertDialog` de confirmação
-- [ ] 9.4 `test/features/history/history_screen_test.dart`
+- [x] 9.1 `lib/features/history/widgets/history_entry_tile.dart` — data/hora + notação + valores + total (com placeholder p/ entry corrompido)
+- [x] 9.2 `lib/features/history/history_screen.dart` — `StreamBuilder` sobre `HistoryRepository.watch()`, empty state + lista reversa (newest-first)
+- [x] 9.3 `lib/features/history/widgets/clear_history_button.dart` — botão "LIMPAR" + `AlertDialog` 1-bit de confirmação
+- [x] 9.4 `test/features/history/` — testes para `history_screen`, `history_entry_tile`, `clear_history_button` (100% line coverage)
 
 ---
 

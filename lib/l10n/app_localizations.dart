@@ -206,59 +206,95 @@ abstract class AppLocalizations {
   /// **'Isso apaga todas as rolagens registradas.'**
   String get historyClearConfirmBody;
 
-  /// Section header for built-in classic-game presets
+  /// Section header for the 7 built-in dice presets
   ///
   /// In pt_BR, this message translates to:
-  /// **'Jogos Clássicos'**
-  String get presetsSectionClassic;
+  /// **'Jogos'**
+  String get presetsSectionBuiltIn;
 
   /// Section header for user-created presets
   ///
   /// In pt_BR, this message translates to:
-  /// **'Personalizados'**
+  /// **'Meus presets'**
   String get presetsSectionCustom;
 
-  /// Classic game name — kept untranslated
+  /// Label for the button that opens the create-preset sheet
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'+ NOVO'**
+  String get presetsAddNew;
+
+  /// Title of the create-preset bottom sheet
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Novo preset'**
+  String get presetsSheetTitle;
+
+  /// Field label for the preset name input
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nome'**
+  String get presetsSheetNameLabel;
+
+  /// Field label for the dice-type chip group
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Dado'**
+  String get presetsSheetDiceLabel;
+
+  /// Field label for the dice-count stepper
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Quantidade'**
+  String get presetsSheetCountLabel;
+
+  /// Save action in the create-preset sheet
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Salvar'**
+  String get presetsSheetSave;
+
+  /// Built-in preset name — Ludo (1×D6)
   ///
   /// In pt_BR, this message translates to:
   /// **'Ludo'**
-  String get presetLudo;
+  String get presetBuiltInLudo;
 
-  /// Classic game name — kept untranslated
+  /// Built-in preset name — Banco Imobiliário (2×D6)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Banco Imobiliário'**
+  String get presetBuiltInBancoImobiliario;
+
+  /// Built-in preset name — War (3×D6)
   ///
   /// In pt_BR, this message translates to:
   /// **'War'**
-  String get presetWar;
+  String get presetBuiltInWar;
 
-  /// Classic game name — kept untranslated
+  /// Built-in preset name — Yahtzee (5×D6)
   ///
   /// In pt_BR, this message translates to:
   /// **'Yahtzee'**
-  String get presetYahtzee;
+  String get presetBuiltInYahtzee;
 
-  /// Classic game name — kept untranslated
+  /// Built-in preset name — D&D Ataque (1×D20)
   ///
   /// In pt_BR, this message translates to:
-  /// **'Craps'**
-  String get presetCraps;
+  /// **'D&D Ataque'**
+  String get presetBuiltInDndAtaque;
 
-  /// Classic game name — kept untranslated
+  /// Built-in preset name — Magic Vida (1×D20)
   ///
   /// In pt_BR, this message translates to:
-  /// **'Bunco'**
-  String get presetBunco;
+  /// **'Magic Vida'**
+  String get presetBuiltInMagicVida;
 
-  /// Classic game name — kept untranslated
+  /// Built-in preset name — Percentil (1×D100)
   ///
   /// In pt_BR, this message translates to:
-  /// **'Farkle'**
-  String get presetFarkle;
-
-  /// Classic game name — kept untranslated
-  ///
-  /// In pt_BR, this message translates to:
-  /// **'Liar\'s Dice'**
-  String get presetLiarsDice;
+  /// **'Percentil'**
+  String get presetBuiltInPercentil;
 
   /// Settings section: appearance
   ///
@@ -343,6 +379,114 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Ajustes'**
   String get settingsTitle;
+
+  /// Toggle label for SFX in Settings > Feedback
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Som'**
+  String get settingsToggleSound;
+
+  /// Toggle label for haptic feedback in Settings > Feedback
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Vibração'**
+  String get settingsToggleHaptic;
+
+  /// Group label for animation style radios in Settings > Animation
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Estilo'**
+  String get settingsAnimationStyleLabel;
+
+  /// Animation style — result appears instantly
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Rápida'**
+  String get settingsAnimationStyleFast;
+
+  /// Animation style — short drum-roll-style shake
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Tambor'**
+  String get settingsAnimationStyleDrum;
+
+  /// Animation style — long tabletop-style roll
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Tabuleiro'**
+  String get settingsAnimationStyleTabletop;
+
+  /// Group label for animation speed radios in Settings > Animation
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Velocidade'**
+  String get settingsAnimationSpeedLabel;
+
+  /// Animation speed — short duration
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Rápido'**
+  String get settingsAnimationSpeedFast;
+
+  /// Animation speed — medium duration
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Médio'**
+  String get settingsAnimationSpeedMedium;
+
+  /// Animation speed — long duration
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Longo'**
+  String get settingsAnimationSpeedSlow;
+
+  /// Label preceding the app version in Settings > About
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Versão'**
+  String get settingsAboutVersion;
+
+  /// Palette name — Mac Classic (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Mac Classic'**
+  String get paletteMacClassic;
+
+  /// Palette name — Mac Beige (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Mac Beige'**
+  String get paletteMacBeige;
+
+  /// Palette name — Game Boy DMG (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Game Boy DMG'**
+  String get paletteGameBoy;
+
+  /// Palette name — Commodore 64 (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Commodore 64'**
+  String get paletteC64;
+
+  /// Palette name — ZX Spectrum (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'ZX Spectrum'**
+  String get paletteZxSpectrum;
+
+  /// Palette name — Apple II Green (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Apple II Green'**
+  String get paletteAppleIIGreen;
+
+  /// Palette name — Apple //e Amber (kept untranslated)
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Apple //e Amber'**
+  String get paletteAppleIIeAmber;
 }
 
 class _AppLocalizationsDelegate

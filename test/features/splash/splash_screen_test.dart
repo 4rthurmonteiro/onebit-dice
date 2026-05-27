@@ -105,15 +105,13 @@ void main() {
       await _pump(tester, _harness());
       await tester.pump();
 
-      final coloredBox = tester.widget<ColoredBox>(
-        find
-            .descendant(
-              of: find.byType(SplashScreen),
-              matching: find.byType(ColoredBox),
-            )
-            .first,
+      final scaffold = tester.widget<Scaffold>(
+        find.descendant(
+          of: find.byType(SplashScreen),
+          matching: find.byType(Scaffold),
+        ),
       );
-      expect(coloredBox.color, const Color(0xFFFFFFFF));
+      expect(scaffold.backgroundColor, const Color(0xFFFFFFFF));
     });
 
     testWidgets('COCU microcopy is italic and uses a muted gray color', (
@@ -174,12 +172,15 @@ void main() {
       );
       await _pump(
         tester,
-        MaterialApp.router(
-          locale: const Locale('en'),
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          theme: buildThemeData(Palette.of(PaletteId.macClassic)),
-          routerConfig: router,
+        Provider<HistoryRepository>(
+          create: (_) => InMemoryHistoryRepository(),
+          child: MaterialApp.router(
+            locale: const Locale('en'),
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            theme: buildThemeData(Palette.of(PaletteId.macClassic)),
+            routerConfig: router,
+          ),
         ),
       );
       await tester.pumpAndSettle();
