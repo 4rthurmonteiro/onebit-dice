@@ -5,15 +5,19 @@ import 'package:onebit_dice/app_router.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
+import 'package:onebit_dice/core/i18n/locale_controller.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/storage/history_repository.dart';
 import 'package:onebit_dice/core/storage/last_dice_config_preference.dart';
+import 'package:onebit_dice/core/storage/presets_repository.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
+import 'package:onebit_dice/core/theme/theme_provider.dart';
 import 'package:onebit_dice/features/dice/dice_controller.dart';
 import 'package:onebit_dice/features/dice/dice_screen.dart';
 import 'package:onebit_dice/features/history/history_screen.dart';
 import 'package:onebit_dice/features/presets/presets_screen.dart';
+import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 import 'package:onebit_dice/features/settings/settings_screen.dart';
 import 'package:onebit_dice/features/shell/app_shell.dart';
 import 'package:onebit_dice/features/splash/splash_screen.dart';
@@ -36,6 +40,7 @@ Widget _harness(GoRouter router) {
   return MultiProvider(
     providers: [
       Provider<HistoryRepository>(create: (_) => InMemoryHistoryRepository()),
+      Provider<PresetsRepository>(create: (_) => InMemoryPresetsRepository()),
       Provider<LastDiceConfigPreference>(
         create: (_) => InMemoryLastDiceConfigPreference(),
       ),
@@ -46,6 +51,13 @@ Widget _harness(GoRouter router) {
       ChangeNotifierProvider<HapticController>(
         create: (_) =>
             HapticController(preference: settings, trigger: () async {}),
+      ),
+      ChangeNotifierProvider<AnimationSettingsController>(
+        create: (_) => AnimationSettingsController(preference: settings),
+      ),
+      ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
+      ChangeNotifierProvider<LocaleController>(
+        create: (_) => LocaleController(),
       ),
       ChangeNotifierProvider<DiceController>(
         create: (ctx) => DiceController(

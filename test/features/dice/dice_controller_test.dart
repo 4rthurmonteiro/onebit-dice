@@ -283,6 +283,69 @@ void main() {
       }
     });
 
+    test('applyConfig with matching type and count is a no-op', () async {
+      final events = <String>[];
+      final controller = _build(events: events)
+        ..addListener(() => events.add('notify'));
+
+      await controller.applyConfig(diceType: DiceType.d6, count: 1);
+
+      expect(events, isEmpty);
+    });
+
+    test(
+      'applyConfig with a new type and count notifies once and persists once',
+      () async {
+        final events = <String>[];
+        final controller = _build(events: events, rng: Random(0))
+          ..addListener(() => events.add('notify'));
+        await controller.roll();
+        events.clear();
+
+        await controller.applyConfig(diceType: DiceType.d20, count: 4);
+
+        expect(controller.selectedType, DiceType.d20);
+        expect(controller.count, 4);
+        expect(controller.lastResult, isNull);
+        expect(events, ['notify', 'lastDice.write(d20,4)']);
+      },
+    );
+
+    test('applyConfig clamps count below 1 to 1', () async {
+      final events = <String>[];
+      final controller = _build(events: events);
+
+      await controller.applyConfig(diceType: DiceType.d20, count: 0);
+
+      expect(controller.count, 1);
+      expect(controller.selectedType, DiceType.d20);
+    });
+
+    test('applyConfig clamps count above 10 to 10', () async {
+      final events = <String>[];
+      final controller = _build(events: events);
+
+      await controller.applyConfig(diceType: DiceType.d12, count: 99);
+
+      expect(controller.count, 10);
+      expect(controller.selectedType, DiceType.d12);
+    });
+
+    test(
+      'applyConfig with only count changing still applies the new count',
+      () async {
+        final events = <String>[];
+        final controller = _build(events: events)
+          ..addListener(() => events.add('notify'));
+
+        await controller.applyConfig(diceType: DiceType.d6, count: 5);
+
+        expect(controller.count, 5);
+        expect(controller.selectedType, DiceType.d6);
+        expect(events, ['notify', 'lastDice.write(d6,5)']);
+      },
+    );
+
     test('notifies once per setType call', () async {
       final controller = _build(events: <String>[]);
       var notifies = 0;

@@ -63,31 +63,49 @@ class AppLocalizationsKo extends AppLocalizations {
   String get historyClearConfirmBody => '기록된 모든 굴림이 삭제됩니다.';
 
   @override
-  String get presetsSectionClassic => '클래식 게임';
+  String get presetsSectionBuiltIn => '게임';
 
   @override
-  String get presetsSectionCustom => '사용자 지정';
+  String get presetsSectionCustom => '내 프리셋';
 
   @override
-  String get presetLudo => 'Ludo';
+  String get presetsAddNew => '+ 새로 만들기';
 
   @override
-  String get presetWar => 'War';
+  String get presetsSheetTitle => '새 프리셋';
 
   @override
-  String get presetYahtzee => 'Yahtzee';
+  String get presetsSheetNameLabel => '이름';
 
   @override
-  String get presetCraps => 'Craps';
+  String get presetsSheetDiceLabel => '주사위';
 
   @override
-  String get presetBunco => 'Bunco';
+  String get presetsSheetCountLabel => '개수';
 
   @override
-  String get presetFarkle => 'Farkle';
+  String get presetsSheetSave => '저장';
 
   @override
-  String get presetLiarsDice => 'Liar\'s Dice';
+  String get presetBuiltInLudo => 'Ludo';
+
+  @override
+  String get presetBuiltInBancoImobiliario => 'Banco Imobiliário';
+
+  @override
+  String get presetBuiltInWar => 'War';
+
+  @override
+  String get presetBuiltInYahtzee => 'Yahtzee';
+
+  @override
+  String get presetBuiltInDndAtaque => 'D&D 공격';
+
+  @override
+  String get presetBuiltInMagicVida => 'Magic 라이프';
+
+  @override
+  String get presetBuiltInPercentil => '퍼센타일';
 
   @override
   String get settingsSectionAppearance => '테마';
@@ -130,4 +148,58 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsTitle => '설정';
+
+  @override
+  String get settingsToggleSound => '소리';
+
+  @override
+  String get settingsToggleHaptic => '진동';
+
+  @override
+  String get settingsAnimationStyleLabel => '스타일';
+
+  @override
+  String get settingsAnimationStyleFast => '빠름';
+
+  @override
+  String get settingsAnimationStyleDrum => '드럼';
+
+  @override
+  String get settingsAnimationStyleTabletop => '테이블';
+
+  @override
+  String get settingsAnimationSpeedLabel => '속도';
+
+  @override
+  String get settingsAnimationSpeedFast => '빠름';
+
+  @override
+  String get settingsAnimationSpeedMedium => '중간';
+
+  @override
+  String get settingsAnimationSpeedSlow => '느림';
+
+  @override
+  String get settingsAboutVersion => '버전';
+
+  @override
+  String get paletteMacClassic => 'Mac Classic';
+
+  @override
+  String get paletteMacBeige => 'Mac Beige';
+
+  @override
+  String get paletteGameBoy => 'Game Boy DMG';
+
+  @override
+  String get paletteC64 => 'Commodore 64';
+
+  @override
+  String get paletteZxSpectrum => 'ZX Spectrum';
+
+  @override
+  String get paletteAppleIIGreen => 'Apple II Green';
+
+  @override
+  String get paletteAppleIIeAmber => 'Apple //e Amber';
 }
