@@ -151,4 +151,58 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsTitle => 'Настройки';
+
+  @override
+  String get settingsToggleSound => 'Звук';
+
+  @override
+  String get settingsToggleHaptic => 'Вибрация';
+
+  @override
+  String get settingsAnimationStyleLabel => 'Стиль';
+
+  @override
+  String get settingsAnimationStyleFast => 'Быстрая';
+
+  @override
+  String get settingsAnimationStyleDrum => 'Барабан';
+
+  @override
+  String get settingsAnimationStyleTabletop => 'Стол';
+
+  @override
+  String get settingsAnimationSpeedLabel => 'Скорость';
+
+  @override
+  String get settingsAnimationSpeedFast => 'Быстро';
+
+  @override
+  String get settingsAnimationSpeedMedium => 'Средне';
+
+  @override
+  String get settingsAnimationSpeedSlow => 'Медленно';
+
+  @override
+  String get settingsAboutVersion => 'Версия';
+
+  @override
+  String get paletteMacClassic => 'Mac Classic';
+
+  @override
+  String get paletteMacBeige => 'Mac Beige';
+
+  @override
+  String get paletteGameBoy => 'Game Boy DMG';
+
+  @override
+  String get paletteC64 => 'Commodore 64';
+
+  @override
+  String get paletteZxSpectrum => 'ZX Spectrum';
+
+  @override
+  String get paletteAppleIIGreen => 'Apple II Green';
+
+  @override
+  String get paletteAppleIIeAmber => 'Apple //e Amber';
 }

@@ -150,4 +150,58 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsTitle => 'Impostazioni';
+
+  @override
+  String get settingsToggleSound => 'Suono';
+
+  @override
+  String get settingsToggleHaptic => 'Vibrazione';
+
+  @override
+  String get settingsAnimationStyleLabel => 'Stile';
+
+  @override
+  String get settingsAnimationStyleFast => 'Veloce';
+
+  @override
+  String get settingsAnimationStyleDrum => 'Tamburo';
+
+  @override
+  String get settingsAnimationStyleTabletop => 'Tavolo';
+
+  @override
+  String get settingsAnimationSpeedLabel => 'Velocità';
+
+  @override
+  String get settingsAnimationSpeedFast => 'Veloce';
+
+  @override
+  String get settingsAnimationSpeedMedium => 'Medio';
+
+  @override
+  String get settingsAnimationSpeedSlow => 'Lento';
+
+  @override
+  String get settingsAboutVersion => 'Versione';
+
+  @override
+  String get paletteMacClassic => 'Mac Classic';
+
+  @override
+  String get paletteMacBeige => 'Mac Beige';
+
+  @override
+  String get paletteGameBoy => 'Game Boy DMG';
+
+  @override
+  String get paletteC64 => 'Commodore 64';
+
+  @override
+  String get paletteZxSpectrum => 'ZX Spectrum';
+
+  @override
+  String get paletteAppleIIGreen => 'Apple II Green';
+
+  @override
+  String get paletteAppleIIeAmber => 'Apple //e Amber';
 }

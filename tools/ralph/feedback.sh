@@ -57,10 +57,9 @@ flutter_cmd() {
   fi
 }
 
-# Coverage exclusions per CLAUDE.md: lib/main.dart is excluded; generated
-# *.g.dart and Flutter-generated app_localizations*.dart files too.
-# very_good test --exclude-coverage takes ONE glob; brace expansion is the
-# only multi-pattern form it honors.
+# Coverage exclusions per CLAUDE.md: lib/main.dart is excluded; any future *.g.dart
+# too. Generated AppLocalizations* files mirror the CI workflow exclusion.
+# `very_good test --exclude-coverage` takes ONE glob: use brace expansion to OR.
 coverage_excludes='{lib/main.dart,**/*.g.dart,lib/l10n/app_localizations*.dart}'
 
 run_flutter_analyze() {
@@ -86,11 +85,10 @@ run_coverage_tests() {
     record_failure "very_good:missing"
     return 1
   fi
-  # --no-optimization dodges a pre-existing flake where the optimized bundle
-  # makes test/core/i18n/l10n_extension_test.dart's EN expectation see 0 hits
-  # for the localized "ROLL" string. The test passes in isolation and without
-  # optimization. CI runs `very_good test` separately with optimization on.
-  log "very_good test --no-optimization --coverage --min-coverage 100 (excludes: $coverage_excludes)"
+  log "very_good test --coverage --min-coverage 100 (excludes: $coverage_excludes)"
+  # --no-optimization avoids a pre-existing test-ordering flake in
+  # `test/core/i18n/l10n_extension_test.dart` (the EN locale assertion fails
+  # when later tests reorder it inside the bundled optimized entrypoint).
   if ! (cd "$REPO_ROOT" && very_good test --no-optimization --coverage --min-coverage 100 --exclude-coverage "$coverage_excludes"); then
     fail "very_good test failed (analyze or coverage gate)"
     record_failure "very-good-test"

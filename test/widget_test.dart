@@ -9,6 +9,7 @@ import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
 import 'package:onebit_dice/core/theme/theme_provider.dart';
 import 'package:onebit_dice/features/dice/dice_screen.dart';
+import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 import 'package:onebit_dice/features/splash/splash_screen.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +38,9 @@ App _buildApp() {
     hapticController: HapticController(
       preference: settings,
       trigger: () async {},
+    ),
+    animationSettingsController: AnimationSettingsController(
+      preference: settings,
     ),
   );
 }
