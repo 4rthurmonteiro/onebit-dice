@@ -105,15 +105,13 @@ void main() {
       await _pump(tester, _harness());
       await tester.pump();
 
-      final coloredBox = tester.widget<ColoredBox>(
-        find
-            .descendant(
-              of: find.byType(SplashScreen),
-              matching: find.byType(ColoredBox),
-            )
-            .first,
+      final scaffold = tester.widget<Scaffold>(
+        find.descendant(
+          of: find.byType(SplashScreen),
+          matching: find.byType(Scaffold),
+        ),
       );
-      expect(coloredBox.color, const Color(0xFFFFFFFF));
+      expect(scaffold.backgroundColor, const Color(0xFFFFFFFF));
     });
 
     testWidgets('COCU microcopy is italic and uses a muted gray color', (

@@ -57,9 +57,9 @@ class _SplashScreenState extends State<SplashScreen> {
     // of the splash — without the splash itself reading any palette state.
     return Theme(
       data: buildThemeData(Palette.of(PaletteId.macClassic)),
-      child: ColoredBox(
-        color: _paper,
-        child: SafeArea(
+      child: Scaffold(
+        backgroundColor: _paper,
+        body: SafeArea(
           child: Column(
             children: [
               const _MacTitleBar(),
