@@ -57,7 +57,9 @@
       "Read(//Users/arthurmonteiroalvesmelo/.pub-cache/**)",
       "Bash(find /var/folders -name \".test_runner.dart\" 2>/dev/null | head -3; find /tmp -name \".test_runner.dart\" 2>/dev/null | head -3; find . -name \".test_runner.dart\" 2>/dev/null | head -3)",
       "Read(//private/var/folders/**)",
-      "Read(//private/tmp/**)"
+      "Read(//private/tmp/**)",
+      "Bash(bash -n /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice/tools/ralph/afk-ralph.sh)",
+      "Bash(shellcheck /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice/tools/ralph/afk-ralph.sh)"
     ]
   }
 }
