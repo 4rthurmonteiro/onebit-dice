@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Description: Run the Ralph loop unsupervised, up to N iterations or until done.
 # Usage: ./tools/ralph/afk-ralph.sh <max-iterations> [--sleep <secs>]
+#                                                   [--idle-timeout <secs>]
+#                                                   [--wall-timeout <secs>]
 #
 # Workflow:
 #   - Creates an integration branch ralph/batch/<UTC-timestamp> from the current
@@ -13,6 +15,10 @@
 # Each iteration:
 #   - Verifies a clean working tree (no leftover diff).
 #   - Invokes claude against tools/ralph/prompt.md and captures its output.
+#   - A watchdog kills claude if the log file stops growing for --idle-timeout
+#     seconds (default 600 = 10min) OR if the iteration exceeds --wall-timeout
+#     seconds total (default 3600 = 60min). When the watchdog fires, the loop
+#     stops immediately — half-applied state should never be retried blindly.
 #   - Greps the output for a <promise>...</promise> stop marker.
 #   - Loops only on <promise>CONTINUE</promise>; any other marker exits the driver.
 #
@@ -44,13 +50,92 @@ if ! [[ "$max_iter" =~ ^[0-9]+$ ]] || [[ "$max_iter" -lt 1 ]] || [[ "$max_iter" 
 fi
 
 sleep_secs=2
+idle_timeout=600
+wall_timeout=3600
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --sleep)   sleep_secs="$2"; shift 2 ;;
+    --sleep)         sleep_secs="$2"; shift 2 ;;
+    --idle-timeout)  idle_timeout="$2"; shift 2 ;;
+    --wall-timeout)  wall_timeout="$2"; shift 2 ;;
     -h|--help) usage ;;
     *) echo "afk-ralph.sh: unknown arg: $1" >&2; usage ;;
   esac
 done
+
+for v in idle_timeout wall_timeout; do
+  if ! [[ "${!v}" =~ ^[0-9]+$ ]] || [[ "${!v}" -lt 30 ]]; then
+    echo "afk-ralph.sh: --${v//_/-} must be an integer >= 30" >&2
+    exit 2
+  fi
+done
+
+# ---------------------------------------------------------------------------
+# Watchdog helpers — protect the loop from a hung `claude -p` invocation.
+# Symptom we guard against: claude proc alive but log stops growing.
+# ---------------------------------------------------------------------------
+
+# Recursively kill a process tree (macOS lacks pkill -KILL --tree).
+kill_tree() {
+  local pid="$1" child
+  for child in $(pgrep -P "$pid" 2>/dev/null); do
+    kill_tree "$child"
+  done
+  kill -KILL "$pid" 2>/dev/null || true
+}
+
+# Run claude with idle + wall-clock watchdog. Streams output to stdout (so the
+# caller can capture it) AND appends to $log_file. Echoes a sentinel line
+# "<watchdog>IDLE|WALL</watchdog>" into the stream when it fires, so the caller
+# can distinguish a real exit from a watchdog kill.
+run_claude_watched() {
+  local prompt="$1" log_file="$2" idle_secs="$3" wall_secs="$4"
+  local tmpout watchdog_state
+  tmpout=$(mktemp -t ralph_claude.XXXXXX)
+  watchdog_state=$(mktemp -t ralph_watchdog.XXXXXX)
+
+  claude --dangerously-skip-permissions -p "$prompt" >"$tmpout" 2>&1 &
+  local claude_pid=$!
+
+  (
+    local last_size=-1 current_size elapsed=0 idle_elapsed=0
+    while kill -0 "$claude_pid" 2>/dev/null; do
+      sleep 10
+      elapsed=$((elapsed + 10))
+      current_size=$(stat -f%z "$tmpout" 2>/dev/null || echo 0)
+      if [[ "$current_size" == "$last_size" ]]; then
+        idle_elapsed=$((idle_elapsed + 10))
+      else
+        idle_elapsed=0
+        last_size="$current_size"
+      fi
+      if [[ "$idle_elapsed" -ge "$idle_secs" ]]; then
+        echo "IDLE" >"$watchdog_state"
+        kill_tree "$claude_pid"
+        exit 0
+      fi
+      if [[ "$elapsed" -ge "$wall_secs" ]]; then
+        echo "WALL" >"$watchdog_state"
+        kill_tree "$claude_pid"
+        exit 0
+      fi
+    done
+  ) &
+  local watchdog_pid=$!
+
+  wait "$claude_pid" 2>/dev/null
+  local rc=$?
+  kill "$watchdog_pid" 2>/dev/null || true
+  wait "$watchdog_pid" 2>/dev/null || true
+
+  cat "$tmpout" | tee -a "$log_file"
+  local fired
+  fired=$(cat "$watchdog_state" 2>/dev/null || true)
+  if [[ -n "$fired" ]]; then
+    echo "<watchdog>${fired}</watchdog>" | tee -a "$log_file"
+  fi
+  rm -f "$tmpout" "$watchdog_state"
+  return "$rc"
+}
 
 # ---------------------------------------------------------------------------
 # Pre-flight
@@ -104,6 +189,7 @@ mkdir -p "$RUN_DIR"
 log_file="$RUN_DIR/$ts.log"
 
 echo "[afk-ralph] base=$base_branch  max_iter=$max_iter  log=$log_file" | tee -a "$log_file"
+echo "[afk-ralph] watchdog: idle=${idle_timeout}s  wall=${wall_timeout}s" | tee -a "$log_file"
 echo "[afk-ralph] When the loop finishes, open the release-candidate PR with:" | tee -a "$log_file"
 echo "[afk-ralph]   gh pr create --base $current_branch --head $batch_branch --title 'feat: ralph batch $ts (release candidate)'" | tee -a "$log_file"
 
@@ -136,9 +222,18 @@ EOF
 )
 
   set +e
-  output=$(claude --dangerously-skip-permissions -p "$prompt" 2>&1 | tee -a "$log_file")
+  output=$(run_claude_watched "$prompt" "$log_file" "$idle_timeout" "$wall_timeout")
   rc=$?
   set -e
+
+  if printf '%s\n' "$output" | grep -q '<watchdog>IDLE</watchdog>'; then
+    echo "[afk-ralph] watchdog: claude was idle ${idle_timeout}s — killed and stopping." | tee -a "$log_file"
+    exit 1
+  fi
+  if printf '%s\n' "$output" | grep -q '<watchdog>WALL</watchdog>'; then
+    echo "[afk-ralph] watchdog: iteration exceeded ${wall_timeout}s — killed and stopping." | tee -a "$log_file"
+    exit 1
+  fi
 
   if [[ $rc -ne 0 ]]; then
     echo "[afk-ralph] claude exited $rc — stopping." | tee -a "$log_file"

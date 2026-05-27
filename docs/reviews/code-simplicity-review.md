@@ -1,4 +1,159 @@
 ---
+title: "Code Simplicity / YAGNI Review — GH-10 Dice Roll Animations"
+date: 2026-05-27
+branch: gh-10-dice-animations
+base: ralph/batch/20260527T112536Z
+reviewer: simplicity-agent
+---
+
+# Code Simplicity / YAGNI Review — GH-10 Dice Roll Animations
+
+**Files reviewed:**
+- `lib/features/dice/widgets/dice_animator.dart`
+- `lib/features/dice/widgets/animations/dice_grid.dart`
+- `lib/features/dice/widgets/animations/fast_animation.dart`
+- `lib/features/dice/widgets/animations/drum_animation.dart`
+- `lib/features/dice/widgets/animations/tabletop_animation.dart`
+
+---
+
+## Critical
+
+### 1. `DiceGrid.builder` is dead code — never called
+
+**File:** `dice_grid.dart:18,40,79-80`
+
+The `builder` parameter (`Widget Function(int index, Widget slot)?`) is declared,
+documented, and dispatched through a `_wrap` helper, but it is never passed at any
+call site. All three consumers (`FastAnimation`, `DrumAnimation`,
+`TabletopAnimation`) call `DiceGrid(count: ..., values: ...)` with no `builder`
+argument. The parameter comment says _"Used by `TabletopAnimation` to apply
+per-slot transforms"_, but `TabletopAnimation` wraps the whole `DiceGrid` in
+`Transform.translate`/`Transform.scale` at the `AnimatedBuilder` level — it never
+uses the per-slot path.
+
+`dice_grid_test.dart` exercises the `builder` path (the "builder wraps each slot"
+test), but that test only exists to provide coverage for the dead parameter.
+
+**Fix:** Remove the `builder` field, the `_wrap` helper, and the corresponding
+test case. Per-slot transforms can be added if a future animation strategy genuinely
+needs them.
+
+**Estimated removal:** ~10 production lines + 1 test case.
+
+---
+
+## Important
+
+### 2. `@visibleForTesting` shims are thin wrappers over private functions
+
+**File:** `tabletop_animation.dart:136-142`
+
+```dart
+@visibleForTesting
+double tabletopTranslateY(double t, double slotSize) => _translateY(t, slotSize);
+
+@visibleForTesting
+double tabletopScale(double t) => _scale(t);
+```
+
+These are pure pass-through functions whose sole purpose is to expose private
+functions to tests. The correct fix is to make `_translateY` and `_scale`
+package-private by removing their leading underscores (e.g., `translateY`,
+`tabletopScale`), then have the tests call them directly. Adding public surface
+area solely to satisfy test tooling is a YAGNI violation and pollutes the file's
+public API.
+
+**Fix:** Rename `_translateY` → `translateY` and `_scale` → `tabletopScale` (or
+similar non-conflicting names). Drop the shim functions and the `@visibleForTesting`
+annotations. Tests import the renamed functions directly.
+
+**Estimated removal:** 8 lines.
+
+### 3. `FilterQuality.none` on `Transform.scale` has no effect here
+
+**File:** `tabletop_animation.dart:125`
+
+`filterQuality: FilterQuality.none` on a `Transform.scale` only affects rasterised
+bitmap children (images, layers promoted to GPU texture via `RepaintBoundary`). The
+`DiceGrid` tree is entirely vector: `Container` decorations and `Text` widgets.
+Flutter repaints them at native resolution on every frame regardless of
+`filterQuality`. The flag has no effect on the 1-bit aesthetic and creates a
+misleading hint ("why is this here?") for future readers.
+
+The pixel-snapping goal is already served by `roundToDouble()` in `_translateY`.
+
+**Fix:** Remove `filterQuality: FilterQuality.none`.
+
+**Estimated removal:** 1 line.
+
+### 4. `DiceGrid` layout parameters are premature generics
+
+**File:** `dice_grid.dart:15-17`, `tabletop_animation.dart:25,43`
+
+`slotSize`, `slotSpacing`, and `maxColumns` are optional parameters with defaults
+of `64`, `8`, and `3`. They are never overridden at any call site in production
+code. Additionally, `TabletopAnimation` independently carries its own `slotSize`
+field (`tabletop_animation.dart:25,43`) defaulting to the same `64`, which is only
+ever used as the slide travel distance passed to `_translateY` — it is not
+forwarded to `DiceGrid`. This creates two independent sources for a value that must
+agree.
+
+**Fix:** Hardcode the three values as private top-level constants inside
+`dice_grid.dart`. Remove the corresponding parameters, field declarations, and doc
+comments. Remove the `slotSize` field from `TabletopAnimation` and replace its use
+in `_translateY` with the shared constant. Restore as parameters only when a caller
+needs to override them.
+
+**Estimated removal:** ~10 lines production code.
+
+---
+
+## Suggestions
+
+### 5. `FastAnimation` wraps a semantically no-op `AnimatedSwitcher`
+
+**File:** `fast_animation.dart:26-37`
+
+`FastAnimation` is the "no animation — hard cut" strategy. It uses
+`AnimatedSwitcher` with `transitionBuilder: (child, _) => child` to suppress the
+default fade, but `AnimatedSwitcher` still keeps the outgoing child mounted for
+`duration` (100 ms). A plain `KeyedSubtree` keyed on `targetValues` would express
+the intent more directly: build a fresh grid on each roll, let Flutter's normal
+widget diffing handle the swap. Low priority — 100 ms is imperceptible.
+
+### 6. Duplicated `didUpdateWidget` / `dispose` pattern across cycling animations
+
+**File:** `drum_animation.dart:62-74,95-101`, `tabletop_animation.dart:71-83,104-110`
+
+Both `_DrumAnimationState` and `_TabletopAnimationState` share identical
+`didUpdateWidget` bodies, identical `_onStatus` handlers, and identical `dispose`
+teardown sequences. The only differences are `_cycleEveryMs` (80 vs 60) and the
+phase guard in `_TabletopAnimationState._onTick`. YAGNI — do not extract a shared
+mixin now (two sites is the minimum threshold for extraction). Revisit if a third
+cycling animation is added.
+
+---
+
+## Summary
+
+| # | Severity | File | Est. LOC removed |
+|---|----------|------|-----------------|
+| 1 | Critical | `dice_grid.dart` + test | ~11 |
+| 2 | Important | `tabletop_animation.dart` | ~8 |
+| 3 | Important | `tabletop_animation.dart` | 1 |
+| 4 | Important | `dice_grid.dart` + `tabletop_animation.dart` | ~10 |
+| 5 | Suggestion | `fast_animation.dart` | ~5 |
+| 6 | Suggestion | (informational — no action now) | 0 |
+
+**Total potential reduction:** ~30 lines (~15% of the 5 new files).
+
+**Verdict: Needs work** — 1 critical issue (dead `builder` param and its test
+coverage) and 3 important issues must be resolved before merge.
+
+---
+
+---
 title: "Code Simplicity / YAGNI Review — E09 App Shell + Splash"
 date: 2026-05-26
 branch: feat/e09-navegacao

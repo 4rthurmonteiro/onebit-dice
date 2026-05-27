@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onebit_dice/core/i18n/l10n_extension.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/app_typography.dart';
+import 'package:onebit_dice/features/dice/widgets/dice_animator.dart';
 
 /// Renders the dice slots and (when a roll has happened) the total and the
 /// equation.
@@ -11,17 +12,24 @@ import 'package:onebit_dice/core/theme/app_typography.dart';
 /// paints one slot per integer, plus a total below, plus the equation when
 /// more than one die was rolled.
 ///
-/// This is a placeholder for E12: when sprite sheets land, the textual
-/// slots become pixel sprites, but the slot grid structure stays the same.
+/// The slot grid is delegated to [DiceAnimator], which picks one of three
+/// animation strategies based on the user's persisted
+/// `AnimationSettingsController` preference.
 class DiceWidget extends StatelessWidget {
   /// Creates a [DiceWidget] showing [count] slots.
   ///
-  /// When [values] is provided, its length must equal [count].
-  const DiceWidget({required this.count, required this.values, super.key})
-    : assert(
-        values == null || values.length == count,
-        'values must be null or match count',
-      );
+  /// When [values] is provided, its length must equal [count]. [sides] is
+  /// forwarded to [DiceAnimator] so cycling animations draw faces from the
+  /// correct range; it defaults to 6 (a D6) when not specified.
+  const DiceWidget({
+    required this.count,
+    required this.values,
+    this.sides = 6,
+    super.key,
+  }) : assert(
+         values == null || values.length == count,
+         'values must be null or match count',
+       );
 
   /// How many slots to render.
   final int count;
@@ -29,7 +37,11 @@ class DiceWidget extends StatelessWidget {
   /// The values of the most recent roll, or `null` to render the empty state.
   final List<int>? values;
 
-  /// Key tagging the slot grid.
+  /// Face count of the active dice — bounds cycled random values in the
+  /// drum/tabletop animations.
+  final int sides;
+
+  /// Key tagging the slot grid container.
   @visibleForTesting
   static const Key gridKey = ValueKey('DiceWidget.grid');
 
@@ -41,10 +53,6 @@ class DiceWidget extends StatelessWidget {
   /// has been rolled.
   @visibleForTesting
   static const Key equationKey = ValueKey('DiceWidget.equation');
-
-  static const double _slotSize = 64;
-  static const double _slotSpacing = 8;
-  static const int _maxColumns = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -69,13 +77,13 @@ class DiceWidget extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _Grid(
+                  KeyedSubtree(
                     key: gridKey,
-                    count: count,
-                    values: values,
-                    slotSize: _slotSize,
-                    slotSpacing: _slotSpacing,
-                    maxColumns: _maxColumns,
+                    child: DiceAnimator(
+                      count: count,
+                      targetValues: values,
+                      sides: sides,
+                    ),
                   ),
                   if (hasResult) ...[
                     const SizedBox(height: 12),
@@ -109,80 +117,4 @@ class DiceWidget extends StatelessWidget {
   }
 
   static int _sum(List<int> xs) => xs.fold(0, (a, b) => a + b);
-}
-
-class _Grid extends StatelessWidget {
-  const _Grid({
-    required this.count,
-    required this.values,
-    required this.slotSize,
-    required this.slotSpacing,
-    required this.maxColumns,
-    super.key,
-  });
-
-  final int count;
-  final List<int>? values;
-  final double slotSize;
-  final double slotSpacing;
-  final int maxColumns;
-
-  @override
-  Widget build(BuildContext context) {
-    final columns = count < maxColumns ? count : maxColumns;
-    final rows = (count + columns - 1) ~/ columns;
-    return SizedBox(
-      width: columns * slotSize + (columns - 1) * slotSpacing,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var r = 0; r < rows; r++) ...[
-            if (r > 0) SizedBox(height: slotSpacing),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (var c = 0; c < columns; c++) ...[
-                  if (c > 0) SizedBox(width: slotSpacing),
-                  if (r * columns + c < count)
-                    _Slot(
-                      text: values != null
-                          ? '${values![r * columns + c]}'
-                          : '?',
-                      size: slotSize,
-                    )
-                  else
-                    SizedBox(width: slotSize, height: slotSize),
-                ],
-              ],
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _Slot extends StatelessWidget {
-  const _Slot({required this.text, required this.size});
-
-  final String text;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<OneBitColors>()!;
-    return Container(
-      width: size,
-      height: size,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: colors.paper,
-        border: Border.all(color: colors.ink, width: 2),
-      ),
-      child: Text(
-        text,
-        style: AppTypography.display.copyWith(color: colors.ink, fontSize: 32),
-      ),
-    );
-  }
 }

@@ -12,6 +12,7 @@ import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
 import 'package:onebit_dice/features/dice/dice_controller.dart';
 import 'package:onebit_dice/features/dice/dice_screen.dart';
+import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 import 'package:onebit_dice/features/splash/splash_screen.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:onebit_dice/shared/widgets/pixel_divider.dart';
@@ -46,6 +47,9 @@ Widget _harness({Locale locale = const Locale('en')}) {
       ChangeNotifierProvider<HapticController>(
         create: (_) =>
             HapticController(preference: settings, trigger: () async {}),
+      ),
+      ChangeNotifierProvider<AnimationSettingsController>(
+        create: (_) => AnimationSettingsController(preference: settings),
       ),
       ChangeNotifierProvider<DiceController>(
         create: (ctx) => DiceController(

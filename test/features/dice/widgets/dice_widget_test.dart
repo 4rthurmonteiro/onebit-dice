@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
 import 'package:onebit_dice/features/dice/widgets/dice_widget.dart';
+import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 Widget _harness(Widget child) {
+  final controller = AnimationSettingsController(
+    preference: InMemoryAppSettingsPreference(),
+  );
   return MaterialApp(
     locale: const Locale('en'),
     supportedLocales: AppLocalizations.supportedLocales,
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     theme: buildThemeData(Palette.of(PaletteId.macClassic)),
-    home: Scaffold(body: Center(child: child)),
+    home: ChangeNotifierProvider<AnimationSettingsController>.value(
+      value: controller,
+      child: Scaffold(body: Center(child: child)),
+    ),
   );
 }
 
@@ -32,6 +41,7 @@ void main() {
       await tester.pumpWidget(
         _harness(DiceWidget(count: 3, values: const [4, 5, 6])),
       );
+      await tester.pumpAndSettle();
       expect(find.text('4'), findsOneWidget);
       expect(find.text('5'), findsOneWidget);
       expect(find.text('6'), findsOneWidget);
@@ -44,6 +54,7 @@ void main() {
       await tester.pumpWidget(
         _harness(DiceWidget(count: 3, values: const [2, 3, 5])),
       );
+      await tester.pumpAndSettle();
       expect(find.byKey(DiceWidget.equationKey), findsOneWidget);
       expect(find.text('2 + 3 + 5 = 10'), findsOneWidget);
     });
@@ -52,6 +63,7 @@ void main() {
       await tester.pumpWidget(
         _harness(DiceWidget(count: 1, values: const [4])),
       );
+      await tester.pumpAndSettle();
       expect(find.byKey(DiceWidget.equationKey), findsNothing);
     });
 
@@ -59,6 +71,7 @@ void main() {
       await tester.pumpWidget(
         _harness(DiceWidget(count: 2, values: const [3, 4])),
       );
+      await tester.pumpAndSettle();
       final context = tester.element(find.byType(DiceWidget));
       expect(
         find.text(AppLocalizations.of(context)!.rollResultTotal(7)),
@@ -75,6 +88,7 @@ void main() {
       await tester.pumpWidget(
         _harness(DiceWidget(count: 2, values: const [1, 2])),
       );
+      await tester.pumpAndSettle();
       expect(find.byKey(DiceWidget.gridKey), findsOneWidget);
     });
 
@@ -99,6 +113,13 @@ void main() {
         _harness(const DiceWidget(count: 10, values: null)),
       );
       expect(find.text('?'), findsNWidgets(10));
+    });
+
+    testWidgets('forwards sides through to the animator', (tester) async {
+      await tester.pumpWidget(
+        _harness(const DiceWidget(count: 1, values: null, sides: 20)),
+      );
+      expect(find.text('?'), findsOneWidget);
     });
   });
 }

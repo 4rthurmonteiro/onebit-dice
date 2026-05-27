@@ -18,6 +18,7 @@ import 'package:onebit_dice/features/presets/preset_data.dart';
 import 'package:onebit_dice/features/presets/widgets/add_preset_button.dart';
 import 'package:onebit_dice/features/presets/widgets/create_preset_sheet.dart';
 import 'package:onebit_dice/features/presets/widgets/preset_card.dart';
+import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:onebit_dice/shared/widgets/mac_button.dart';
 import 'package:provider/provider.dart';
@@ -56,6 +57,9 @@ Widget _harness({
       ChangeNotifierProvider<HapticController>(
         create: (_) =>
             HapticController(preference: settings, trigger: () async {}),
+      ),
+      ChangeNotifierProvider<AnimationSettingsController>(
+        create: (_) => AnimationSettingsController(preference: settings),
       ),
       ChangeNotifierProvider<DiceController>(
         create: (ctx) => DiceController(
