@@ -182,10 +182,10 @@
 
 ## EPIC 13 — Feature: Animações de Dados
 
-- [ ] 13.1 `lib/core/models/animation_style.dart` — enums `AnimationStyle` + `AnimationSpeed`
-- [ ] 13.2 Animação "Rápida" — `AnimatedSwitcher` 200ms no `DiceWidget`
-- [ ] 13.3 Animação "Tambor" — `AnimationController` ciclando frames (placeholder textual)
-- [ ] 13.4 Animação "Tabuleiro" — multi-fase: slide in → bounce → ciclo → resultado
+- [x] 13.1 `lib/core/models/animation_style.dart` — enums `AnimationStyle` + `AnimationSpeed`
+- [x] 13.2 Animação "Rápida" — `AnimatedSwitcher` 100ms hard cut em `FastAnimation`
+- [x] 13.3 Animação "Tambor" — `AnimationController` ciclando frames (placeholder textual)
+- [x] 13.4 Animação "Tabuleiro" — multi-fase: slide in → bounce → ciclo → settle
 - [!] 13.5 Substituir placeholder por sprite sheets reais (intervenção humana — assets Blender)
 
 ---

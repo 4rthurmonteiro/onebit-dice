@@ -46,6 +46,7 @@ class DiceScreen extends StatelessWidget {
                             child: DiceWidget(
                               count: controller.count,
                               values: controller.lastResult?.values,
+                              sides: controller.selectedType.sides,
                             ),
                           ),
                         ),

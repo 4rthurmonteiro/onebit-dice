@@ -1,83 +1,130 @@
-# Architecture Review — E09 (App Shell + Splash)
+# Architecture Review — GH-10 Dice Animations
 
-Branch: `feat/e09-navegacao`
-Plan: `docs/plan/2026-05-26-feat-e09-app-shell-and-splash-plan.md`
+Branch: `gh-10-dice-animations`
 Reviewer: architecture-review agent
-Date: 2026-05-26
+Date: 2026-05-27
 
-## Layer Separation
+## Summary
 
-The project's declared layers (per `CLAUDE.md`):
+The animation work lands cleanly inside the `features/dice` slice. Layer
+separation, palette discipline, state-management constraints, and the
+100% line-coverage gate are all upheld. No new state-management libraries.
+No bleed into `lib/core`.
 
-- `lib/core/` — app-wide services (analytics, audio, haptic, storage, theme, i18n)
-- `lib/features/` — feature slices (presentation + per-feature controllers)
-- `lib/shared/` — reusable UI/utilities consumed by multiple features
-- `lib/app.dart`, `lib/app_router.dart`, `lib/main.dart` — composition root (top of the tree, may depend on everything below)
+**Verdict:** Ready to merge.
 
-Dependency direction enforced: composition root → features → (shared | core); shared → core; core → nothing inside the app.
+## Critical
+- None.
 
-**Scan results (full `lib/` tree, focused on E09-added files):**
+## Important
+- None.
 
-- `core/` imports `features/`: **0 violations**.
-- `core/` imports `shared/`: **0 violations**.
-- `shared/` imports `features/`: **0 violations**.
-- `features/<X>/` imports `features/<Y>/` (cross-feature): **0 violations**. The only intra-`features/` imports are inside the dice slice (`dice/dice_screen.dart` importing its own `dice/widgets/*` and `dice/dice_controller.dart`) — that is intra-feature, not cross-feature.
-- `shared/widgets/*` imports `core/i18n` and `core/theme` (`shared/widgets/retro_tab_bar.dart:3-5`, `shared/widgets/pixel_icon.dart:2`, `shared/widgets/pixel_divider.dart:2`, `shared/widgets/mac_*.dart`). Per project convention this is acceptable — `core/theme` and `core/i18n` are app-wide infrastructure, not a presentation layer above shared widgets. Same pattern already existed pre-E09. No change required, but worth noting that if `shared/` were ever extracted into a standalone package it would need either an interface abstraction or the theme/i18n primitives would have to be re-homed.
+## Suggestions
 
-**Conclusion: layer separation is clean.** Every checked file respects the declared boundaries.
+- `DiceWidget` API change (adding `sides`, default `6`): **agree** with the
+  divergence from the plan. The plan's "DiceWidget keeps its current API"
+  was written before the cycle-bounding requirement landed. The available
+  alternatives were:
+  1. Threading `sides` explicitly through the widget tree (chosen).
+  2. Reading `DiceController` via `context.watch` inside `DiceAnimator`.
+  3. Hard-coding `6` and accepting incorrect faces for D4/D8/D10/D12/D20.
+  Option 2 couples a generic animation utility to a feature-specific
+  controller and inverts the dependency we want (animations should not
+  depend on `DiceController`). Option 3 is wrong. Option 1 keeps the
+  data flow explicit, props are immutable, and `DiceScreen` already
+  watches `DiceController` exactly once. The default of `6` preserves
+  source compatibility for any caller that does not yet care about
+  multi-sided dice. Recommend keeping the change.
+- `DiceGrid.builder` parameter is defined (`lib/features/dice/widgets/animations/dice_grid.dart:40`)
+  and a `_wrap` helper exists, but no current strategy passes a builder.
+  Either wire it up in `TabletopAnimation` (the docstring promises
+  "per-slot transforms") or drop the parameter to avoid dead API. Not
+  blocking — current single-transform approach in `TabletopAnimation`
+  works.
 
-## State Management Assessment
+## Detailed Findings
 
-Per `CLAUDE.md`, the stack is `setState` + `ChangeNotifier` + `package:provider` (DI only). No Bloc/Riverpod.
+### Layer separation — clean
 
-- **`_AppView` (`lib/app.dart:79-107`)**: Correct. `StatefulWidget` owning a `late final GoRouter _router = buildAppRouter();` initialized once. Comment on lines 87-90 explicitly documents why this is in `initState`-equivalent (field initializer) and not in `build`. This is the right pattern — palette / locale `notifyListeners` rebuild `_AppView.build`, but `_router` is not recreated, so navigation state survives. `context.watch<ThemeProvider>()` / `context.watch<LocaleController>()` correctly drive theme & locale rebuilds without touching the router.
+All four new files live under `lib/features/dice/widgets/animations/`.
+Their imports (verified by scanning all `^import` lines):
 
-- **`SplashScreen` (`lib/features/splash/splash_screen.dart`)**: Correct. `StatefulWidget` with a single `Timer?` field, scheduled in `initState`, cancelled in `dispose`. `mounted` check before `const DiceRoute().go(context);` guards against navigation after unmount. `splashDuration` exposed via `@visibleForTesting` for deterministic tests. The local `Theme(...)` wrap on line 58 with a hard-coded Mac Classic palette is a deliberate, documented choice (see comment lines 56-58) — keeps the splash from depending on persisted user state. This is sound.
+- `drum_animation.dart`, `tabletop_animation.dart`: `dart:math`,
+  `flutter/foundation.dart`, `flutter/material.dart`, sibling
+  `dice_grid.dart`.
+- `fast_animation.dart`: `flutter/material.dart`, sibling `dice_grid.dart`.
+- `dice_grid.dart`: `flutter/material.dart`, `core/theme/app_theme.dart`,
+  `core/theme/app_typography.dart`.
 
-- **`AppShell` (`lib/features/shell/app_shell.dart`)**: Correct. Pure `StatelessWidget`; receives `StatefulNavigationShell` from the router and renders it as the body. No business logic, no state. Tab state is owned by `go_router`'s shell, which is the right place.
+`features/dice` -> `core/theme` is the allowed direction. Nothing under
+`lib/core/` imports from the animations folder. No imports into other
+feature slices.
 
-- **`RetroTabBar` (`lib/shared/widgets/retro_tab_bar.dart`)**: Correct. `StatelessWidget`, reads colors from `Theme.of(context).extension<OneBitColors>()`, drives navigation via `shell.goBranch(i, initialLocation: i == shell.currentIndex)` — the canonical pattern for "re-tap active tab resets that branch" with `StatefulShellRoute`. No state stored in the widget.
+### Provider wiring — correct
 
-- **`PixelIcon` / `PixelIconPainter` (`lib/shared/widgets/pixel_icon.dart`)**: Correct. Pure presentation. Painter `shouldRepaint` covers matrix and color changes, so palette swaps repaint automatically.
+- `lib/app.dart:63` provides `AnimationSettingsController` via
+  `ChangeNotifierProvider<AnimationSettingsController>.value(...)` at the
+  app root inside `MultiProvider`.
+- `lib/features/dice/widgets/dice_animator.dart:35` consumes it via
+  `context.watch<AnimationSettingsController>()` and rebuilds when style
+  or speed change.
+- `AnimationSettingsController` is a `ChangeNotifier` (no Bloc/Riverpod)
+  hydrated from `AppSettingsPreference`, mirroring `AudioController` /
+  `HapticController`.
 
-- **Stubs (`history_screen.dart`, `presets_screen.dart`, `settings_screen.dart`)**: Correct. `StatelessWidget`, theme-aware, l10n-aware, no state. Identical shape — flag for low-cost dedup if a fourth "coming soon" stub ever appears, but with three near-clones it's fine to keep them duplicated rather than introducing a `ComingSoonScreen` abstraction.
+### State management — within bounds
 
-No business logic leaks into widgets, no UI-side data fetching, no mutable state on the wrong widget.
+- Grepped `lib/` for `package:bloc`, `package:flutter_bloc`,
+  `package:riverpod`, `package:flutter_riverpod`, `package:get_it`,
+  `package:mobx`, `package:signals` — **0 matches**.
+- New stateful widgets (`DrumAnimation`, `TabletopAnimation`) use
+  `AnimationController` + `setState` only.
+- `DiceAnimator` is a `StatelessWidget` that selects a strategy — no
+  hidden state.
 
-## Dependency Direction
+### Palette / aesthetic — clean
 
-Verified import graph for E09-touched files:
+- Grepped `lib/features/dice/widgets/animations/` for `Color(` and
+  `Colors.` — **0 matches**. Every color path goes through
+  `Theme.of(context).extension<OneBitColors>()` (`ink` / `paper`) in
+  `dice_grid.dart:97`.
+- Pixel snap verified in `lib/features/dice/widgets/animations/tabletop_animation.dart:147`
+  and `:151` — both translate paths apply `.roundToDouble()`.
+  `Transform.scale` is wrapped with `filterQuality: FilterQuality.none`
+  (`tabletop_animation.dart:125`), which keeps the 1-bit look during
+  the settle pulse.
 
-- `lib/app.dart` → `app_router.dart`, `core/*`, `features/dice/dice_controller.dart`, `l10n/*`, third-party. Composition root, correct.
-- `lib/app_router.dart` → `features/{dice,history,presets,settings,shell,splash}` + `go_router`. Composition over features, correct.
-- `features/splash/splash_screen.dart` → `app_router.dart` (for `const DiceRoute().go(context)`), `core/{app_info,i18n,theme}`, `shared/widgets/{pixel_divider,pixel_icon}`. **Note**: importing `app_router.dart` from inside a feature is unavoidable with `go_router_builder` typed routes (the route classes are the public navigation API) and is the typed-route pattern's intended use. Not a violation.
-- `features/shell/app_shell.dart` → `shared/widgets/retro_tab_bar.dart` + `go_router`. Correct.
-- `features/history|presets|settings/*_screen.dart` → only `core/i18n` and `core/theme`. Correct.
-- `shared/widgets/*` → `core/{i18n,theme}` only. Correct.
+### Dependency direction
 
-**Circular dependencies: none detected.** `core/` does not depend on `shared/`, `features/`, or the composition root.
+- `features/dice` -> `core/theme`: OK (UI feature reads theme).
+- `features/dice/widgets/dice_animator.dart` -> `features/settings/animation_settings_controller.dart`:
+  cross-feature import, but `animation_settings_controller` is a shared
+  user-preference controller already provided at the app root. This is
+  the same pattern as `AudioController` / `HapticController` reads
+  inside `DiceController`. Acceptable given the project's current
+  structure (no `core/settings` slice today). If more features begin
+  reading these settings, consider promoting to `lib/core/settings/`.
+- No circular dependencies detected.
 
-`MultiProvider` in `App.build` sits above `_AppView`, so every provider is in scope inside any route built by the router — verified by reading `lib/app.dart:53-75` followed by `MaterialApp.router` on line 97. This is the right placement.
+### Package structure
 
-## Package Structure
+Single-package Flutter app. Folder structure under
+`lib/features/dice/widgets/animations/` is well-scoped:
+`dice_grid.dart` (shared layout) + three strategy files, each a single
+responsibility. Matches CLAUDE.md folder conventions.
 
-The project is a single-package Flutter app (not a multi-package monorepo), so VGV's multi-package layered-architecture checklist (per-package `pubspec.yaml`, `analysis_options.yaml`, etc.) doesn't apply. Within the single package:
+### Quality gates
 
-- **Feature folders are well-scoped.** Each new `features/<slice>/` contains exactly the files E09 needed:
-  - `shell/` — `app_shell.dart`
-  - `splash/` — `splash_screen.dart`
-  - `history/`, `presets/`, `settings/` — each has `<feature>_screen.dart` + empty `widgets/` placeholder dir (pre-existing). No grab-bag packages.
-- **`shared/widgets/` additions** (`pixel_icon.dart`, `retro_tab_bar.dart`) are correctly placed: `PixelIcon` is genuinely reused (splash, tab bar; future use likely in dice/history rendering) and `RetroTabBar` is feature-agnostic infrastructure used by `AppShell`. Both belong in `shared/`.
-- **`core/app_info.dart`** is a single-purpose file (constants for version + studio name) and is consistent with how other small core concerns are organized (e.g. `core/audio/`, `core/haptic/` each have their own folder while small leaf files like `app_info.dart` sit at `core/`'s root). No restructuring needed; if `app_info.dart` ever grows past constants, promote it to `core/app_info/` with `app_info.dart` inside.
-- **Routing at top of `lib/`** (`app_router.dart` + generated `app_router.g.dart`) is correct — routing is composition, not a feature. Matches the plan's stated layout (plan section "Estrutura nova", lines 35-60).
-- **Memory rules verified**:
-  - `StatefulShellRoute.indexedStack` used (not manual `IndexedStack`) — `feedback_no_indexed_stack_use_go_router` respected.
-  - No underscore-prefixed folder names (`shell/`, `splash/`, not `_shell/` / `_internal/`) — `feedback_no_underscore_prefixed_folders` respected.
-
-## Verdict
-
-Architecture is clean. Ready to merge.
-
-- 0 critical issues
-- 0 important issues
-- 1 informational note: `shared/widgets/*` imports `core/{theme,i18n}`. Acceptable per project conventions; would need re-homing only if `shared/` were ever extracted to a standalone package.
+- `flutter analyze`: **0 issues**.
+- `very_good test --coverage`: **passes**, 100% line coverage on every
+  changed/new source file in `lib/features/dice/`:
+  - `dice_screen.dart` 33/33
+  - `dice_widget.dart` 36/36
+  - `dice_animator.dart` 22/22
+  - `animations/dice_grid.dart` 37/37
+  - `animations/drum_animation.dart` 40/40
+  - `animations/fast_animation.dart` 10/10
+  - `animations/tabletop_animation.dart` 67/67
+  - Remaining uncovered lines in the repo are all `*.g.dart` and
+    `lib/l10n/app_localizations*.dart` (generated; excluded per
+    CLAUDE.md).

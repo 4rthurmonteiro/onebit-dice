@@ -15,6 +15,7 @@ import 'package:onebit_dice/features/dice/dice_controller.dart';
 import 'package:onebit_dice/features/dice/dice_screen.dart';
 import 'package:onebit_dice/features/dice/widgets/dice_widget.dart';
 import 'package:onebit_dice/features/dice/widgets/roll_button.dart';
+import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:onebit_dice/shared/widgets/mac_button.dart';
 import 'package:provider/provider.dart';
@@ -73,6 +74,11 @@ Widget _harness({
         Provider<HistoryRepository>.value(value: history),
         ChangeNotifierProvider<AudioController>.value(value: audio),
         ChangeNotifierProvider<HapticController>.value(value: haptic),
+        ChangeNotifierProvider<AnimationSettingsController>(
+          create: (_) => AnimationSettingsController(
+            preference: InMemoryAppSettingsPreference(),
+          ),
+        ),
         Provider<LastDiceConfigPreference>.value(value: lastDicePref),
         ChangeNotifierProvider<DiceController>(
           create: (ctx) => DiceController(
