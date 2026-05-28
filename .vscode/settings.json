@@ -1,0 +1,24 @@
+{
+  "workbench.colorCustomizations": {
+    "contrastBorder": "#000000",
+    "contrastActiveBorder": "#000000",
+    "window.activeBorder": "#000000",
+    "window.inactiveBorder": "#000000",
+    "titleBar.border": "#000000",
+    "activityBar.border": "#000000",
+    "sideBar.border": "#000000",
+    "sideBarSectionHeader.border": "#000000",
+    "panel.border": "#000000",
+    "panelSection.border": "#000000",
+    "editorGroup.border": "#000000",
+    "editorGroupHeader.border": "#000000",
+    "tab.border": "#000000",
+    "tab.activeBorder": "#000000",
+    "statusBar.border": "#000000",
+    "menu.border": "#000000",
+    "notifications.border": "#000000",
+    "input.border": "#000000",
+    "dropdown.border": "#000000",
+    "focusBorder": "#000000"
+  }
+}
