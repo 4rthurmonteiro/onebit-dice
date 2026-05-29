@@ -77,7 +77,7 @@
 - [x] 4.1 Camada de áudio: `sound_player.dart` (interface + `SoundEvent`), `soloud_gateway.dart` (seam), `soloud_sound_player.dart` (impl `flutter_soloud`), `audio_controller.dart` (`ChangeNotifier` + `WidgetsBindingObserver` + toggle persistido)
 - [x] 4.2 `lib/core/haptic/haptic_controller.dart` — `ChangeNotifier` com `HapticTrigger` seam sobre `HapticFeedback.mediumImpact` + toggle persistido
 - [x] 4.3 Placeholders em `assets/sounds/` (roll.mp3, stop.mp3, total.mp3) — 100 ms de silêncio
-- [!] 4.4 Substituir placeholders por arquivos `.mp3` reais (intervenção humana — assets de áudio)
+- [x] 4.4 Substituídos por 8 takes `.ogg` reais (grab×2, shake×3, throw×3). `SoundEvent` refatorado para `grab/shake/land` com variantes random; `AudioController.playRollSequence()` toca grab → 120 ms → shake → 500 ms → land.
 
 ---
 

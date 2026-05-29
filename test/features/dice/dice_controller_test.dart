@@ -44,12 +44,12 @@ class _RecordingAudio extends AudioController {
       );
 
   final List<String> events;
-  final List<SoundEvent> plays = [];
+  int sequencesPlayed = 0;
 
   @override
-  void play(SoundEvent event) {
-    plays.add(event);
-    events.add('audio.play(${event.name})');
+  Future<void> playRollSequence() async {
+    sequencesPlayed++;
+    events.add('audio.playRollSequence');
   }
 }
 
@@ -231,23 +231,12 @@ void main() {
         expect(events, [
           'notify',
           'history.append',
-          'audio.play(total)',
+          'audio.playRollSequence',
           'haptic.trigger',
           'lastDice.write(d6,1)',
         ]);
       },
     );
-
-    test('roll() never plays roll or stop sounds — only total', () async {
-      final events = <String>[];
-      final controller = _build(events: events, rng: Random(0));
-
-      await controller.roll();
-
-      expect(events.where((e) => e.startsWith('audio.play')), [
-        'audio.play(total)',
-      ]);
-    });
 
     test(
       'roll() sets lastResult with correct diceCount, type, values',

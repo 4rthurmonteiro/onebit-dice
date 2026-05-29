@@ -3,6 +3,8 @@
 // test code that is exercising the seam.
 // ignore_for_file: invalid_use_of_internal_member
 
+import 'dart:math';
+
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onebit_dice/core/audio/soloud_gateway.dart';
@@ -20,6 +22,7 @@ class _FakeSoLoudGateway implements SoLoudGateway {
   int initCalls = 0;
   int deinitCalls = 0;
   final List<String> loadedAssets = [];
+  final Map<String, AudioSource> sourcesByPath = {};
   final List<AudioSource> playedSources = [];
   final List<SoundHandle> stoppedHandles = [];
 
@@ -47,7 +50,9 @@ class _FakeSoLoudGateway implements SoLoudGateway {
   @override
   Future<AudioSource> loadAsset(String path) async {
     loadedAssets.add(path);
-    return AudioSource(SoundHash(_nextHash++));
+    final source = AudioSource(SoundHash(_nextHash++));
+    sourcesByPath[path] = source;
+    return source;
   }
 
   @override
@@ -68,25 +73,30 @@ class _FakeSoLoudGateway implements SoLoudGateway {
   }
 }
 
+int _totalVariantCount() =>
+    SoundEvent.values.fold(0, (sum, e) => sum + e.assetPaths.length);
+
 void main() {
   group('SoLoudSoundPlayer', () {
     test('default constructor falls back to the real gateway', () {
       expect(SoLoudSoundPlayer.new, returnsNormally);
     });
 
-    test('init boots the gateway and loads every SoundEvent asset', () async {
-      final gateway = _FakeSoLoudGateway();
-      final player = SoLoudSoundPlayer(gateway: gateway);
+    test(
+      'init boots the gateway and loads every variant of every SoundEvent',
+      () async {
+        final gateway = _FakeSoLoudGateway();
+        final player = SoLoudSoundPlayer(gateway: gateway);
 
-      await player.init();
+        await player.init();
 
-      expect(gateway.initCalls, 1);
-      expect(gateway.deinitCalls, 0);
-      expect(
-        gateway.loadedAssets,
-        SoundEvent.values.map((e) => e.assetPath).toList(),
-      );
-    });
+        expect(gateway.initCalls, 1);
+        expect(gateway.deinitCalls, 0);
+        expect(gateway.loadedAssets, [
+          for (final e in SoundEvent.values) ...e.assetPaths,
+        ]);
+      },
+    );
 
     test('init is a no-op when called a second time', () async {
       final gateway = _FakeSoLoudGateway();
@@ -96,7 +106,7 @@ void main() {
       await player.init();
 
       expect(gateway.initCalls, 1);
-      expect(gateway.loadedAssets, hasLength(SoundEvent.values.length));
+      expect(gateway.loadedAssets, hasLength(_totalVariantCount()));
     });
 
     test('init calls deinit first when the gateway is already initialized '
@@ -119,36 +129,68 @@ void main() {
         await expectLater(player.init(), completes);
 
         // Subsequent play is a no-op because init failed.
-        player.play(SoundEvent.roll);
+        player.play(SoundEvent.grab);
         expect(gateway.playedSources, isEmpty);
       },
     );
 
     test('play before init is a no-op', () {
       final gateway = _FakeSoLoudGateway();
-      SoLoudSoundPlayer(gateway: gateway).play(SoundEvent.roll);
+      SoLoudSoundPlayer(gateway: gateway).play(SoundEvent.grab);
 
       expect(gateway.playedSources, isEmpty);
     });
 
-    test('play after init forwards the loaded source to the gateway', () async {
+    test('play after init picks a variant from the requested event', () async {
       final gateway = _FakeSoLoudGateway();
-      final player = SoLoudSoundPlayer(gateway: gateway);
+      final player = SoLoudSoundPlayer(gateway: gateway, random: Random(0));
       await player.init();
 
-      player
-        ..play(SoundEvent.roll)
-        ..play(SoundEvent.total);
+      player.play(SoundEvent.grab);
 
-      expect(gateway.playedSources, hasLength(2));
+      expect(gateway.playedSources, hasLength(1));
+      final grabSources = [
+        for (final p in SoundEvent.grab.assetPaths) gateway.sourcesByPath[p],
+      ];
+      expect(grabSources, contains(gateway.playedSources.single));
     });
+
+    test(
+      'play with a seeded Random selects deterministically across phases',
+      () async {
+        final gateway = _FakeSoLoudGateway();
+        final player = SoLoudSoundPlayer(gateway: gateway, random: Random(0));
+        await player.init();
+
+        player
+          ..play(SoundEvent.grab)
+          ..play(SoundEvent.shake)
+          ..play(SoundEvent.land);
+
+        // Replay the same RNG to predict the variant indices the player
+        // walked through, then map those back to the loaded sources.
+        final oracle = Random(0);
+        final expected = [
+          gateway.sourcesByPath[SoundEvent.grab.assetPaths[oracle.nextInt(
+            SoundEvent.grab.assetPaths.length,
+          )]],
+          gateway.sourcesByPath[SoundEvent.shake.assetPaths[oracle.nextInt(
+            SoundEvent.shake.assetPaths.length,
+          )]],
+          gateway.sourcesByPath[SoundEvent.land.assetPaths[oracle.nextInt(
+            SoundEvent.land.assetPaths.length,
+          )]],
+        ];
+        expect(gateway.playedSources, expected);
+      },
+    );
 
     test('play swallows engine errors instead of propagating', () async {
       final gateway = _FakeSoLoudGateway()..throwOnPlay = true;
       final player = SoLoudSoundPlayer(gateway: gateway);
       await player.init();
 
-      expect(() => player.play(SoundEvent.stop), returnsNormally);
+      expect(() => player.play(SoundEvent.shake), returnsNormally);
     });
 
     test('stopAll before init is a no-op', () async {
@@ -167,9 +209,9 @@ void main() {
         final player = SoLoudSoundPlayer(gateway: gateway);
         await player.init();
         player
-          ..play(SoundEvent.roll)
-          ..play(SoundEvent.stop)
-          ..play(SoundEvent.total);
+          ..play(SoundEvent.grab)
+          ..play(SoundEvent.shake)
+          ..play(SoundEvent.land);
 
         await player.stopAll();
 
@@ -184,7 +226,7 @@ void main() {
       final gateway = _FakeSoLoudGateway()..throwOnStop = true;
       final player = SoLoudSoundPlayer(gateway: gateway);
       await player.init();
-      player.play(SoundEvent.roll);
+      player.play(SoundEvent.grab);
 
       await expectLater(player.stopAll(), completes);
     });
@@ -204,13 +246,13 @@ void main() {
         final gateway = _FakeSoLoudGateway();
         final player = SoLoudSoundPlayer(gateway: gateway);
         await player.init();
-        player.play(SoundEvent.roll);
+        player.play(SoundEvent.grab);
         final playsBeforeDispose = gateway.playedSources.length;
 
         await player.dispose();
 
         expect(gateway.deinitCalls, 1);
-        player.play(SoundEvent.stop);
+        player.play(SoundEvent.shake);
         expect(gateway.playedSources, hasLength(playsBeforeDispose));
       },
     );

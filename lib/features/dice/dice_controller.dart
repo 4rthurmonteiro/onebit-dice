@@ -1,8 +1,8 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
-import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
 import 'package:onebit_dice/core/models/dice_type.dart';
 import 'package:onebit_dice/core/models/roll_result.dart';
@@ -20,7 +20,7 @@ import 'package:onebit_dice/shared/utils/random_dice.dart';
 /// `roll()` runs its side effects in a deliberate order:
 ///   1. compute the [RollResult] and notify listeners (UI updates first)
 ///   2. append to [HistoryRepository]
-///   3. play `SoundEvent.total`
+///   3. kick off [AudioController.playRollSequence] (fire-and-forget)
 ///   4. fire a haptic pulse
 ///   5. persist the current config
 ///
@@ -143,7 +143,7 @@ class DiceController extends ChangeNotifier {
     );
     notifyListeners();
     await _history.append(_lastResult!);
-    _audio.play(SoundEvent.total);
+    unawaited(_audio.playRollSequence());
     _haptic.trigger();
     await _lastDiceConfig.write(
       LastDiceConfig(diceType: _selectedType, count: _count),

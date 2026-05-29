@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
@@ -131,23 +134,61 @@ void main() {
       },
     );
 
-    test('play delegates to the player when soundEnabled is true', () {
-      final player = _FakeSoundPlayer();
-      AudioController(
-        preference: InMemoryAppSettingsPreference(),
-        player: player,
-      ).play(SoundEvent.roll);
+    group('playRollSequence', () {
+      test('fires grab → shake → land with the configured offsets', () {
+        fakeAsync((async) {
+          final player = _FakeSoundPlayer();
+          final controller = AudioController(
+            preference: InMemoryAppSettingsPreference(),
+            player: player,
+          );
 
-      expect(player.playCalls, [SoundEvent.roll]);
-    });
+          unawaited(controller.playRollSequence());
 
-    test('play is a no-op when soundEnabled is false', () async {
-      final pref = InMemoryAppSettingsPreference();
-      await pref.writeSoundEnabled(value: false);
-      final player = _FakeSoundPlayer();
-      AudioController(preference: pref, player: player).play(SoundEvent.roll);
+          expect(player.playCalls, [SoundEvent.grab]);
 
-      expect(player.playCalls, isEmpty);
+          async.elapse(AudioController.shakeOffset);
+          expect(player.playCalls, [SoundEvent.grab, SoundEvent.shake]);
+
+          async.elapse(AudioController.landOffset);
+          expect(player.playCalls, [
+            SoundEvent.grab,
+            SoundEvent.shake,
+            SoundEvent.land,
+          ]);
+        });
+      });
+
+      test('is a no-op when sound is disabled at the start', () async {
+        final pref = InMemoryAppSettingsPreference();
+        await pref.writeSoundEnabled(value: false);
+        final player = _FakeSoundPlayer();
+        final controller = AudioController(preference: pref, player: player);
+
+        await controller.playRollSequence();
+
+        expect(player.playCalls, isEmpty);
+      });
+
+      test('aborts mid-sequence when sound is toggled off after grab', () {
+        fakeAsync((async) {
+          final player = _FakeSoundPlayer();
+          final controller = AudioController(
+            preference: InMemoryAppSettingsPreference(),
+            player: player,
+          );
+
+          unawaited(controller.playRollSequence());
+          expect(player.playCalls, [SoundEvent.grab]);
+
+          unawaited(controller.setSoundEnabled(value: false));
+          async
+            ..flushMicrotasks()
+            ..elapse(AudioController.shakeOffset + AudioController.landOffset);
+
+          expect(player.playCalls, [SoundEvent.grab]);
+        });
+      });
     });
 
     test('setSoundEnabled(true→false) notifies, then stops, then persists '

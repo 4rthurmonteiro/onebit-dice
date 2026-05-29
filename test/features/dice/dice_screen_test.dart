@@ -41,10 +41,12 @@ class _RecordingAudio extends AudioController {
         player: _NoopSoundPlayer(),
       );
 
-  final List<SoundEvent> plays = [];
+  int sequencesPlayed = 0;
 
   @override
-  void play(SoundEvent event) => plays.add(event);
+  Future<void> playRollSequence() async {
+    sequencesPlayed++;
+  }
 }
 
 class _RecordingHaptic extends HapticController {
@@ -190,7 +192,7 @@ void main() {
 
         expect(find.text('?'), findsNothing);
         expect(find.byKey(DiceWidget.totalKey), findsOneWidget);
-        expect(audio.plays, [SoundEvent.total]);
+        expect(audio.sequencesPlayed, 1);
         expect(haptic.triggers, 1);
         expect(history.snapshot(), hasLength(1));
         expect(pref.read(), isNotNull);

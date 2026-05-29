@@ -22,6 +22,17 @@ class AudioController extends ChangeNotifier with WidgetsBindingObserver {
        _player = player ?? SoLoudSoundPlayer(),
        _soundEnabled = preference.readSoundEnabled() ?? true;
 
+  /// Delay between the `grab` and `shake` phases of [playRollSequence].
+  /// Tuned to let the grab transient finish before the shake layer enters.
+  @visibleForTesting
+  static const Duration shakeOffset = Duration(milliseconds: 120);
+
+  /// Delay between the `shake` and `land` phases of [playRollSequence].
+  /// Matches the body length of the shake takes so `land` lines up with
+  /// the visual settle.
+  @visibleForTesting
+  static const Duration landOffset = Duration(milliseconds: 500);
+
   final AppSettingsPreference _preference;
   final SoundPlayer _player;
   bool _soundEnabled;
@@ -39,10 +50,22 @@ class AudioController extends ChangeNotifier with WidgetsBindingObserver {
     _initialized = true;
   }
 
-  /// Plays [event] when sound is enabled. No-op otherwise.
-  void play(SoundEvent event) {
+  /// Plays the full dice-roll sound sequence — `grab` immediately, then
+  /// `shake` after [shakeOffset], then `land` after a further [landOffset].
+  ///
+  /// No-op when sound is disabled. Each phase re-checks the flag, so a
+  /// toggle mid-sequence stops further phases. Callers typically
+  /// `unawaited` the returned Future — completion only indicates the
+  /// `land` phase was triggered, not that the audio has finished playing.
+  Future<void> playRollSequence() async {
     if (!_soundEnabled) return;
-    _player.play(event);
+    _player.play(SoundEvent.grab);
+    await Future<void>.delayed(shakeOffset);
+    if (!_soundEnabled) return;
+    _player.play(SoundEvent.shake);
+    await Future<void>.delayed(landOffset);
+    if (!_soundEnabled) return;
+    _player.play(SoundEvent.land);
   }
 
   /// Updates the flag and notifies listeners immediately for snappy UI,

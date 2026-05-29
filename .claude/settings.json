@@ -62,7 +62,9 @@
       "Bash(shellcheck /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice/tools/ralph/afk-ralph.sh)",
       "Bash(python3)",
       "Bash(dart run *)",
-      "Bash(./tools/ralph/feedback.sh --all)"
+      "Bash(./tools/ralph/feedback.sh --all)",
+      "Bash(./tools/ralph/feedback.sh)",
+      "Bash(grep -vE \"^$|^\\\\[2K\")"
     ]
   }
 }

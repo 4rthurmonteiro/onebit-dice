@@ -1,22 +1,43 @@
 /// The set of one-shot sound effects the app can play, paired with the
-/// bundled asset that backs each one.
+/// bundled assets that back each one.
+///
+/// Each phase ships multiple takes — the player picks one at random per
+/// trigger so repeated rolls don't sound identical.
 ///
 /// The ordering of members is not persisted (unlike enums in
 /// `lib/core/storage/models/animation_settings.dart`), so reordering is safe.
 enum SoundEvent {
-  /// Played while the dice are rolling.
-  roll(assetPath: 'assets/sounds/roll.mp3'),
+  /// Played when a roll starts — the "pick up the dice" beat.
+  grab(
+    assetPaths: [
+      'assets/sounds/dice-grab-1.ogg',
+      'assets/sounds/dice-grab-2.ogg',
+    ],
+  ),
 
-  /// Played when the rolling animation finishes and individual dice settle.
-  stop(assetPath: 'assets/sounds/stop.mp3'),
+  /// Played mid-roll — the dice tumbling in the cup.
+  shake(
+    assetPaths: [
+      'assets/sounds/dice-shake-1.ogg',
+      'assets/sounds/dice-shake-2.ogg',
+      'assets/sounds/dice-shake-3.ogg',
+    ],
+  ),
 
-  /// Played when the final total is revealed.
-  total(assetPath: 'assets/sounds/total.mp3');
+  /// Played when the dice hit the table — the closing beat.
+  land(
+    assetPaths: [
+      'assets/sounds/dice-throw-1.ogg',
+      'assets/sounds/dice-throw-2.ogg',
+      'assets/sounds/dice-throw-3.ogg',
+    ],
+  );
 
-  const SoundEvent({required this.assetPath});
+  const SoundEvent({required this.assetPaths});
 
-  /// The bundled asset path for this SFX, suitable for `loadAsset`.
-  final String assetPath;
+  /// Bundled asset paths for this phase. The player loads every entry and
+  /// picks one at random each time the event fires.
+  final List<String> assetPaths;
 }
 
 /// Contract for a minimal audio engine that plays short, one-shot SFX.
@@ -25,11 +46,12 @@ enum SoundEvent {
 /// records calls — there is no reason to instantiate the real engine in unit
 /// tests.
 abstract interface class SoundPlayer {
-  /// Boots the engine and pre-loads every [SoundEvent]. Idempotent: calling
-  /// this more than once is a no-op.
+  /// Boots the engine and pre-loads every [SoundEvent] variant. Idempotent:
+  /// calling this more than once is a no-op.
   Future<void> init();
 
-  /// Plays [event]. Fire-and-forget. No-op when [init] has not run yet.
+  /// Plays a random variant of [event]. Fire-and-forget. No-op when [init]
+  /// has not run yet.
   void play(SoundEvent event);
 
   /// Stops any SFX currently playing. Idempotent. No-op when [init] has not
