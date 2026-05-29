@@ -8,11 +8,11 @@
 
 ## EPIC 0 — Infraestrutura & Setup do Agent Loop
 
-- [ ] 0.1 Escrever `CLAUDE.md` com convenções + instruções do loop
-- [ ] 0.2 Atualizar `pubspec.yaml` com todas as dependências do M1 + rodar `flutter pub get`
-- [ ] 0.3 Criar estrutura de pastas (`lib/core/`, `lib/features/`, `lib/shared/`) com placeholders
-- [ ] 0.4 Atualizar `analysis_options.yaml` com regras adicionais
-- [ ] 0.5 Criar `.github/workflows/ci.yml` (flutter analyze + flutter test)
+- [x] 0.1 `CLAUDE.md` com convenções + instruções do loop
+- [x] 0.2 `pubspec.yaml` com todas as dependências do M1
+- [x] 0.3 Estrutura de pastas (`lib/core/`, `lib/features/`, `lib/shared/`)
+- [x] 0.4 `analysis_options.yaml` com regras `very_good_analysis`
+- [x] 0.5 `.github/workflows/ci.yml` (flutter analyze + very_good test)
 - [!] 0.6 Firebase setup — requer conta Firebase + `flutterfire configure` (intervenção humana)
 
 ---
@@ -121,15 +121,15 @@
 
 ## EPIC 8 — Feature: Home Screen / Rolagem
 
-- [ ] 8.1 `lib/features/dice/dice_controller.dart` — `ChangeNotifier` com `roll()`, `setType()`, `setCount()`
-- [ ] 8.2 `lib/features/dice/widgets/type_selector.dart` — chips para cada DiceType
-- [ ] 8.3 `lib/features/dice/widgets/quantity_selector.dart` — − / count / + clampado 1–10
-- [ ] 8.4 `lib/features/dice/widgets/dice_widget.dart` — placeholder (número grande Silkscreen)
-- [ ] 8.5 `lib/features/dice/widgets/roll_button.dart` — MacButton full-width "ROLAR"
-- [ ] 8.6 `lib/features/dice/dice_screen.dart` — compõe todos os widgets + resultado
-- [ ] 8.7 `test/features/dice/dice_controller_test.dart`
-- [ ] 8.8 `test/features/dice/widgets/type_selector_test.dart`
-- [ ] 8.9 `test/features/dice/widgets/quantity_selector_test.dart`
+- [x] 8.1 `lib/features/dice/dice_controller.dart` — `ChangeNotifier` com `roll()`, `setType()`, `setCount()`, `applyConfig()`
+- [x] 8.2 `lib/features/dice/widgets/type_selector.dart` — 7 chips com `Semantics(button, selected)`
+- [x] 8.3 `lib/features/dice/widgets/quantity_selector.dart` — −/count/+ clampado 1–10, com semantics
+- [x] 8.4 `lib/features/dice/widgets/dice_widget.dart` + `dice_grid.dart` + `dice_slot.dart` — grid responsivo + animator
+- [x] 8.5 `lib/features/dice/widgets/roll_button.dart` — MacButton full-width "ROLAR"
+- [x] 8.6 `lib/features/dice/dice_screen.dart` — compõe tudo + result + integração com history/audio/haptic/prefs
+- [x] 8.7 `test/features/dice/dice_controller_test.dart`
+- [x] 8.8 `test/features/dice/widgets/type_selector_test.dart`
+- [x] 8.9 `test/features/dice/widgets/quantity_selector_test.dart` + tests para dice_widget, dice_grid, dice_slot, roll_button, dice_screen
 
 ---
 
@@ -144,21 +144,21 @@
 
 ## EPIC 10 — Feature: Presets / Jogos
 
-- [ ] 10.1 `lib/features/presets/preset_data.dart` — 7 presets estáticos
-- [ ] 10.2 `lib/features/presets/widgets/preset_card.dart` — `MacWindow` card com nome + dado
-- [ ] 10.3 `lib/features/presets/presets_screen.dart` — seção builtIn + seção custom + "+ NOVO"
-- [ ] 10.4 Bottom sheet para criar preset customizado
-- [ ] 10.5 `test/features/presets/presets_screen_test.dart`
+- [x] 10.1 `lib/features/presets/preset_data.dart` — 7 presets builtIn (Ludo, Banco, War, Yahtzee, D&D Ataque, Magic Vida, Percentil)
+- [x] 10.2 `lib/features/presets/widgets/preset_card.dart` — card com label + notação + semantics
+- [x] 10.3 `lib/features/presets/presets_screen.dart` — `preset_section.dart` builtIn + custom + `add_preset_button.dart`
+- [x] 10.4 `lib/features/presets/widgets/create_preset_sheet.dart` — bottom sheet com TextField (24 chars max, trim) + save habilitado condicional
+- [x] 10.5 Tests para presets_screen, preset_card, preset_section, add_preset_button, create_preset_sheet, preset_data
 
 ---
 
 ## EPIC 11 — Feature: Ajustes
 
-- [ ] 11.1 `lib/features/settings/widgets/palette_selector.dart` — grid 7 swatches
-- [ ] 11.2 `lib/features/settings/widgets/toggle_tile.dart` — checkbox Mac-style □/X
-- [ ] 11.3 `lib/features/settings/widgets/animation_settings.dart` — estilo + velocidade
-- [ ] 11.4 `lib/features/settings/settings_screen.dart` — compõe tudo
-- [ ] 11.5 `test/features/settings/settings_screen_test.dart`
+- [x] 11.1 `lib/features/settings/widgets/palette_selector.dart` — grid 7 swatches com `PaletteSwatchPainter`
+- [x] 11.2 `lib/features/settings/widgets/toggle_tile.dart` — checkbox Mac-style □/X com `CheckboxPainter`
+- [x] 11.3 `lib/features/settings/widgets/animation_section.dart` — radios de estilo + velocidade (3×3) com `RadioPainter`
+- [x] 11.4 `lib/features/settings/settings_screen.dart` — compõe 5 sections (palette, sound/haptic, animation, language, about)
+- [x] 11.5 Tests para settings_screen, about_section, animation_section, language_picker, palette_selector, toggle_tile
 
 ---
 
@@ -204,12 +204,12 @@
 
 - [!] 15.1 Gerar keystore Android + configurar `key.properties` + backup (intervenção humana)
 - [ ] 15.2 Atualizar `android/app/build.gradle` com signing config
-- [ ] 15.3 Atualizar `AndroidManifest.xml` — bundle ID + app name
-- [ ] 15.4 Atualizar `ios/Runner/Info.plist` — bundle ID + display name + min iOS 13
+- [x] 15.3 Bundle ID `com.am2.onebitdice` + `android:label="1-Bit Dice"` (configurado no `build.gradle.kts` namespace/applicationId + AndroidManifest)
+- [x] 15.4 iOS `PRODUCT_BUNDLE_IDENTIFIER = com.am2.onebitdice`, `CFBundleDisplayName/Name = "1-Bit Dice"`, `IPHONEOS_DEPLOYMENT_TARGET = 13.0` + Podfile `platform :ios, '13.0'`
 - [ ] 15.5 `flutter build appbundle --release` — verificar build sem erros
 - [ ] 15.6 `flutter build ipa --release` — verificar build sem erros
 - [!] 15.7 Capturar screenshots nas resoluções corretas (intervenção humana — device físico)
 - [!] 15.8 Criar app records no Play Console + App Store Connect (intervenção humana)
-- [ ] 15.9 Publicar política de privacidade no GitHub Pages
+- [x] 15.9 Política de privacidade redigida em PT-BR + EN ([docs/privacy/index.html](../privacy/index.html) + [en.html](../privacy/en.html)) — falta habilitar GH Pages no GitHub: Settings → Pages → Source: `main` / `/docs`. URL final: `https://4rthurmonteiro.github.io/onebit-dice/privacy/`
 - [ ] 15.10 Upload AAB no Play Console (faixa de testes internos)
 - [ ] 15.11 Upload IPA no App Store Connect
