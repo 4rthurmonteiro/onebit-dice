@@ -29,6 +29,9 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   equatable: ^2.0.8
+  firebase_analytics: ^12.4.1
+  firebase_core: ^4.9.0
+  firebase_crashlytics: ^5.2.2
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -49,6 +52,7 @@ dev_dependencies:
     sdk: flutter
   go_router_builder: ^4.3.0
   hive_ce_generator: ^1.11.2
+  mocktail: ^1.0.5
   very_good_analysis: ^7.0.0
 
 flutter:

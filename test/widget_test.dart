@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onebit_dice/app.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
@@ -42,6 +43,7 @@ App _buildApp() {
     animationSettingsController: AnimationSettingsController(
       preference: settings,
     ),
+    analyticsService: const NoOpAnalyticsService(),
   );
 }
 
