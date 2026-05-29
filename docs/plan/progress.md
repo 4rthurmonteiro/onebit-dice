@@ -192,11 +192,11 @@
 
 ## EPIC 14 — Assets: Ícone + Native Splash
 
-- [!] 14.1 Criar `assets/icon/icon.png` (1024×1024, d6 pixel art) — intervenção humana
-- [ ] 14.2 `flutter_launcher_icons.yaml` — config Android + iOS
-- [ ] 14.3 Rodar `dart run flutter_launcher_icons`
-- [ ] 14.4 Atualizar `flutter_native_splash.yaml` com ícone real
-- [ ] 14.5 Rodar `dart run flutter_native_splash:create`
+- [x] 14.1 `assets/icon/icon.png` + `assets/icon/icon-foreground.png` (1024×1024, d6 face 1, direção A do critique em [docs/design/icon-review/](../design/icon-review/))
+- [x] 14.2 `flutter_launcher_icons.yaml` + `flutter_launcher_icons: ^0.13.1` em dev_dependencies
+- [x] 14.3 `dart run flutter_launcher_icons` — mipmaps Android (legacy + adaptive) + `AppIcon.appiconset` + `colors.xml` gerados
+- [x] 14.4 `flutter_native_splash.yaml` inalterado (já apontava para `assets/icon/icon.png`)
+- [x] 14.5 `dart run flutter_native_splash:create` — splash regenerado com ícone novo
 
 ---
 

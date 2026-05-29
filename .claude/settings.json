@@ -59,7 +59,10 @@
       "Read(//private/var/folders/**)",
       "Read(//private/tmp/**)",
       "Bash(bash -n /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice/tools/ralph/afk-ralph.sh)",
-      "Bash(shellcheck /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice/tools/ralph/afk-ralph.sh)"
+      "Bash(shellcheck /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice/tools/ralph/afk-ralph.sh)",
+      "Bash(python3)",
+      "Bash(dart run *)",
+      "Bash(./tools/ralph/feedback.sh --all)"
     ]
   }
 }

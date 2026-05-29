@@ -1,11 +1,11 @@
 {
-    "name": "onebit_dice",
-    "short_name": "onebit_dice",
+    "name": "1-Bit Dice",
+    "short_name": "1-Bit Dice",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#FFFFFF",
+    "theme_color": "#000000",
+    "description": "Dice for every game. A retro 1-bit dice roller for board games and RPGs.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
