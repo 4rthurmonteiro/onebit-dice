@@ -13,7 +13,7 @@
 - [x] 0.3 Estrutura de pastas (`lib/core/`, `lib/features/`, `lib/shared/`)
 - [x] 0.4 `analysis_options.yaml` com regras `very_good_analysis`
 - [x] 0.5 `.github/workflows/ci.yml` (flutter analyze + very_good test)
-- [!] 0.6 Firebase setup — requer conta Firebase + `flutterfire configure` (intervenção humana)
+- [x] 0.6 Firebase setup — projeto `onebit-dice-am2` criado; `flutterfire configure` rodado p/ android+ios; `lib/firebase_options.dart`, `google-services.json`, `GoogleService-Info.plist`, `firebase.json` commitados; plugins Gradle (`com.google.gms.google-services` + `com.google.firebase.crashlytics`) aplicados em `android/settings.gradle.kts` + `android/app/build.gradle.kts`
 
 ---
 
@@ -83,14 +83,15 @@
 
 ## EPIC 5 — Core: Analytics & Crash Reporting
 
-> Nota: bundled com **0.6 Firebase setup** (`[!]` BLOCKED). Faz pouco sentido
-> implementar a `AnalyticsService` antes de o Firebase estar configurado —
-> o plano completo (interfaces No-Op/Firebase, 9 call sites, hooks de
-> Crashlytics) deve ser elaborado e executado quando 0.6 desbloquear.
+> Bootstrap entregue junto com **0.6**. Interface `AnalyticsService` +
+> `NoOpAnalyticsService` + `FirebaseAnalyticsService` (Analytics +
+> Crashlytics injetados via construtor) cobertos por testes. Call sites
+> de eventos específicos (dice rolled, palette changed etc.) ficam para
+> uma iteração futura — fora do escopo deste bootstrap.
 
-- [!] 5.1 `lib/core/analytics/analytics_service.dart` — bundled com 0.6
-- [!] 5.2 Atualizar `lib/main.dart` — `Firebase.initializeApp` + Crashlytics `FlutterError.onError`
-- [!] 5.3 `test/core/analytics/analytics_service_test.dart` — bundled com 0.6
+- [x] 5.1 `lib/core/analytics/analytics_service.dart` + `firebase_analytics_service.dart` — interface + `NoOpAnalyticsService` + impl Firebase
+- [x] 5.2 `lib/main.dart` — `Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)` + `FlutterError.onError` → `crashlytics.recordFlutterFatalError` + `PlatformDispatcher.onError` → `crashlytics.recordError(fatal: true)` + `setCrashlyticsCollectionEnabled(!kDebugMode)`. `App` recebe `analyticsService` e expõe via `Provider<AnalyticsService>`.
+- [x] 5.3 `test/core/analytics/analytics_service_test.dart` — `NoOpAnalyticsService` smoke + `FirebaseAnalyticsService` forwarding (mocktail mocks de `FirebaseAnalytics` / `FirebaseCrashlytics`)
 
 ---
 

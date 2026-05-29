@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "590407408363",
+    "project_id": "onebit-dice-am2",
+    "storage_bucket": "onebit-dice-am2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:590407408363:android:9dd0c4e47f9c2f664b7cae",
+        "android_client_info": {
+          "package_name": "com.am2.onebitdice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjAyH_pX9T7-8MUxzwFG3oH_ZYbkNxkOg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

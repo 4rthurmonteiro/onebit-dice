@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:onebit_dice/app_router.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
 import 'package:onebit_dice/core/i18n/locale_controller.dart';
@@ -42,6 +43,7 @@ class App extends StatelessWidget {
     required this.audioController,
     required this.hapticController,
     required this.animationSettingsController,
+    required this.analyticsService,
     super.key,
   });
 
@@ -54,10 +56,14 @@ class App extends StatelessWidget {
   /// Owns the persisted dice-animation style and speed preferences.
   final AnimationSettingsController animationSettingsController;
 
+  /// Records analytics events and crash reports.
+  final AnalyticsService analyticsService;
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<AnalyticsService>.value(value: analyticsService),
         ChangeNotifierProvider<AudioController>.value(value: audioController),
         ChangeNotifierProvider<HapticController>.value(value: hapticController),
         ChangeNotifierProvider<AnimationSettingsController>.value(
