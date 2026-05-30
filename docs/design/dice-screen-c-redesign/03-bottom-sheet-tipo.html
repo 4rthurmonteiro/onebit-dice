@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1-Bit Dice — Bottom Sheet: Escolher Tipo de Dado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #fff;
+      color: #000;
+      font-family: 'Press Start 2P', monospace;
+      padding: 32px 16px 64px;
+    }
+
+    h1 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 8px;
+      border-bottom: 3px solid #000;
+      padding-bottom: 12px;
+    }
+
+    .subtitle {
+      font-family: 'Silkscreen', monospace;
+      font-size: 11px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 40px;
+      color: #000;
+    }
+
+    /* ── VARIANT ROW ── */
+    .variants-row {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 64px;
+    }
+
+    .variant-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .variant-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border: 2px solid #000;
+      padding: 4px 10px;
+    }
+
+    /* ── PHONE FRAME ── */
+    .phone {
+      width: 300px;
+      height: 600px;
+      border: 3px solid #000;
+      position: relative;
+      overflow: hidden;
+      background: #fff;
+      image-rendering: pixelated;
+    }
+
+    /* Notch bar */
+    .phone::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 20px;
+      background: #000;
+      z-index: 10;
+    }
+
+    /* ── MAIN SCREEN (background) ── */
+    .screen-bg {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Pixel dice icon on main screen */
+    .bg-dice {
+      width: 120px;
+      height: 120px;
+      border: 3px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 28px;
+    }
+
+    .bg-label {
+      margin-top: 12px;
+      font-family: 'Silkscreen', monospace;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    /* ── HATCH OVERLAY (1-bit "dimming" — no gray allowed) ── */
+    .hatch-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      /* 4×4 checkerboard hatch — every other pixel black, no gray */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='2' height='2' x='0' y='0' fill='%23000'/%3E%3Crect width='2' height='2' x='2' y='2' fill='%23000'/%3E%3C/svg%3E");
+      background-size: 4px 4px;
+      opacity: 1;
+    }
+
+    /* ── BOTTOM SHEET BASE ── */
+    .sheet {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      background: #fff;
+      border-top: 3px solid #000;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    /* Drag handle row */
+    .sheet-handle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px 0;
+    }
+
+    .drag-handle {
+      width: 40px;
+      height: 5px;
+      border: 2px solid #000;
+      /* pixel-art inner fill — 3 segments */
+      background: linear-gradient(to right, #000 33%, #fff 33%, #fff 66%, #000 66%);
+      image-rendering: pixelated;
+      margin: 0 auto;
+    }
+
+    /* Pure pixel drag handle using repeating blocks */
+    .drag-handle-px {
+      display: flex;
+      gap: 3px;
+      margin: 0 auto;
+    }
+    .drag-handle-px span {
+      display: block;
+      width: 8px;
+      height: 4px;
+      background: #000;
+    }
+
+    .sheet-close-btn {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #000;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .sheet-close-btn:hover { background: #000; color: #fff; }
+
+    .sheet-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px 8px;
+      border-bottom: 2px solid #000;
+    }
+
+    .sheet-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* hint: close cues */
+    .close-hints {
+      font-family: 'Silkscreen', monospace;
+      font-size: 9px;
+      letter-spacing: 0;
+      text-align: center;
+      padding: 5px 12px;
+      border-bottom: 1px solid #000;
+      text-transform: uppercase;
+    }
+
+    /* ════════════════════════════════════
+       VARIANTE A — lista vertical
+    ════════════════════════════════════ */
+    .sheet-a { height: 360px; }
+
+    .list-scroll {
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .dice-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 2px solid #000;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .dice-list-item:last-child { border-bottom: none; }
+
+    .dice-list-item.selected {
+      background: #000;
+      color: #fff;
+    }
+
+    .dice-list-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Tiny pixel dice shape badge */
+    .dice-badge {
+      width: 22px;
+      height: 22px;
+      border: 2px solid currentColor;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7px;
+      flex-shrink: 0;
+    }
+
+    .dice-list-item.selected .dice-badge {
+      border-color: #fff;
+    }
+
+    /* Pixel checkmark — 3 tiny squares */
+    .pixel-check {
+      display: grid;
+      grid-template-columns: repeat(5, 4px);
+      grid-template-rows: repeat(5, 4px);
+      gap: 0;
+    }
+    .pixel-check span {
+      display: block;
+      width: 4px;
+      height: 4px;
+    }
+    .pixel-check span.on { background: #fff; }
+
+    /* ════════════════════════════════════
+       VARIANTE B — grade 2 colunas
+    ════════════════════════════════════ */
+    .sheet-b { height: 380px; }
+
+    .dice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding: 0;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .dice-card {
+      border-right: 2px solid #000;
+      border-bottom: 2px solid #000;
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .dice-card:nth-child(2n) { border-right: none; }
+    .dice-card:nth-last-child(-n+2) { border-bottom: none; }
+
+    .dice-card.selected {
+      background: #000;
+      color: #fff;
+    }
+
+    /* SVG-based pixel dice shapes */
+    .dice-shape {
+      image-rendering: pixelated;
+    }
+
+    .dice-card-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .dice-card-sublabel {
+      font-family: 'Silkscreen', monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+    .dice-card.selected .dice-card-sublabel { opacity: 0.8; }
+
+    /* ════════════════════════════════════
+       VARIANTE C — recentes + grade
+    ════════════════════════════════════ */
+    .sheet-c { height: 420px; }
+
+    .recentes-section {
+      padding: 8px 10px 0;
+    }
+
+    .section-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .recentes-row {
+      display: flex;
+      gap: 6px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #000;
+      overflow-x: auto;
+    }
+
+    .recente-chip {
+      border: 2px solid #000;
+      padding: 4px 8px;
+      font-family: 'Silkscreen', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .recente-chip.selected {
+      background: #000;
+      color: #fff;
+    }
+
+    .recente-dot {
+      width: 4px;
+      height: 4px;
+      background: currentColor;
+      display: inline-block;
+    }
+
+    .all-section {
+      padding: 8px 10px 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dice-grid-c {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .dice-cell {
+      border-right: 2px solid #000;
+      border-bottom: 2px solid #000;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .dice-cell:nth-child(4n) { border-right: none; }
+    .dice-cell.selected { background: #000; color: #fff; }
+
+    .dice-cell-label {
+      font-family: 'Silkscreen', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    /* ── TAB BAR (decorative) ── */
+    .tab-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 48px;
+      border-top: 3px solid #000;
+      background: #fff;
+      display: flex;
+      z-index: 1;
+    }
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-family: 'Silkscreen', monospace;
+      font-size: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      border-right: 2px solid #000;
+    }
+    .tab-item:last-child { border-right: none; }
+    .tab-item.active { background: #000; color: #fff; }
+    .tab-icon { font-size: 11px; line-height: 1; }
+
+    /* ── DESIGN NOTES ── */
+    .notes-section {
+      max-width: 980px;
+      margin: 0 auto;
+      border: 3px solid #000;
+      padding: 0;
+    }
+
+    .notes-header {
+      background: #000;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 12px 16px;
+    }
+
+    .notes-body {
+      padding: 20px 20px;
+    }
+
+    .notes-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Silkscreen', monospace;
+      font-size: 12px;
+      margin-bottom: 24px;
+    }
+    .notes-table th {
+      background: #000;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      text-align: left;
+      border: 2px solid #000;
+    }
+    .notes-table td {
+      border: 2px solid #000;
+      padding: 8px 12px;
+      vertical-align: top;
+    }
+    .notes-table tr:nth-child(even) td { background: #f8f8f8; }
+
+    .tag {
+      display: inline-block;
+      border: 2px solid #000;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      padding: 2px 6px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .tag.rec { background: #000; color: #fff; }
+
+    .notes-rec {
+      border: 3px solid #000;
+      padding: 14px 16px;
+      margin-top: 16px;
+    }
+    .notes-rec-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .notes-rec-body {
+      font-family: 'Silkscreen', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .notes-rec-body p { margin-bottom: 8px; }
+    .notes-rec-body p:last-child { margin-bottom: 0; }
+
+    .kv-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .kv-list li {
+      display: flex;
+      gap: 8px;
+      padding: 5px 0;
+      border-bottom: 1px dashed #000;
+      font-family: 'Silkscreen', monospace;
+      font-size: 12px;
+    }
+    .kv-list li:last-child { border-bottom: none; }
+    .kv-key {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      text-transform: uppercase;
+      min-width: 80px;
+      padding-top: 2px;
+    }
+
+    .pixel-rule {
+      border: none;
+      border-top: 2px solid #000;
+      margin: 20px 0;
+    }
+
+    /* scrollbar 1-bit */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: #000; }
+    ::-webkit-scrollbar-track { background: #fff; border-left: 1px solid #000; }
+  </style>
+</head>
+<body>
+
+<h1>1-Bit Dice · Bottom Sheet — Escolher Tipo de Dado</h1>
+<p class="subtitle">Design C · Tela de Rolagem · 3 Variantes de Layout</p>
+
+<div class="variants-row">
+
+  <!-- ══════════════════════════════════
+       VARIANTE A — LISTA VERTICAL
+  ══════════════════════════════════ -->
+  <div class="variant-wrap">
+    <div class="variant-label">Variante A — Lista</div>
+
+    <div class="phone">
+      <!-- notch (via ::before) -->
+
+      <!-- Background screen -->
+      <div class="screen-bg" style="padding-top:20px;">
+        <div class="bg-dice">D20</div>
+        <div class="bg-label">TOQUE PARA ROLAR</div>
+      </div>
+
+      <!-- Tab bar (behind sheet) -->
+      <div class="tab-bar">
+        <div class="tab-item active"><span class="tab-icon">⚄</span>ROLAR</div>
+        <div class="tab-item"><span class="tab-icon">📋</span>HIST.</div>
+        <div class="tab-item"><span class="tab-icon">🎲</span>JOGOS</div>
+        <div class="tab-item"><span class="tab-icon">⚙</span>AJUST.</div>
+      </div>
+
+      <!-- Hatch overlay -->
+      <div class="hatch-overlay"></div>
+
+      <!-- SHEET A -->
+      <div class="sheet sheet-a">
+        <!-- Drag handle row -->
+        <div class="sheet-handle-row">
+          <div style="width:20px;"></div>
+          <div class="drag-handle-px">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="sheet-close-btn">✕</div>
+        </div>
+
+        <!-- Title row -->
+        <div class="sheet-title-row">
+          <span class="sheet-title">ESCOLHER DADO</span>
+          <span style="font-family:'Silkscreen',monospace;font-size:9px;text-transform:uppercase;">7 TIPOS</span>
+        </div>
+
+        <!-- Close hints -->
+        <div class="close-hints">↓ ARRASTAR · TAP FORA · ✕</div>
+
+        <!-- List -->
+        <div class="list-scroll">
+          <div class="dice-list-item">
+            <div class="dice-left" style="display:flex;align-items:center;gap:10px;">
+              <div class="dice-badge">▲</div>
+              <span>D4</span>
+            </div>
+            <span style="font-family:'Silkscreen',monospace;font-size:10px;">4 LADOS</span>
+          </div>
+          <div class="dice-list-item">
+            <div class="dice-left" style="display:flex;align-items:center;gap:10px;">
+              <div class="dice-badge">■</div>
+              <span>D6</span>
+            </div>
+            <span style="font-family:'Silkscreen',monospace;font-size:10px;">6 LADOS</span>
+          </div>
+          <div class="dice-list-item">
+            <div class="dice-left" style="display:flex;align-items:center;gap:10px;">
+              <div class="dice-badge">◆</div>
+              <span>D8</span>
+            </div>
+            <span style="font-family:'Silkscreen',monospace;font-size:10px;">8 LADOS</span>
+          </div>
+          <div class="dice-list-item">
+            <div class="dice-left" style="display:flex;align-items:center;gap:10px;">
+              <div class="dice-badge">◇</div>
+              <span>D10</span>
+            </div>
+            <span style="font-family:'Silkscreen',monospace;font-size:10px;">10 LADOS</span>
+          </div>
+          <div class="dice-list-item">
+            <div class="dice-left" style="display:flex;align-items:center;gap:10px;">
+              <div class="dice-badge">⬠</div>
+              <span>D12</span>
+            </div>
+            <span style="font-family:'Silkscreen',monospace;font-size:10px;">12 LADOS</span>
+          </div>
+          <!-- SELECTED: D20 -->
+          <div class="dice-list-item selected">
+            <div class="dice-left" style="display:flex;align-items:center;gap:10px;">
+              <div class="dice-badge">⬟</div>
+              <span>D20</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-family:'Silkscreen',monospace;font-size:10px;">20 LADOS</span>
+              <!-- Pixel checkmark via SVG -->
+              <svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;flex-shrink:0;">
+                <rect x="1" y="6" width="2" height="2" fill="#fff"/>
+                <rect x="3" y="8" width="2" height="2" fill="#fff"/>
+                <rect x="5" y="6" width="2" height="2" fill="#fff"/>
+                <rect x="7" y="4" width="2" height="2" fill="#fff"/>
+                <rect x="9" y="2" width="2" height="2" fill="#fff"/>
+              </svg>
+            </div>
+          </div>
+          <div class="dice-list-item">
+            <div class="dice-left" style="display:flex;align-items:center;gap:10px;">
+              <div class="dice-badge">%</div>
+              <span>D100</span>
+            </div>
+            <span style="font-family:'Silkscreen',monospace;font-size:10px;">100 LADOS</span>
+          </div>
+        </div>
+      </div>
+    </div><!-- /phone -->
+  </div><!-- /variant-wrap A -->
+
+
+  <!-- ══════════════════════════════════
+       VARIANTE B — GRADE 2 COLUNAS
+  ══════════════════════════════════ -->
+  <div class="variant-wrap">
+    <div class="variant-label">Variante B — Grade</div>
+
+    <div class="phone">
+      <div class="screen-bg" style="padding-top:20px;">
+        <div class="bg-dice">D20</div>
+        <div class="bg-label">TOQUE PARA ROLAR</div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item active"><span class="tab-icon">⚄</span>ROLAR</div>
+        <div class="tab-item"><span class="tab-icon">📋</span>HIST.</div>
+        <div class="tab-item"><span class="tab-icon">🎲</span>JOGOS</div>
+        <div class="tab-item"><span class="tab-icon">⚙</span>AJUST.</div>
+      </div>
+      <div class="hatch-overlay"></div>
+
+      <!-- SHEET B -->
+      <div class="sheet sheet-b">
+        <div class="sheet-handle-row">
+          <div style="width:20px;"></div>
+          <div class="drag-handle-px">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="sheet-close-btn">✕</div>
+        </div>
+        <div class="sheet-title-row">
+          <span class="sheet-title">ESCOLHER DADO</span>
+          <span style="font-family:'Silkscreen',monospace;font-size:9px;text-transform:uppercase;">7 TIPOS</span>
+        </div>
+        <div class="close-hints">↓ ARRASTAR · TAP FORA · ✕</div>
+
+        <!-- 2-col grid -->
+        <div class="dice-grid">
+          <!-- D4 -->
+          <div class="dice-card">
+            <svg class="dice-shape" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+              <polygon points="18,2 34,32 2,32" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+              <text x="18" y="26" text-anchor="middle" font-family="'Press Start 2P'" font-size="8" fill="#000">4</text>
+            </svg>
+            <div class="dice-card-label">D4</div>
+            <div class="dice-card-sublabel">TETRAEDRO</div>
+          </div>
+          <!-- D6 -->
+          <div class="dice-card">
+            <svg class="dice-shape" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+              <rect x="2" y="2" width="32" height="32" fill="none" stroke="#000" stroke-width="3"/>
+              <text x="18" y="24" text-anchor="middle" font-family="'Press Start 2P'" font-size="8" fill="#000">6</text>
+            </svg>
+            <div class="dice-card-label">D6</div>
+            <div class="dice-card-sublabel">CUBO</div>
+          </div>
+          <!-- D8 -->
+          <div class="dice-card">
+            <svg class="dice-shape" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+              <polygon points="18,2 34,18 18,34 2,18" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+              <text x="18" y="23" text-anchor="middle" font-family="'Press Start 2P'" font-size="8" fill="#000">8</text>
+            </svg>
+            <div class="dice-card-label">D8</div>
+            <div class="dice-card-sublabel">OCTAEDRO</div>
+          </div>
+          <!-- D10 -->
+          <div class="dice-card">
+            <svg class="dice-shape" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+              <polygon points="18,2 34,12 30,32 6,32 2,12" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+              <text x="18" y="23" text-anchor="middle" font-family="'Press Start 2P'" font-size="7" fill="#000">10</text>
+            </svg>
+            <div class="dice-card-label">D10</div>
+            <div class="dice-card-sublabel">DECAEDRO</div>
+          </div>
+          <!-- D12 -->
+          <div class="dice-card">
+            <svg class="dice-shape" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+              <polygon points="18,2 32,8 36,22 28,34 8,34 0,22 4,8" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+              <text x="18" y="23" text-anchor="middle" font-family="'Press Start 2P'" font-size="7" fill="#000">12</text>
+            </svg>
+            <div class="dice-card-label">D12</div>
+            <div class="dice-card-sublabel">DODECAEDRO</div>
+          </div>
+          <!-- D20 — SELECTED -->
+          <div class="dice-card selected">
+            <svg class="dice-shape" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+              <polygon points="18,2 34,10 34,26 18,34 2,26 2,10" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+              <text x="18" y="23" text-anchor="middle" font-family="'Press Start 2P'" font-size="7" fill="#fff">20</text>
+            </svg>
+            <div class="dice-card-label" style="display:flex;align-items:center;gap:4px;">
+              D20
+              <!-- pixel checkmark -->
+              <svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+                <rect x="1" y="5" width="2" height="2" fill="#fff"/>
+                <rect x="3" y="7" width="2" height="2" fill="#fff"/>
+                <rect x="5" y="5" width="2" height="2" fill="#fff"/>
+                <rect x="7" y="3" width="2" height="2" fill="#fff"/>
+                <rect x="9" y="1" width="2" height="2" fill="#fff"/>
+              </svg>
+            </div>
+            <div class="dice-card-sublabel">ICOSAEDRO</div>
+          </div>
+          <!-- D100 — spans 2 cols -->
+          <div class="dice-card" style="grid-column: span 2; border-right:none; border-bottom:none; flex-direction:row; gap:12px; padding: 8px 16px;">
+            <svg class="dice-shape" width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;flex-shrink:0;">
+              <rect x="2" y="2" width="32" height="32" rx="0" fill="none" stroke="#000" stroke-width="3"/>
+              <rect x="8" y="8" width="20" height="20" fill="none" stroke="#000" stroke-width="2"/>
+              <text x="18" y="22" text-anchor="middle" font-family="'Press Start 2P'" font-size="6" fill="#000">%</text>
+            </svg>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div class="dice-card-label">D100</div>
+              <div class="dice-card-sublabel">PERCENTUAL</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /phone -->
+  </div><!-- /variant-wrap B -->
+
+
+  <!-- ══════════════════════════════════
+       VARIANTE C — RECENTES + GRADE 4
+  ══════════════════════════════════ -->
+  <div class="variant-wrap">
+    <div class="variant-label">Variante C — Recentes + Grade</div>
+
+    <div class="phone">
+      <div class="screen-bg" style="padding-top:20px;">
+        <div class="bg-dice">D20</div>
+        <div class="bg-label">TOQUE PARA ROLAR</div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab-item active"><span class="tab-icon">⚄</span>ROLAR</div>
+        <div class="tab-item"><span class="tab-icon">📋</span>HIST.</div>
+        <div class="tab-item"><span class="tab-icon">🎲</span>JOGOS</div>
+        <div class="tab-item"><span class="tab-icon">⚙</span>AJUST.</div>
+      </div>
+      <div class="hatch-overlay"></div>
+
+      <!-- SHEET C -->
+      <div class="sheet sheet-c">
+        <div class="sheet-handle-row">
+          <div style="width:20px;"></div>
+          <div class="drag-handle-px">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="sheet-close-btn">✕</div>
+        </div>
+        <div class="sheet-title-row">
+          <span class="sheet-title">ESCOLHER DADO</span>
+          <span style="font-family:'Silkscreen',monospace;font-size:9px;text-transform:uppercase;">7 TIPOS</span>
+        </div>
+        <div class="close-hints">↓ ARRASTAR · TAP FORA · ✕</div>
+
+        <!-- RECENTES -->
+        <div class="recentes-section">
+          <div class="section-label">★ RECENTES</div>
+          <div class="recentes-row">
+            <div class="recente-chip selected">
+              <span class="recente-dot"></span>D20
+            </div>
+            <div class="recente-chip">D6</div>
+            <div class="recente-chip">D8</div>
+            <div class="recente-chip">D4</div>
+          </div>
+        </div>
+
+        <!-- ALL -->
+        <div class="all-section">
+          <div class="section-label" style="margin-bottom:6px;">TODOS OS DADOS</div>
+          <div class="dice-grid-c">
+            <div class="dice-cell selected">
+              <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+                <polygon points="11,1 21,20 1,20" fill="none" stroke="#fff" stroke-width="2"/>
+              </svg>
+              <div class="dice-cell-label">D4</div>
+            </div>
+            <div class="dice-cell">
+              <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+                <rect x="1" y="1" width="20" height="20" fill="none" stroke="#000" stroke-width="2"/>
+              </svg>
+              <div class="dice-cell-label">D6</div>
+            </div>
+            <div class="dice-cell">
+              <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+                <polygon points="11,1 21,11 11,21 1,11" fill="none" stroke="#000" stroke-width="2"/>
+              </svg>
+              <div class="dice-cell-label">D8</div>
+            </div>
+            <div class="dice-cell">
+              <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+                <polygon points="11,1 21,8 18,20 4,20 1,8" fill="none" stroke="#000" stroke-width="2"/>
+              </svg>
+              <div class="dice-cell-label">D10</div>
+            </div>
+            <div class="dice-cell">
+              <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+                <polygon points="11,1 20,5 22,14 17,21 5,21 0,14 2,5" fill="none" stroke="#000" stroke-width="2"/>
+              </svg>
+              <div class="dice-cell-label">D12</div>
+            </div>
+            <!-- D20 SELECTED -->
+            <div class="dice-cell selected">
+              <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+                <polygon points="11,1 21,6 21,16 11,21 1,16 1,6" fill="none" stroke="#fff" stroke-width="2"/>
+              </svg>
+              <div class="dice-cell-label" style="display:flex;align-items:center;gap:2px;">
+                D20
+                <svg width="8" height="8" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+                  <rect x="0" y="4" width="2" height="2" fill="#fff"/>
+                  <rect x="2" y="6" width="2" height="2" fill="#fff"/>
+                  <rect x="4" y="4" width="2" height="2" fill="#fff"/>
+                  <rect x="6" y="2" width="2" height="2" fill="#fff"/>
+                </svg>
+              </div>
+            </div>
+            <div class="dice-cell" style="border-right:none;">
+              <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+                <rect x="1" y="1" width="20" height="20" fill="none" stroke="#000" stroke-width="2"/>
+                <rect x="5" y="5" width="12" height="12" fill="none" stroke="#000" stroke-width="1"/>
+              </svg>
+              <div class="dice-cell-label">D100</div>
+            </div>
+            <!-- Empty cell for grid alignment -->
+            <div class="dice-cell" style="border-right:none;border-bottom:none;background:repeating-linear-gradient(45deg,#000 0,#000 1px,transparent 0,transparent 50%) 0 0 / 4px 4px;opacity:0.05;"></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /phone -->
+  </div><!-- /variant-wrap C -->
+
+</div><!-- /variants-row -->
+
+
+<!-- ══════════════════════════════════════════════════════
+     NOTAS DE DESIGN
+══════════════════════════════════════════════════════ -->
+<div class="notes-section">
+  <div class="notes-header">■ NOTAS DE DESIGN — BOTTOM SHEET TIPO DE DADO</div>
+  <div class="notes-body">
+
+    <table class="notes-table">
+      <thead>
+        <tr>
+          <th>CRITÉRIO</th>
+          <th>VARIANTE A — LISTA</th>
+          <th>VARIANTE B — GRADE 2×</th>
+          <th>VARIANTE C — RECENTES</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Altura do sheet</strong></td>
+          <td>~60% da tela</td>
+          <td>~65% da tela</td>
+          <td>~70% da tela</td>
+        </tr>
+        <tr>
+          <td><strong>Scanabilidade</strong></td>
+          <td>Alta — label legível em linha reta, nome + subtítulo visiveis</td>
+          <td>Média — ícone SVG domina, label pequeno</td>
+          <td>Alta — chips de atalho aceleram repetição</td>
+        </tr>
+        <tr>
+          <td><strong>Estado selecionado</strong></td>
+          <td>Inversão total (ink/paper) + checkmark pixel — muito claro</td>
+          <td>Card inteiro invertido — claro, mas ícone SVG perde detail em preto</td>
+          <td>Chip + célula invertidos simultaneamente — duplicação confirma escolha</td>
+        </tr>
+        <tr>
+          <td><strong>Aderência 1-bit</strong></td>
+          <td>Excelente — só bordas e inversão, sem shape complexo</td>
+          <td>Boa — SVG polygon funciona, mas shapes muito complexos quebram em displays pequenos</td>
+          <td>Excelente — chips e grade usam só bordas e inversão</td>
+        </tr>
+        <tr>
+          <td><strong>Caso de uso principal</strong></td>
+          <td>Usuário explorando todos os tipos pela primeira vez</td>
+          <td>Usuário visual que reconhece dado pela forma geométrica</td>
+          <td>Usuário de sessão longa com conjuntos fixos (ex.: RPG com D20 + D6)</td>
+        </tr>
+        <tr>
+          <td><strong>Complexidade de implementação</strong></td>
+          <td>Baixa — ListView simples</td>
+          <td>Média — GridView + SVG assets por tipo</td>
+          <td>Média — duas seções, lógica de histórico</td>
+        </tr>
+        <tr>
+          <td><strong>Acessibilidade</strong></td>
+          <td>Ótima — área de toque ~44px por item, texto legível</td>
+          <td>Boa — cards ~70×80px, boa área de toque</td>
+          <td>Boa — chips podem ser pequenos em mãos grandes</td>
+        </tr>
+        <tr>
+          <td><strong>Coerência com Design C</strong></td>
+          <td>Alta — simplicidade e hierarquia vertical combinam com a tela minimalista</td>
+          <td>Média — shapes detalhados contrastam com o dado gigante e simples da tela principal</td>
+          <td>Alta — fluxo rápido reforça o gesto rápido de rolar</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr class="pixel-rule" />
+
+    <div class="notes-rec">
+      <div class="notes-rec-title">
+        <span class="tag rec">★ RECOMENDAÇÃO</span>
+        VARIANTE A (M1) → VARIANTE C (M2)
+      </div>
+      <div class="notes-rec-body">
+        <p>
+          Para o <strong>Milestone 1</strong>, adotar a <strong>Variante A — Lista Vertical</strong>
+          como implementação definitiva do bottom sheet. A lista é a solução mais fiel à estética
+          1-bit (apenas bordas e inversão), exige zero assets extras, e a área de toque de 44 px
+          por linha garante conforto em qualquer tamanho de tela. O estado selecionado com
+          inversão total + checkmark pixel é inequívoco e acessível.
+        </p>
+        <p>
+          A <strong>Variante B — Grade</strong> deve ser descartada para M1: os ícones SVG
+          poligonais introduzem complexidade visual desnecessária que rivaliza com o dado principal
+          na tela de rolagem, quebrando o princípio de hierarquia única. Pode ser reavaliada se
+          futuros user-tests indicarem que usuários iniciantes não reconhecem os dados pelo nome.
+        </p>
+        <p>
+          A <strong>Variante C — Recentes + Grade</strong> é a <strong>evolução natural para M2</strong>
+          após o tracking de histórico estar implementado. A linha de "recentes" com chips oferece
+          atalho de um toque para usuários de RPG (sessão com D20/D6 fixos) sem esconder os
+          demais tipos. A duplicação do estado selecionado (chip + célula) é uma vantagem
+          ergonômica que justifica a complexidade extra — mas depende de persistência de dados
+          que só estará disponível com o módulo de histórico.
+        </p>
+      </div>
+    </div>
+
+    <hr class="pixel-rule" />
+
+    <ul class="kv-list">
+      <li>
+        <span class="kv-key">FECHAR</span>
+        <span>3 gestos suportados: tap fora do sheet (toca a hachura), arrastar drag-handle para baixo, botão ✕ pixel. Todos os 3 devem ser implementados mesmo que o ✕ seja escondido por padrão — acessibilidade exige fallback por toque.</span>
+      </li>
+      <li>
+        <span class="kv-key">OVERLAY</span>
+        <span>Hachura 4×4 xadrez preta/branca (50 % dos pixels = preto) — equivalente visual a um semitransparente de 50 % sem usar opacidade ou cor cinza. Nenhum rgba() permitido.</span>
+      </li>
+      <li>
+        <span class="kv-key">ANIMAÇÃO</span>
+        <span>Sheet desliza de baixo para cima em 200 ms, curva linear — sem easing suave (quebraria a estética rígida). Hachura aparece com o sheet (sem fade separado).</span>
+      </li>
+      <li>
+        <span class="kv-key">DRAG HANDLE</span>
+        <span>4 blocos de 8×4 px com gap de 3 px — pixel art puro. Não usar border-radius. Centralizado horizontalmente, padding-top de 8 px acima do título.</span>
+      </li>
+      <li>
+        <span class="kv-key">TIPOGRAFIA</span>
+        <span>Labels principais: Press Start 2P 8–9 px. Sub-labels (lados, nome técnico): Silkscreen 10–11 px. Tudo CAIXA ALTA.</span>
+      </li>
+    </ul>
+
+  </div><!-- /notes-body -->
+</div><!-- /notes-section -->
+
+</body>
+</html>

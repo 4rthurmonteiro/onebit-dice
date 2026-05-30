@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1-Bit Dice — Mockups Design C</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    image-rendering: pixelated;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-family: 'VT323', monospace;
+    padding: 40px 20px 60px;
+  }
+
+  h1 {
+    font-family: 'Silkscreen', monospace;
+    font-size: 18px;
+    text-align: center;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .subtitle {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    text-align: center;
+    letter-spacing: 1px;
+    margin-bottom: 48px;
+    text-transform: uppercase;
+  }
+
+  .screens-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .screen-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .screen-label {
+    font-family: 'Silkscreen', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    max-width: 300px;
+    line-height: 1.6;
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 300px;
+    height: 620px;
+    border: 3px solid #000;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 28px;
+    background: #000;
+    color: #fff;
+    font-family: 'VT323', monospace;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    flex-shrink: 0;
+  }
+
+  /* App title bar */
+  .app-bar {
+    height: 36px;
+    border-bottom: 3px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .app-bar-title {
+    font-family: 'Silkscreen', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Canvas area — hero */
+  .canvas {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  /* Grid background for canvas */
+  .canvas-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(#000 1px, transparent 1px),
+      linear-gradient(90deg, #000 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.04;
+  }
+
+  /* Tap hint */
+  .tap-hint {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    text-align: center;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 2;
+    position: absolute;
+    bottom: 24px;
+    left: 0;
+    right: 0;
+    padding: 0 16px;
+  }
+
+  .tap-hint-large {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    text-align: center;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 2.2;
+    border: 2px solid #000;
+    padding: 12px 16px;
+    margin: 0 24px;
+  }
+
+  /* Dice SVG wrappers */
+  .dice-area {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 16px;
+  }
+
+  .die {
+    width: 64px;
+    height: 64px;
+  }
+
+  .die-face {
+    width: 64px;
+    height: 64px;
+    border: 3px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 20px;
+    background: #fff;
+  }
+
+  .die-face.inverted {
+    background: #000;
+    color: #fff;
+  }
+
+  .die-face.scramble {
+    background: #000;
+    color: #fff;
+    font-size: 22px;
+  }
+
+  /* D20 shape */
+  svg.d20-svg {
+    width: 64px;
+    height: 64px;
+  }
+
+  svg.d20-svg.large {
+    width: 100px;
+    height: 100px;
+  }
+
+  /* Total display */
+  .total-block {
+    margin-top: 16px;
+    border: 3px solid #000;
+    padding: 8px 20px;
+    text-align: center;
+  }
+
+  .total-label {
+    font-family: 'Silkscreen', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .total-value {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 28px;
+    line-height: 1.3;
+    display: block;
+  }
+
+  .individual-rolls {
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    letter-spacing: 2px;
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  /* Previous result (faded = lighter border + inner box) */
+  .prev-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border: 2px dashed #000;
+    margin: 0 20px;
+  }
+
+  .prev-label {
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+
+  /* Controls bar */
+  .controls-bar {
+    height: 52px;
+    border-top: 3px solid #000;
+    border-bottom: 3px solid #000;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .dice-type-btn {
+    border: 2px solid #000;
+    padding: 4px 10px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-left: auto;
+  }
+
+  .stepper-btn {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    cursor: pointer;
+    background: #fff;
+  }
+
+  .stepper-val {
+    width: 36px;
+    height: 32px;
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 12px;
+  }
+
+  /* Tab bar */
+  .tab-bar {
+    height: 56px;
+    border-top: 3px solid #000;
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-family: 'Silkscreen', monospace;
+    font-size: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-right: 2px solid #000;
+    cursor: pointer;
+  }
+
+  .tab-item:last-child {
+    border-right: none;
+  }
+
+  .tab-item.active {
+    background: #000;
+    color: #fff;
+  }
+
+  .tab-icon {
+    font-size: 16px;
+    font-family: 'VT323', monospace;
+    line-height: 1;
+  }
+
+  /* Bottom sheet overlay */
+  .bs-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    z-index: 10;
+  }
+
+  .bs-sheet {
+    background: #fff;
+    border-top: 3px solid #000;
+  }
+
+  .bs-header {
+    height: 44px;
+    border-bottom: 3px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+  }
+
+  .bs-title {
+    font-family: 'Silkscreen', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .bs-close {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    cursor: pointer;
+  }
+
+  .bs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+
+  .bs-item {
+    border-right: 2px solid #000;
+    border-bottom: 2px solid #000;
+    padding: 14px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    cursor: pointer;
+  }
+
+  .bs-item:nth-child(4n) {
+    border-right: none;
+  }
+
+  .bs-item.selected {
+    background: #000;
+    color: #fff;
+  }
+
+  /* Scramble animation overlay */
+  .scramble-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .scramble-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  /* Pixel dots for decoration on empty state */
+  .pixel-decoration {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #000;
+    opacity: 0.12;
+  }
+</style>
+</head>
+<body>
+
+<h1>1-Bit Dice — Design C</h1>
+<p class="subtitle">Mockups de estados — Tela Principal</p>
+
+<div class="screens-row">
+
+  <!-- ======================================================
+       ESTADO 1 — Primeiro uso / ocioso vazio
+  ====================================================== -->
+  <div class="screen-wrapper">
+    <div class="phone">
+      <!-- Status bar -->
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>AM2</span>
+        <span>100%</span>
+      </div>
+
+      <!-- App bar -->
+      <div class="app-bar">
+        <span class="app-bar-title">1-BIT DICE</span>
+      </div>
+
+      <!-- Canvas hero -->
+      <div class="canvas">
+        <div class="canvas-grid"></div>
+
+        <!-- Pixel corner decorations -->
+        <div class="pixel-decoration" style="top:20px;left:20px;width:16px;height:16px;opacity:0.08;"></div>
+        <div class="pixel-decoration" style="top:20px;right:20px;width:16px;height:16px;opacity:0.08;"></div>
+        <div class="pixel-decoration" style="bottom:70px;left:20px;width:16px;height:16px;opacity:0.08;"></div>
+        <div class="pixel-decoration" style="bottom:70px;right:20px;width:16px;height:16px;opacity:0.08;"></div>
+
+        <!-- Large D20 outline, empty/idle -->
+        <svg viewBox="0 0 100 100" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="50,4 96,28 96,72 50,96 4,72 4,28" fill="none" stroke="#000" stroke-width="3"/>
+          <polygon points="50,4 96,28 50,50" fill="none" stroke="#000" stroke-width="2"/>
+          <polygon points="96,28 96,72 50,50" fill="none" stroke="#000" stroke-width="2"/>
+          <polygon points="4,28 50,4 50,50" fill="none" stroke="#000" stroke-width="2"/>
+          <polygon points="4,72 4,28 50,50" fill="none" stroke="#000" stroke-width="2"/>
+          <polygon points="50,96 4,72 50,50" fill="none" stroke="#000" stroke-width="2"/>
+          <polygon points="96,72 50,96 50,50" fill="none" stroke="#000" stroke-width="2"/>
+          <text x="50" y="58" font-family="'Press Start 2P'" font-size="16" fill="#000" text-anchor="middle" dominant-baseline="middle">?</text>
+        </svg>
+
+        <!-- Prominent tap hint -->
+        <div style="margin-top:20px;padding:0 24px;width:100%;">
+          <div class="tap-hint-large">
+            ▸ TOQUE PARA ROLAR ◂
+          </div>
+        </div>
+
+        <div class="tap-hint" style="bottom:8px;">
+          D20 &nbsp;·&nbsp; 1 DADO
+        </div>
+      </div>
+
+      <!-- Controls bar -->
+      <div class="controls-bar">
+        <div class="dice-type-btn">D20 ▾</div>
+        <div class="stepper">
+          <div class="stepper-btn">−</div>
+          <div class="stepper-val">1</div>
+          <div class="stepper-btn">+</div>
+        </div>
+      </div>
+
+      <!-- Tab bar -->
+      <div class="tab-bar">
+        <div class="tab-item active">
+          <span class="tab-icon">⬡</span>
+          <span>ROLAR</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">☰</span>
+          <span>HISTÓRICO</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">⊞</span>
+          <span>JOGOS</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">⚙</span>
+          <span>AJUSTES</span>
+        </div>
+      </div>
+    </div>
+    <div class="screen-label">1 — PRIMEIRO USO<br>OCIOSO / SEM RESULTADO</div>
+  </div>
+
+  <!-- ======================================================
+       ESTADO 2 — Ocioso com resultado anterior visível
+  ====================================================== -->
+  <div class="screen-wrapper">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>AM2</span>
+        <span>100%</span>
+      </div>
+      <div class="app-bar">
+        <span class="app-bar-title">1-BIT DICE</span>
+      </div>
+
+      <div class="canvas">
+        <div class="canvas-grid"></div>
+
+        <!-- Previous result displayed, desaturated feel via dashed border -->
+        <div class="prev-result">
+          <span class="prev-label">ÚLTIMA ROLAGEM — D6 × 2</span>
+          <div class="dice-area">
+            <!-- die 1 -->
+            <div class="die-face">4</div>
+            <!-- die 2 -->
+            <div class="die-face">6</div>
+          </div>
+          <div style="font-family:'VT323',monospace;font-size:15px;letter-spacing:3px;text-transform:uppercase;margin-top:4px;">4 + 6</div>
+          <div class="total-block" style="margin-top:4px;padding:4px 20px;">
+            <span class="total-label">TOTAL</span>
+            <span class="total-value">10</span>
+          </div>
+        </div>
+
+        <div class="tap-hint" style="bottom:8px;">
+          ▸ TOQUE PARA ROLAR ◂
+        </div>
+      </div>
+
+      <div class="controls-bar">
+        <div class="dice-type-btn">D6 ▾</div>
+        <div class="stepper">
+          <div class="stepper-btn">−</div>
+          <div class="stepper-val">2</div>
+          <div class="stepper-btn">+</div>
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <div class="tab-item active">
+          <span class="tab-icon">⬡</span>
+          <span>ROLAR</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">☰</span>
+          <span>HISTÓRICO</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">⊞</span>
+          <span>JOGOS</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">⚙</span>
+          <span>AJUSTES</span>
+        </div>
+      </div>
+    </div>
+    <div class="screen-label">2 — OCIOSO<br>RESULTADO ANTERIOR VISÍVEL</div>
+  </div>
+
+  <!-- ======================================================
+       ESTADO 3 — Rolando (frame da animação)
+  ====================================================== -->
+  <div class="screen-wrapper">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>AM2</span>
+        <span>100%</span>
+      </div>
+      <div class="app-bar">
+        <span class="app-bar-title">1-BIT DICE</span>
+      </div>
+
+      <div class="canvas" style="background:#000;">
+        <!-- Inverted canvas during roll -->
+
+        <!-- Three scrambled dice, mid-roll -->
+        <div class="scramble-overlay">
+          <span class="scramble-label" style="color:#fff;">ROLANDO...</span>
+          <div class="dice-area">
+            <!-- die 1 scramble -->
+            <div class="die-face scramble">?</div>
+            <!-- die 2 scramble — offset to show motion -->
+            <div class="die-face scramble" style="transform:rotate(-8deg);margin-top:-10px;">?</div>
+            <!-- die 3 scramble -->
+            <div class="die-face scramble" style="transform:rotate(5deg);margin-top:6px;">?</div>
+          </div>
+          <!-- pixel noise lines to suggest motion blur -->
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:center;margin-top:8px;">
+            <div style="width:80px;height:3px;background:#fff;opacity:0.4;"></div>
+            <div style="width:50px;height:3px;background:#fff;opacity:0.25;margin-left:20px;"></div>
+            <div style="width:65px;height:3px;background:#fff;opacity:0.3;margin-left:-10px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-bar">
+        <div class="dice-type-btn" style="opacity:0.4;">D20 ▾</div>
+        <div class="stepper" style="opacity:0.4;">
+          <div class="stepper-btn">−</div>
+          <div class="stepper-val">3</div>
+          <div class="stepper-btn">+</div>
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <div class="tab-item active">
+          <span class="tab-icon">⬡</span>
+          <span>ROLAR</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">☰</span>
+          <span>HISTÓRICO</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">⊞</span>
+          <span>JOGOS</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">⚙</span>
+          <span>AJUSTES</span>
+        </div>
+      </div>
+    </div>
+    <div class="screen-label">3 — ROLANDO<br>FRAME DA ANIMAÇÃO</div>
+  </div>
+
+  <!-- ======================================================
+       ESTADO 4 — Resultado (3 dados + TOTAL)
+  ====================================================== -->
+  <div class="screen-wrapper">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>AM2</span>
+        <span>100%</span>
+      </div>
+      <div class="app-bar">
+        <span class="app-bar-title">1-BIT DICE</span>
+      </div>
+
+      <div class="canvas">
+        <div class="canvas-grid"></div>
+
+        <!-- 3 dice result -->
+        <div class="dice-area">
+          <div class="die-face">17</div>
+          <div class="die-face inverted">3</div>
+          <div class="die-face">11</div>
+        </div>
+
+        <!-- Individual values -->
+        <div class="individual-rolls" style="margin-top:12px;">
+          17 + 3 + 11
+        </div>
+
+        <!-- Total block -->
+        <div class="total-block" style="margin-top:12px;">
+          <span class="total-label">TOTAL</span>
+          <span class="total-value">31</span>
+        </div>
+
+        <div class="tap-hint" style="bottom:8px;">
+          ▸ TOQUE PARA ROLAR NOVAMENTE ◂
+        </div>
+      </div>
+
+      <div class="controls-bar">
+        <div class="dice-type-btn">D20 ▾</div>
+        <div class="stepper">
+          <div class="stepper-btn">−</div>
+          <div class="stepper-val">3</div>
+          <div class="stepper-btn">+</div>
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <div class="tab-item active">
+          <span class="tab-icon">⬡</span>
+          <span>ROLAR</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">☰</span>
+          <span>HISTÓRICO</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">⊞</span>
+          <span>JOGOS</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">⚙</span>
+          <span>AJUSTES</span>
+        </div>
+      </div>
+    </div>
+    <div class="screen-label">4 — RESULTADO<br>3 DADOS + TOTAL + SOMA</div>
+  </div>
+
+  <!-- ======================================================
+       ESTADO 5 — Bottom sheet de tipo aberto
+  ====================================================== -->
+  <div class="screen-wrapper">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>AM2</span>
+        <span>100%</span>
+      </div>
+      <div class="app-bar">
+        <span class="app-bar-title">1-BIT DICE</span>
+      </div>
+
+      <!-- Canvas (dimmed behind overlay) -->
+      <div class="canvas" style="filter:none;position:relative;flex:1;">
+        <div class="canvas-grid"></div>
+        <!-- dim layer -->
+        <div style="position:absolute;inset:0;background:#000;opacity:0.45;z-index:5;"></div>
+        <div class="dice-area" style="position:relative;z-index:1;">
+          <div class="die-face">17</div>
+          <div class="die-face inverted">3</div>
+          <div class="die-face">11</div>
+        </div>
+        <div class="individual-rolls" style="margin-top:12px;position:relative;z-index:1;">17 + 3 + 11</div>
+        <div class="total-block" style="margin-top:12px;position:relative;z-index:1;">
+          <span class="total-label">TOTAL</span>
+          <span class="total-value">31</span>
+        </div>
+
+        <!-- Bottom sheet overlaid at bottom of canvas -->
+        <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;background:#fff;border-top:3px solid #000;">
+          <div class="bs-header">
+            <span class="bs-title">TIPO DE DADO</span>
+            <span class="bs-close">✕</span>
+          </div>
+          <div class="bs-grid">
+            <div class="bs-item">D4</div>
+            <div class="bs-item">D6</div>
+            <div class="bs-item">D8</div>
+            <div class="bs-item">D10</div>
+            <div class="bs-item">D12</div>
+            <div class="bs-item selected">D20</div>
+            <div class="bs-item">D100</div>
+            <div class="bs-item" style="border-right:none;opacity:0.2;font-size:8px;">—</div>
+          </div>
+          <!-- drag handle hint -->
+          <div style="height:28px;display:flex;align-items:center;justify-content:center;border-top:2px solid #000;">
+            <div style="width:36px;height:4px;background:#000;opacity:0.3;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-bar">
+        <!-- type button highlighted as open -->
+        <div class="dice-type-btn" style="background:#000;color:#fff;">D20 ▾</div>
+        <div class="stepper">
+          <div class="stepper-btn">−</div>
+          <div class="stepper-val">3</div>
+          <div class="stepper-btn">+</div>
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <div class="tab-item active">
+          <span class="tab-icon">⬡</span>
+          <span>ROLAR</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">☰</span>
+          <span>HISTÓRICO</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">⊞</span>
+          <span>JOGOS</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">⚙</span>
+          <span>AJUSTES</span>
+        </div>
+      </div>
+    </div>
+    <div class="screen-label">5 — BOTTOM SHEET ABERTO<br>SELEÇÃO DE TIPO DE DADO</div>
+  </div>
+
+</div><!-- end screens-row -->
+
+<!-- Footer -->
+<div style="text-align:center;margin-top:60px;font-family:'VT323',monospace;font-size:16px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;">
+  AM2 STUDIO · 1-BIT DICE · DESIGN C · 2026
+</div>
+
+</body>
+</html>
