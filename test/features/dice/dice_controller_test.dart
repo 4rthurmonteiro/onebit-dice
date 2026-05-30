@@ -349,5 +349,63 @@ void main() {
       final controller = _build(events: <String>[]);
       expect(controller, isA<ChangeNotifier>());
     });
+
+    group('hasRolled', () {
+      test('is false before any roll', () {
+        final controller = _build(events: <String>[]);
+        expect(controller.hasRolled, isFalse);
+      });
+
+      test('becomes true after roll()', () async {
+        final controller = _build(events: <String>[], rng: Random(0));
+        await controller.roll();
+        expect(controller.hasRolled, isTrue);
+      });
+
+      test('stays true after setType / setCount / applyConfig', () async {
+        final controller = _build(events: <String>[], rng: Random(0));
+        await controller.roll();
+
+        await controller.setType(DiceType.d20);
+        expect(controller.hasRolled, isTrue);
+
+        await controller.setCount(3);
+        expect(controller.hasRolled, isTrue);
+
+        await controller.applyConfig(diceType: DiceType.d4, count: 2);
+        expect(controller.hasRolled, isTrue);
+      });
+    });
+
+    group('isRolling', () {
+      test('is false before and after a completed roll', () async {
+        final controller = _build(events: <String>[], rng: Random(0));
+        expect(controller.isRolling, isFalse);
+        await controller.roll();
+        expect(controller.isRolling, isFalse);
+      });
+
+      test(
+        'a second roll() started before the first settles is a no-op',
+        () async {
+          final events = <String>[];
+          final controller = _build(events: events, rng: Random(0));
+
+          // Start the first roll but do not await it: it suspends at the
+          // awaited history.append with _isRolling already true.
+          final first = controller.roll();
+          final second = controller.roll();
+          await Future.wait([first, second]);
+
+          expect(controller.isRolling, isFalse);
+          expect(events.where((e) => e == 'history.append'), hasLength(1));
+          expect(
+            events.where((e) => e == 'audio.playRollSequence'),
+            hasLength(1),
+          );
+          expect(events.where((e) => e == 'haptic.trigger'), hasLength(1));
+        },
+      );
+    });
   });
 }

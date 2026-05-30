@@ -1,4 +1,178 @@
 ---
+title: "Code Simplicity / YAGNI Review — Design C Tap-to-Roll Dice Screen Redesign"
+date: 2026-05-30
+branch: feat/redesign
+plan: docs/plan/2026-05-30-feat-dice-screen-tap-to-roll-redesign-plan.md
+reviewer: code-simplicity-agent
+files_reviewed:
+  - lib/features/dice/dice_controller.dart
+  - lib/features/dice/dice_screen.dart
+  - lib/features/dice/widgets/type_selector.dart
+  - lib/features/dice/widgets/quantity_selector.dart
+  - lib/features/dice/widgets/dice_type_sheet.dart
+  - lib/features/dice/widgets/dice_type_badge.dart
+  - lib/shared/widgets/hatch_painter.dart
+  - lib/features/presets/widgets/create_preset_sheet.dart
+---
+
+# Code Simplicity / YAGNI Review — Design C Tap-to-Roll Dice Screen Redesign
+
+## Simplification Analysis
+
+### Core Purpose
+
+Invert the dice screen so the canvas is the roll target, collapse the 7-chip type picker into a compact bottom-sheet flow, and guard the enlarged tap surface against double-rolls. The roll engine, animations, `DiceWidget`, and persistence are deliberately unchanged.
+
+---
+
+### Unnecessary Complexity Found
+
+#### 1. `_DragHandle` is a `StatefulWidget` with no `setState` calls
+
+**File:** `lib/features/dice/widgets/dice_type_sheet.dart` lines 184–222
+
+`_DragHandleState` owns two instance fields: `_dragged` (accumulated drag delta) and `_dismissed` (one-shot guard). Neither field drives a `setState` call — the widget never rebuilds itself. The full `StatefulWidget`/`State` lifecycle exists only to keep these two values alive across gesture callbacks in a single continuous drag gesture.
+
+The `_dismissed` flag is functionally necessary: calling `Navigator.pop()` twice on a route that is already popped will throw. However the flag does not require `State` objects to survive. Since the route builds the panel widget once and never rebuilds it, `build` is called once per route instance. Closure-local mutable variables defined in `build` persist for the lifetime of the GestureDetector, making `StatefulWidget` unnecessary here.
+
+**Fix:** Convert to `StatelessWidget` using closure-local variables in `build`:
+
+```dart
+class _DragHandle extends StatelessWidget {
+  const _DragHandle({required this.onDismiss});
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    var dragged = 0.0;
+    var dismissed = false;
+    final colors = Theme.of(context).extension<OneBitColors>()!;
+    return GestureDetector(
+      key: DiceTypeSheet.dragHandleKey,
+      behavior: HitTestBehavior.opaque,
+      onVerticalDragUpdate: (d) {
+        if (dismissed) return;
+        dragged += d.delta.dy;
+        if (dragged > _threshold) {
+          dismissed = true;
+          onDismiss();
+        }
+      },
+      onVerticalDragEnd: (_) => dragged = 0,
+      child: Container(
+        width: double.infinity,
+        height: 24,
+        color: colors.paper,
+        alignment: Alignment.center,
+        child: Container(width: 32, height: 4, color: colors.ink),
+      ),
+    );
+  }
+}
+```
+
+Move `_threshold` to a file-scope constant (it is currently a class-level constant on `_DragHandleState`).
+
+**Estimated removal:** ~12 LOC (one class, one `createState` override, one State subclass).
+
+#### 2. `_DisabledSaveButton` in `create_preset_sheet.dart` duplicates `MacButton` visuals
+
+**File:** `lib/features/presets/widgets/create_preset_sheet.dart` lines 170–192
+
+`_DisabledSaveButton` replicates `MacButton`'s full visual output — identical border, padding, uppercase text, and colors — to represent a disabled/invalid form state. The comment on line 169 acknowledges the visual identity ("Kept identical to the active button on purpose — the 1-bit aesthetic has no grey/disabled state"). This means there is no design reason for two separate widgets: they look the same.
+
+If `MacButton` accepts a nullable `onPressed` (`VoidCallback?`) and ignores taps when it is `null` (standard Flutter pattern), the `if (_isValid) ... else ...` branch collapses to:
+
+```dart
+MacButton(
+  label: l10n.presetsSheetSave,
+  onPressed: _isValid ? _save : null,
+  expand: true,
+)
+```
+
+`_DisabledSaveButton` can then be deleted entirely. Any future visual change to the save button needs to be made in only one place.
+
+Note: `create_preset_sheet.dart` is a modified (not newly added) file in this redesign. `_DisabledSaveButton` pre-dates the redesign but the file is explicitly listed as changed, so the issue is surfaced here.
+
+**Estimated removal:** ~22 LOC.
+
+---
+
+### Code to Remove
+
+| File | Lines | Reason | Est. LOC reduction |
+|------|-------|--------|--------------------|
+| `dice_type_sheet.dart` | 184–222 | `_DragHandle` `StatefulWidget`/`State` — state machinery not needed | ~12 |
+| `create_preset_sheet.dart` | 170–192 | `_DisabledSaveButton` duplicates `MacButton` visuals; fix `MacButton` to accept nullable `onPressed` | ~22 |
+
+**Total estimated reduction: ~34 LOC**
+
+---
+
+### Simplification Recommendations
+
+#### 1. Convert `_DragHandle` to `StatelessWidget` (Important)
+
+**Current:** `_DragHandle` is a `StatefulWidget` with `_DragHandleState` holding `_dragged` and `_dismissed`. The widget never calls `setState`, making the State lifecycle overhead unjustified.
+
+**Proposed:** Use closure-local mutable variables in `build`. The route builds the panel once; closure-local vars persist exactly as long as the GestureDetector's callbacks are live. See the code snippet in Finding 1 above.
+
+**Impact:** ~12 LOC removed. Reduces cognitive load (no misleading implication that this widget has reactive state).
+
+#### 2. Delete `_DisabledSaveButton`; make `MacButton.onPressed` nullable (Important)
+
+**Current:** Two separate widget classes that look identical, maintained in parallel.
+
+**Proposed:** Change `MacButton.onPressed` type from `VoidCallback` to `VoidCallback?`. When `null`, taps are silently ignored (the button looks and lays out identically). Delete `_DisabledSaveButton`. Collapse the `if (_isValid)` conditional to a single `MacButton` call.
+
+**Impact:** ~22 LOC removed from `create_preset_sheet.dart`. Single source of truth for the button visual.
+
+---
+
+### YAGNI Violations
+
+No YAGNI violations were found in the new files (`dice_type_sheet.dart`, `dice_type_badge.dart`, `hatch_painter.dart`) or in the modified `dice_controller.dart`, `dice_screen.dart`, `type_selector.dart`, or `quantity_selector.dart`.
+
+Every component is directly required by the acceptance criteria. Specific items confirmed as non-YAGNI:
+
+- **`DiceTypeBadge` pixel matrices** — required because plan explicitly rules out font glyphs (fallback risk). The `@visibleForTesting` annotation on `matrices` is justified by the badge-per-type test requirement.
+- **`HatchPainter`** — required by the 2-color palette rule (no translucent grey scrim). Its `cell` constant is `@visibleForTesting` as required for painter coverage.
+- **`hasRolled` and `isRolling` flags on `DiceController`** — both are required and correctly motivated: `hasRolled` cannot be derived from `lastResult == null` (documented rationale in the controller), and `isRolling` is the reentrancy guard needed because `RollButton` was deleted.
+- **`_DiceTypeSheetRoute` (custom `PopupRoute`)** — required to own the hatch barrier. `showModalBottomSheet` is explicitly ruled out because it does not expose its barrier for custom painting.
+- **`onDismiss` callback on `DiceTypeSheet`** — the callback-based API (vs. calling `Navigator.pop()` directly inside the widget) is necessary for testability: the sheet is pumped in tests outside of a live route context.
+- **`@visibleForTesting` keys (`sheetKey`, `barrierKey`, `dragHandleKey`)** — all are required for the specified dismissal-branch tests.
+- **The caret pixel matrix in `TypeSelector`** — required for the same font-fallback reason as the badge matrices.
+
+---
+
+### Notes on Intentional Design (Not Flagged)
+
+The following items were inspected and confirmed as intentional design requirements per the plan — not complexity to remove:
+
+- **`_checkmark` pixel matrix vs. `CheckmarkPainter` from `language_picker.dart`:** These are not interchangeable. `CheckmarkPainter` uses `drawLine` with `strokeCap.square`, which can anti-alias at sub-pixel scales. The sheet's `_checkmark` uses a pixel matrix rendered through `PixelIcon` (always crisp, 1-bit). The inverted-row context (paper-on-ink) requires the pixel approach. A comment on `_checkmark` explaining why `CheckmarkPainter` was not reused would prevent a future reader from incorrectly collapsing them.
+- **`_DiceTypeSheetRoute.barrierDismissible = false` with `barrierColor = null`:** Correct. The route owns its own opaque hatch barrier and wires dismissal manually. The `barrierLabel = null` is a minor accessibility gap (the framework back-gesture label), but the `Semantics(button: true, label: l10n.actionClose)` on the hatch `GestureDetector` compensates for it adequately.
+- **Hard-cut transition (`transitionDuration: Duration.zero`):** Required by the plan — a fade would introduce alpha and violate the 2-color rule.
+- **`HatchPainter` fills the background with a `drawRect` first, then draws ink cells:** This is the correct approach. Drawing only ink cells over a transparent background would let the underlying canvas color show through, which would be theme-dependent and could produce a three-color appearance.
+
+---
+
+### Final Assessment
+
+**Total potential LOC reduction: ~34 LOC (~3% of changed files)**
+**Complexity score: Low**
+**Recommended action: Minor tweaks only**
+
+The implementation is clean and well-aligned with the plan. The two issues worth fixing before merge are:
+
+1. `_DragHandle` carrying unnecessary `StatefulWidget` overhead (no `setState` ever called) — easy conversion to `StatelessWidget`.
+2. `_DisabledSaveButton` duplicating `MacButton` visuals — a one-line `MacButton` API change removes ~22 LOC and eliminates the dual-maintenance risk.
+
+Neither issue is a blocker, but both are straightforward improvements that pay ongoing maintenance dividends.
+
+---
+
+---
 title: "Code Simplicity / YAGNI Review — GH-10 Dice Roll Animations"
 date: 2026-05-27
 branch: gh-10-dice-animations

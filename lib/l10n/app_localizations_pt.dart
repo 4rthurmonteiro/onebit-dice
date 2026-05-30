@@ -55,6 +55,29 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get rollTapHint => '▸ TOQUE PARA ROLAR ◂';
+
+  @override
+  String get rollCanvasLabel => 'Rolar dados';
+
+  @override
+  String get diceTypeSheetTitle => 'ESCOLHER DADO';
+
+  @override
+  String get diceTypeFieldLabel => 'Tipo de dado';
+
+  @override
+  String diceTypeSidesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count LADOS',
+      one: '1 LADO',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get historyEmpty => 'Nenhuma rolagem ainda.';
 
   @override
@@ -254,6 +277,29 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String rollResultTotal(int total) {
     return 'Total: $total';
+  }
+
+  @override
+  String get rollTapHint => '▸ TOQUE PARA ROLAR ◂';
+
+  @override
+  String get rollCanvasLabel => 'Rolar dados';
+
+  @override
+  String get diceTypeSheetTitle => 'ESCOLHER DADO';
+
+  @override
+  String get diceTypeFieldLabel => 'Tipo de dado';
+
+  @override
+  String diceTypeSidesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count LADOS',
+      one: '1 LADO',
+    );
+    return '$_temp0';
   }
 
   @override

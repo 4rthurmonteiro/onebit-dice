@@ -55,6 +55,29 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get rollTapHint => '▸ TOCCA PER LANCIARE ◂';
+
+  @override
+  String get rollCanvasLabel => 'Lancia i dadi';
+
+  @override
+  String get diceTypeSheetTitle => 'SCEGLI DADO';
+
+  @override
+  String get diceTypeFieldLabel => 'Tipo di dado';
+
+  @override
+  String diceTypeSidesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count LATI',
+      one: '1 LATO',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get historyEmpty => 'Nessun lancio ancora.';
 
   @override

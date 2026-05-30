@@ -54,6 +54,28 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get rollTapHint => '▸ 탭하여 굴리기 ◂';
+
+  @override
+  String get rollCanvasLabel => '주사위 굴리기';
+
+  @override
+  String get diceTypeSheetTitle => '주사위 선택';
+
+  @override
+  String get diceTypeFieldLabel => '주사위 종류';
+
+  @override
+  String diceTypeSidesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count면',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get historyEmpty => '아직 굴린 기록이 없습니다.';
 
   @override

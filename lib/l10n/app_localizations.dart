@@ -188,6 +188,36 @@ abstract class AppLocalizations {
   /// **'Total: {total}'**
   String rollResultTotal(int total);
 
+  /// Hint overlaid on the dice canvas before the first roll of the session, telling the user to tap to roll
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'▸ TOQUE PARA ROLAR ◂'**
+  String get rollTapHint;
+
+  /// Accessibility label for the tappable dice canvas that triggers a roll
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Rolar dados'**
+  String get rollCanvasLabel;
+
+  /// Title of the bottom sheet that lists the dice types to choose from
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'ESCOLHER DADO'**
+  String get diceTypeSheetTitle;
+
+  /// Accessibility label for the compact dice-type field that opens the type sheet
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Tipo de dado'**
+  String get diceTypeFieldLabel;
+
+  /// Sublabel under each dice-type row stating how many sides the die has
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'{count, plural, one{1 LADO} other{{count} LADOS}}'**
+  String diceTypeSidesLabel(int count);
+
   /// Empty state for the History screen
   ///
   /// In pt_BR, this message translates to:

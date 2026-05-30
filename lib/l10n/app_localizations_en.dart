@@ -55,6 +55,29 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get rollTapHint => '▸ TAP TO ROLL ◂';
+
+  @override
+  String get rollCanvasLabel => 'Roll dice';
+
+  @override
+  String get diceTypeSheetTitle => 'CHOOSE DIE';
+
+  @override
+  String get diceTypeFieldLabel => 'Dice type';
+
+  @override
+  String diceTypeSidesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count SIDES',
+      one: '1 SIDE',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get historyEmpty => 'No rolls yet.';
 
   @override

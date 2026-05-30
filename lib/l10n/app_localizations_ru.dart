@@ -57,6 +57,31 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get rollTapHint => '▸ НАЖМИТЕ, ЧТОБЫ БРОСИТЬ ◂';
+
+  @override
+  String get rollCanvasLabel => 'Бросить кубики';
+
+  @override
+  String get diceTypeSheetTitle => 'ВЫБРАТЬ КУБИК';
+
+  @override
+  String get diceTypeFieldLabel => 'Тип кубика';
+
+  @override
+  String diceTypeSidesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count СТОРОНЫ',
+      many: '$count СТОРОН',
+      few: '$count СТОРОНЫ',
+      one: '1 СТОРОНА',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get historyEmpty => 'Бросков пока нет.';
 
   @override

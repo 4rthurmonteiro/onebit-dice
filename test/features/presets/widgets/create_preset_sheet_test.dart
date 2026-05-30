@@ -4,6 +4,8 @@ import 'package:onebit_dice/core/models/dice_type.dart';
 import 'package:onebit_dice/core/storage/presets_repository.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
+import 'package:onebit_dice/features/dice/widgets/dice_type_sheet.dart';
+import 'package:onebit_dice/features/dice/widgets/type_selector.dart';
 import 'package:onebit_dice/features/presets/widgets/create_preset_sheet.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:onebit_dice/shared/widgets/mac_button.dart';
@@ -100,8 +102,12 @@ void main() {
 
         await tester.enterText(find.byType(TextField), 'Custom 1');
         await tester.pump();
+        // The type picker now opens a DiceTypeSheet instead of inline chips.
+        await tester.tap(find.byType(TypeSelector));
+        await tester.pumpAndSettle();
+        expect(find.byType(DiceTypeSheet), findsOneWidget);
         await tester.tap(find.text('D20'));
-        await tester.pump();
+        await tester.pumpAndSettle();
         // QuantitySelector renders a Text('+') for the increment step.
         await tester.tap(find.text('+'));
         await tester.pump();

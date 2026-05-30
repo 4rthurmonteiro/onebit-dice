@@ -63,6 +63,32 @@
     }
   },
 
+  "rollTapHint": "▸ TOQUE PARA ROLAR ◂",
+  "@rollTapHint": {
+    "description": "Hint overlaid on the dice canvas before the first roll of the session, telling the user to tap to roll"
+  },
+  "rollCanvasLabel": "Rolar dados",
+  "@rollCanvasLabel": {
+    "description": "Accessibility label for the tappable dice canvas that triggers a roll"
+  },
+  "diceTypeSheetTitle": "ESCOLHER DADO",
+  "@diceTypeSheetTitle": {
+    "description": "Title of the bottom sheet that lists the dice types to choose from"
+  },
+  "diceTypeFieldLabel": "Tipo de dado",
+  "@diceTypeFieldLabel": {
+    "description": "Accessibility label for the compact dice-type field that opens the type sheet"
+  },
+  "diceTypeSidesLabel": "{count, plural, one{1 LADO} other{{count} LADOS}}",
+  "@diceTypeSidesLabel": {
+    "description": "Sublabel under each dice-type row stating how many sides the die has",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
   "historyEmpty": "Nenhuma rolagem ainda.",
   "@historyEmpty": {
     "description": "Empty state for the History screen"

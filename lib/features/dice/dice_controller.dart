@@ -30,9 +30,11 @@ import 'package:onebit_dice/shared/utils/random_dice.dart';
 /// can fail in production.
 ///
 /// Not reentrant — `roll()` is `async` because two of its side effects are
-/// awaited. A debounced `RollButton` (E12) will protect against double-taps;
-/// for now a second `roll()` started before the first completes will simply
-/// race the writes.
+/// awaited. The dice canvas is now the roll target (the dedicated `RollButton`
+/// was removed in the Design C redesign), so the reentrancy guard lives here:
+/// [isRolling] flips `true` for the duration of a `roll()` and a second call
+/// started before the first settles early-returns. That keeps a rapid double
+/// tap on the large canvas from appending two history rows / overlapping audio.
 class DiceController extends ChangeNotifier {
   /// Creates a [DiceController] hydrated from [lastDiceConfig].
   ///
@@ -75,6 +77,8 @@ class DiceController extends ChangeNotifier {
   DiceType _selectedType;
   int _count;
   RollResult? _lastResult;
+  bool _hasRolled = false;
+  bool _isRolling = false;
 
   /// The currently selected [DiceType].
   DiceType get selectedType => _selectedType;
@@ -85,6 +89,22 @@ class DiceController extends ChangeNotifier {
   /// The most recent roll, or `null` when none has happened in this session
   /// or the user has changed the type/count since the last roll.
   RollResult? get lastResult => _lastResult;
+
+  /// Whether at least one [roll] has happened since this controller was built.
+  ///
+  /// Session-scoped and in-memory only — never persisted. Deliberately **not**
+  /// reset by [setType] / [setCount] / [applyConfig] (those clear [lastResult]
+  /// but a config change is not "un-rolling"), so the tap-to-roll hint clears
+  /// permanently after the first tap and only a fresh controller / app restart
+  /// brings it back.
+  bool get hasRolled => _hasRolled;
+
+  /// Whether a [roll] is currently in flight.
+  ///
+  /// The dice canvas is the roll target now that `RollButton` is gone, so this
+  /// guards the larger, easier-to-double-tap surface: a second [roll] started
+  /// before the first settles is a no-op.
+  bool get isRolling => _isRolling;
 
   /// Selects [type]. No-op when [type] already matches [selectedType].
   /// Otherwise clears [lastResult], notifies listeners, and persists.
@@ -133,20 +153,32 @@ class DiceController extends ChangeNotifier {
 
   /// Rolls [count] dice of [selectedType], applies the side effects, and
   /// updates [lastResult].
+  ///
+  /// Non-reentrant: a call made while [isRolling] is `true` early-returns
+  /// without producing a second result, history append, audio, or haptic.
+  /// Sets [hasRolled] `true` at the very start so the tap-to-roll hint clears
+  /// the instant the user taps, not after the animation resolves.
   Future<void> roll() async {
-    final values = rollDice(_selectedType.sides, _count, rng: _rng);
-    _lastResult = RollResult(
-      timestamp: DateTime.now(),
-      diceType: _selectedType,
-      diceCount: _count,
-      values: values,
-    );
-    notifyListeners();
-    await _history.append(_lastResult!);
-    unawaited(_audio.playRollSequence());
-    _haptic.trigger();
-    await _lastDiceConfig.write(
-      LastDiceConfig(diceType: _selectedType, count: _count),
-    );
+    if (_isRolling) return;
+    _isRolling = true;
+    _hasRolled = true;
+    try {
+      final values = rollDice(_selectedType.sides, _count, rng: _rng);
+      _lastResult = RollResult(
+        timestamp: DateTime.now(),
+        diceType: _selectedType,
+        diceCount: _count,
+        values: values,
+      );
+      notifyListeners();
+      await _history.append(_lastResult!);
+      unawaited(_audio.playRollSequence());
+      _haptic.trigger();
+      await _lastDiceConfig.write(
+        LastDiceConfig(diceType: _selectedType, count: _count),
+      );
+    } finally {
+      _isRolling = false;
+    }
   }
 }
