@@ -9,6 +9,7 @@ class FastAnimation extends StatelessWidget {
     required this.count,
     required this.targetValues,
     required this.duration,
+    this.sides = 6,
     super.key,
   });
 
@@ -21,6 +22,9 @@ class FastAnimation extends StatelessWidget {
   /// How long [AnimatedSwitcher] keeps the outgoing child mounted.
   final Duration duration;
 
+  /// Face count of the active dice — dice with `sides <= 6` render pips.
+  final int sides;
+
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
@@ -32,6 +36,7 @@ class FastAnimation extends StatelessWidget {
         ),
         count: count,
         values: targetValues,
+        sides: sides,
       ),
     );
   }

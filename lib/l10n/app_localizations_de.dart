@@ -55,6 +55,29 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get rollTapHint => '▸ ZUM WÜRFELN TIPPEN ◂';
+
+  @override
+  String get rollCanvasLabel => 'Würfeln';
+
+  @override
+  String get diceTypeSheetTitle => 'WÜRFEL WÄHLEN';
+
+  @override
+  String get diceTypeFieldLabel => 'Würfeltyp';
+
+  @override
+  String diceTypeSidesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count SEITEN',
+      one: '1 SEITE',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get historyEmpty => 'Noch keine Würfe.';
 
   @override

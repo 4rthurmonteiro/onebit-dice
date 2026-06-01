@@ -54,6 +54,28 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get rollTapHint => '▸ 点击投掷 ◂';
+
+  @override
+  String get rollCanvasLabel => '投掷骰子';
+
+  @override
+  String get diceTypeSheetTitle => '选择骰子';
+
+  @override
+  String get diceTypeFieldLabel => '骰子类型';
+
+  @override
+  String diceTypeSidesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 面',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get historyEmpty => '暂无投掷记录。';
 
   @override
@@ -251,6 +273,28 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   @override
   String rollResultTotal(int total) {
     return '总计：$total';
+  }
+
+  @override
+  String get rollTapHint => '▸ 点击投掷 ◂';
+
+  @override
+  String get rollCanvasLabel => '投掷骰子';
+
+  @override
+  String get diceTypeSheetTitle => '选择骰子';
+
+  @override
+  String get diceTypeFieldLabel => '骰子类型';
+
+  @override
+  String diceTypeSidesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 面',
+    );
+    return '$_temp0';
   }
 
   @override

@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
+import 'package:onebit_dice/features/dice/widgets/animations/dice_grid.dart';
 import 'package:onebit_dice/features/dice/widgets/animations/tabletop_animation.dart';
 
 Widget _harness(Widget child) => MaterialApp(
   theme: buildThemeData(Palette.of(PaletteId.macClassic)),
   home: Scaffold(body: Center(child: child)),
 );
+
+Iterable<int> _faces(WidgetTester tester) =>
+    tester.widgetList<PipFace>(find.byType(PipFace)).map((p) => p.value);
 
 void main() {
   group('TabletopAnimation', () {
@@ -29,7 +33,7 @@ void main() {
           ),
         ),
       );
-      expect(find.text('3'), findsOneWidget);
+      expect(_faces(tester), [3]);
     });
 
     testWidgets('settles on targetValues after duration elapses', (
@@ -58,7 +62,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('6'), findsOneWidget);
+      expect(_faces(tester), [6]);
     });
 
     testWidgets('dropping target to null stops the animation and clears', (
@@ -131,8 +135,8 @@ void main() {
       // Step into the cycle phase (≥ 50% of 800ms = 400ms in).
       for (var t = 0; t < 250; t += 60) {
         await tester.pump(const Duration(milliseconds: 60));
-        for (final bad in const ['5', '6', '7', '8', '9']) {
-          expect(find.text(bad), findsNothing);
+        for (final value in _faces(tester)) {
+          expect(value >= 1 && value <= 4, isTrue);
         }
       }
     });
@@ -161,7 +165,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('4'), findsOneWidget);
+      expect(_faces(tester), [4]);
     });
   });
 

@@ -134,6 +134,22 @@
 
 ---
 
+## EPIC 8b — Dice Screen Redesign (tap-to-roll / Design C)
+
+- [x] 8b.1 `dice_controller.dart` — flag `hasRolled` (session, in-memory) + guarda de reentrância `isRolling` (early-return + `finally`)
+- [x] 8b.2 `dice_screen.dart` — canvas herói tap-to-roll (`Semantics(button)`, ignora tap enquanto `isRolling`) + hint `▸ TOQUE PARA ROLAR ◂` até a 1ª rolagem + barra fina (campo + stepper); `RollButton` removido
+- [x] 8b.3 `widgets/type_selector.dart` — repurposed: campo compacto `{label} ▾` que abre `DiceTypeSheet` (caret pintado via `PixelIcon`)
+- [x] 8b.4 `widgets/quantity_selector.dart` — layout compacto (`mainAxisSize.min`, fonte 24)
+- [x] 8b.5 `widgets/dice_type_sheet.dart` — bottom sheet (7 tipos, linha invertida + checkmark) com barreira hachurada 1-bit via `_DiceTypeSheetRoute` (corte seco, sem alpha); dismiss por ✕/scrim/arrastar/back
+- [x] 8b.6 `widgets/dice_type_badge.dart` — silhuetas 8×8 por `DiceType` via `PixelIcon`
+- [x] 8b.7 `shared/widgets/hatch_painter.dart` — xadrez 1-bit ink/paper (sem cinza/alpha)
+- [x] 8b.8 `create_preset_sheet.dart` — adota o mesmo campo + sheet (UX consistente)
+- [x] 8b.9 i18n: 5 chaves novas em 12 locales (`rollTapHint`, `rollCanvasLabel`, `diceTypeSheetTitle`, `diceTypeFieldLabel`, `diceTypeSidesLabel` plural)
+- [x] 8b.10 `roll_button.dart` + teste removidos
+- [x] 8b.11 Testes 100% cobertura: controller (`hasRolled`/`isRolling`), screen (tap-to-roll, reentrância, sheet), `type_selector`, `dice_type_sheet`, `dice_type_badge`, `hatch_painter`, `create_preset_sheet`
+
+---
+
 ## EPIC 9 — Feature: Histórico
 
 - [x] 9.1 `lib/features/history/widgets/history_entry_tile.dart` — data/hora + notação + valores + total (com placeholder p/ entry corrompido)

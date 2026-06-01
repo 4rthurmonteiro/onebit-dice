@@ -26,6 +26,21 @@ void main() {
       expect(find.text('−'), findsOneWidget);
     });
 
+    testWidgets('lays out as a compact group (mainAxisSize.min)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _harness(QuantitySelector(count: 3, onChanged: (_) {})),
+      );
+      final row = tester.widget<Row>(
+        find.descendant(
+          of: find.byType(QuantitySelector),
+          matching: find.byType(Row),
+        ),
+      );
+      expect(row.mainAxisSize, MainAxisSize.min);
+    });
+
     testWidgets('− is disabled (no callback) when count == 1', (tester) async {
       var calls = 0;
       await tester.pumpWidget(

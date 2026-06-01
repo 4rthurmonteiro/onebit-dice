@@ -28,7 +28,7 @@ class QuantitySelector extends StatelessWidget {
     final colors = Theme.of(context).extension<OneBitColors>()!;
     final l10n = context.l10n;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.min,
       children: [
         _StepButton(
           symbol: '−',
@@ -36,11 +36,14 @@ class QuantitySelector extends StatelessWidget {
           onTap: () => onChanged(count - 1),
           semanticLabel: l10n.diceCountDecreaseLabel,
         ),
-        Text(
-          '$count',
-          style: AppTypography.display.copyWith(
-            color: colors.ink,
-            fontSize: 40,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            '$count',
+            style: AppTypography.display.copyWith(
+              color: colors.ink,
+              fontSize: 24,
+            ),
           ),
         ),
         _StepButton(

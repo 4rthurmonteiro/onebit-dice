@@ -123,7 +123,11 @@ class _TabletopAnimationState extends State<TabletopAnimation>
           child: Transform.scale(
             scale: scale,
             filterQuality: FilterQuality.none,
-            child: DiceGrid(count: widget.count, values: _displayed),
+            child: DiceGrid(
+              count: widget.count,
+              values: _displayed,
+              sides: widget.sides,
+            ),
           ),
         );
       },

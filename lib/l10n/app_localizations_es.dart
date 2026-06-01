@@ -55,6 +55,29 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get rollTapHint => '▸ TOCA PARA TIRAR ◂';
+
+  @override
+  String get rollCanvasLabel => 'Tirar dados';
+
+  @override
+  String get diceTypeSheetTitle => 'ELEGIR DADO';
+
+  @override
+  String get diceTypeFieldLabel => 'Tipo de dado';
+
+  @override
+  String diceTypeSidesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count LADOS',
+      one: '1 LADO',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get historyEmpty => 'Aún no hay tiradas.';
 
   @override

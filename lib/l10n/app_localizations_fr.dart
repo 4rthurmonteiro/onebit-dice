@@ -55,6 +55,29 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get rollTapHint => '▸ TOUCHEZ POUR LANCER ◂';
+
+  @override
+  String get rollCanvasLabel => 'Lancer les dés';
+
+  @override
+  String get diceTypeSheetTitle => 'CHOISIR LE DÉ';
+
+  @override
+  String get diceTypeFieldLabel => 'Type de dé';
+
+  @override
+  String diceTypeSidesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count FACES',
+      one: '1 FACE',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get historyEmpty => 'Aucun lancer pour le moment.';
 
   @override

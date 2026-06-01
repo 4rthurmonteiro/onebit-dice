@@ -54,6 +54,28 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get rollTapHint => '▸ タップしてふる ◂';
+
+  @override
+  String get rollCanvasLabel => 'ダイスをふる';
+
+  @override
+  String get diceTypeSheetTitle => 'ダイスをえらぶ';
+
+  @override
+  String get diceTypeFieldLabel => 'ダイスの種類';
+
+  @override
+  String diceTypeSidesLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countめん',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get historyEmpty => 'まだダイスをふっていません。';
 
   @override
