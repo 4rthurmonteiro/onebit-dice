@@ -69,7 +69,11 @@
       "Bash(awk -F'[: ]' '/^SF:/{sf=$2} /^LF:/{lf=$2} /^LH:/{lh=$2; if\\(lh!=lf\\) print sf\" \"lh\"/\"lf}' coverage/lcov.info)",
       "Bash(awk -F'[: ]' '/^SF:/{sf=$2} /^LF:/{lf=$2} /^LH:/{lh=$2; if\\(sf ~ /dice_type_sheet|dice_type_badge|hatch_painter|type_selector|quantity_selector|dice_controller|dice_screen/\\) print sf\" \"lh\"/\"lf}' coverage/lcov.info)",
       "Bash(awk -F: '{print $1\" -> \"$3}')",
-      "Bash(awk ' *)"
+      "Bash(awk ' *)",
+      "Bash(awk '/^SF:.*\\(dice_grid|dice_widget|dice_animator|fast_animation|drum_animation|tabletop_animation\\)\\\\.dart/{f=$0; show=1} show{print} /^end_of_record/{show=0}' coverage/lcov.info)",
+      "Bash(grep -E \"^SF:|^DA:[0-9]+,0$\")",
+      "Bash(awk '/^SF:/{f=$1} /^DA:[0-9]+,0$/{print f\" \"$0}' coverage/lcov.info)",
+      "Bash(awk '/^SF:/{f=$1} /^DA:[0-9]+,0$/{print f}' coverage/lcov.info)"
     ]
   }
 }

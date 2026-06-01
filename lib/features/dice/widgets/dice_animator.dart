@@ -39,6 +39,7 @@ class DiceAnimator extends StatelessWidget {
         count: count,
         targetValues: targetValues,
         duration: duration,
+        sides: sides,
       ),
       AnimationStyle.drum => DrumAnimation(
         count: count,
@@ -59,7 +60,9 @@ class DiceAnimator extends StatelessWidget {
 /// Returns the animation [Duration] for the chosen [style] + [speed]
 /// combination. `AnimationStyle.fast` ignores [speed] — it is the "no
 /// animation" style and is always 100 ms.
-@visibleForTesting
+///
+/// Public so `DiceWidget` can reveal the roll total only once a roll's
+/// animation has run for this long.
 Duration resolveDuration(AnimationStyle style, AnimationSpeed speed) =>
     switch ((style, speed)) {
       (AnimationStyle.fast, _) => const Duration(milliseconds: 100),

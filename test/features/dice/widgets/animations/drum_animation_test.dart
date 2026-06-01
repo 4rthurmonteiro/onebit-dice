@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
+import 'package:onebit_dice/features/dice/widgets/animations/dice_grid.dart';
 import 'package:onebit_dice/features/dice/widgets/animations/drum_animation.dart';
 
 Widget _harness(Widget child) => MaterialApp(
   theme: buildThemeData(Palette.of(PaletteId.macClassic)),
   home: Scaffold(body: Center(child: child)),
 );
+
+Iterable<int> _faces(WidgetTester tester) =>
+    tester.widgetList<PipFace>(find.byType(PipFace)).map((p) => p.value);
 
 void main() {
   group('DrumAnimation', () {
@@ -29,8 +33,7 @@ void main() {
           ),
         ),
       );
-      expect(find.text('3'), findsOneWidget);
-      expect(find.text('4'), findsOneWidget);
+      expect(_faces(tester), unorderedEquals([3, 4]));
     });
 
     testWidgets(
@@ -64,7 +67,7 @@ void main() {
         // After the duration completes the displayed value snaps to target.
         await tester.pump(duration);
         await tester.pumpAndSettle();
-        expect(find.text('6'), findsOneWidget);
+        expect(_faces(tester), [6]);
       },
     );
 
@@ -138,14 +141,14 @@ void main() {
         ),
       );
 
-      // Sample several mid-cycle ticks; every visible digit must be ≤ 4.
+      // Sample several mid-cycle ticks; every visible pip face must be ≤ 4.
       for (var t = 80; t < 360; t += 80) {
         await tester.pump(const Duration(milliseconds: 80));
-        for (final digit in const ['5', '6', '7', '8', '9']) {
+        for (final value in _faces(tester)) {
           expect(
-            find.text(digit),
-            findsNothing,
-            reason: 'tick=$t produced $digit (sides=4)',
+            value >= 1 && value <= 4,
+            isTrue,
+            reason: 'tick=$t produced $value (sides=4)',
           );
         }
       }
@@ -178,7 +181,7 @@ void main() {
         ),
       );
       await tester.pump();
-      expect(find.text('2'), findsOneWidget);
+      expect(_faces(tester), [2]);
     });
 
     testWidgets('uses Random() by default when none is injected', (
@@ -206,7 +209,7 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 80));
       await tester.pumpAndSettle();
-      expect(find.text('5'), findsOneWidget);
+      expect(_faces(tester), [5]);
     });
   });
 }

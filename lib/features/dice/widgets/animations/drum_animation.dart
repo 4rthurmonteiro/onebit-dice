@@ -102,6 +102,10 @@ class _DrumAnimationState extends State<DrumAnimation>
 
   @override
   Widget build(BuildContext context) {
-    return DiceGrid(count: widget.count, values: _displayed);
+    return DiceGrid(
+      count: widget.count,
+      values: _displayed,
+      sides: widget.sides,
+    );
   }
 }

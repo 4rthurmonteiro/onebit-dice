@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
+import 'package:onebit_dice/features/dice/widgets/animations/dice_grid.dart';
 import 'package:onebit_dice/features/dice/widgets/dice_widget.dart';
 import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
@@ -37,15 +38,27 @@ void main() {
       expect(find.byKey(DiceWidget.equationKey), findsNothing);
     });
 
-    testWidgets('values != null → renders one slot per value', (tester) async {
+    testWidgets('d6 or smaller → renders one pip face per value', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _harness(DiceWidget(count: 3, values: const [4, 5, 6])),
       );
       await tester.pumpAndSettle();
-      expect(find.text('4'), findsOneWidget);
-      expect(find.text('5'), findsOneWidget);
-      expect(find.text('6'), findsOneWidget);
+      final faces = tester
+          .widgetList<PipFace>(find.byType(PipFace))
+          .map((p) => p.value);
+      expect(faces, unorderedEquals([4, 5, 6]));
       expect(find.text('?'), findsNothing);
+    });
+
+    testWidgets('larger dice → renders numerals, not pips', (tester) async {
+      await tester.pumpWidget(
+        _harness(DiceWidget(count: 1, values: const [13], sides: 20)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(PipFace), findsNothing);
+      expect(find.text('13'), findsOneWidget);
     });
 
     testWidgets('values != null && length > 1 → renders the equation', (
@@ -77,6 +90,46 @@ void main() {
         find.text(AppLocalizations.of(context)!.rollResultTotal(7)),
         findsOneWidget,
       );
+    });
+
+    testWidgets('total stays hidden mid-roll and appears once settled', (
+      tester,
+    ) async {
+      // Empty state, then a fresh roll arrives on the same widget.
+      await tester.pumpWidget(
+        _harness(const DiceWidget(count: 1, values: null)),
+      );
+      await tester.pumpWidget(
+        _harness(DiceWidget(count: 1, values: const [4])),
+      );
+      await tester.pump();
+      // Mid-roll: the slot animation is still running, no total yet.
+      expect(find.byKey(DiceWidget.totalKey), findsNothing);
+      // After the animation duration elapses, the total is revealed.
+      await tester.pumpAndSettle();
+      expect(find.byKey(DiceWidget.totalKey), findsOneWidget);
+    });
+
+    testWidgets('changing the result re-hides the total until it settles', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _harness(const DiceWidget(count: 1, values: null)),
+      );
+      await tester.pumpWidget(
+        _harness(DiceWidget(count: 1, values: const [2])),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(DiceWidget.totalKey), findsOneWidget);
+
+      // A second roll hides the total again until it re-settles.
+      await tester.pumpWidget(
+        _harness(DiceWidget(count: 1, values: const [5])),
+      );
+      await tester.pump();
+      expect(find.byKey(DiceWidget.totalKey), findsNothing);
+      await tester.pumpAndSettle();
+      expect(find.byKey(DiceWidget.totalKey), findsOneWidget);
     });
 
     testWidgets('grid key is present in both states', (tester) async {

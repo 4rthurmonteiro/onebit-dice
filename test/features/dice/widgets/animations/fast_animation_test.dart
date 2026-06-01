@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
+import 'package:onebit_dice/features/dice/widgets/animations/dice_grid.dart';
 import 'package:onebit_dice/features/dice/widgets/animations/fast_animation.dart';
 
 Widget _harness(Widget child) => MaterialApp(
   theme: buildThemeData(Palette.of(PaletteId.macClassic)),
   home: Scaffold(body: Center(child: child)),
 );
+
+Iterable<int> _faces(WidgetTester tester) =>
+    tester.widgetList<PipFace>(find.byType(PipFace)).map((p) => p.value);
 
 void main() {
   group('FastAnimation', () {
@@ -35,8 +39,7 @@ void main() {
         ),
       );
       await tester.pump(duration);
-      expect(find.text('3'), findsOneWidget);
-      expect(find.text('4'), findsOneWidget);
+      expect(_faces(tester), unorderedEquals([3, 4]));
     });
 
     testWidgets('changing targetValues swaps the grid via AnimatedSwitcher', (
@@ -47,16 +50,17 @@ void main() {
           const FastAnimation(count: 1, targetValues: [1], duration: duration),
         ),
       );
-      await tester.pump(duration);
-      expect(find.text('1'), findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(_faces(tester), [1]);
 
       await tester.pumpWidget(
         _harness(
           const FastAnimation(count: 1, targetValues: [6], duration: duration),
         ),
       );
-      await tester.pump(duration);
-      expect(find.text('6'), findsOneWidget);
+      // Settle past the hard cut so the outgoing grid is fully removed.
+      await tester.pumpAndSettle();
+      expect(_faces(tester), [6]);
     });
 
     testWidgets('transitionBuilder returns the child unchanged (hard cut)', (
