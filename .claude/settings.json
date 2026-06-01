@@ -73,7 +73,8 @@
       "Bash(awk '/^SF:.*\\(dice_grid|dice_widget|dice_animator|fast_animation|drum_animation|tabletop_animation\\)\\\\.dart/{f=$0; show=1} show{print} /^end_of_record/{show=0}' coverage/lcov.info)",
       "Bash(grep -E \"^SF:|^DA:[0-9]+,0$\")",
       "Bash(awk '/^SF:/{f=$1} /^DA:[0-9]+,0$/{print f\" \"$0}' coverage/lcov.info)",
-      "Bash(awk '/^SF:/{f=$1} /^DA:[0-9]+,0$/{print f}' coverage/lcov.info)"
+      "Bash(awk '/^SF:/{f=$1} /^DA:[0-9]+,0$/{print f}' coverage/lcov.info)",
+      "Bash(keytool -help)"
     ]
   }
 }
