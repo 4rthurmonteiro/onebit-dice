@@ -203,7 +203,7 @@
 - [x] 13.2 Animação "Rápida" — `AnimatedSwitcher` 100ms hard cut em `FastAnimation`
 - [x] 13.3 Animação "Tambor" — `AnimationController` ciclando frames (placeholder textual)
 - [x] 13.4 Animação "Tabuleiro" — multi-fase: slide in → bounce → ciclo → settle
-- [!] 13.5 Substituir placeholder por sprite sheets reais (intervenção humana — assets Blender)
+- [x] 13.5 Placeholders textuais eliminados no redesign (#18): as fases "Tambor" e "Tabuleiro" agora renderizam faces de dado reais via `CustomPaint`/pixel-art (sem sprite sheets do Blender — a abordagem deixou de ser necessária)
 
 ---
 
