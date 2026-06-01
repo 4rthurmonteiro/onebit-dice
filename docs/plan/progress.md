@@ -219,7 +219,7 @@
 
 ## EPIC 15 — Release Preparation
 
-- [!] 15.1 Gerar keystore Android + configurar `key.properties` + backup (intervenção humana)
+- [x] 15.1 Gerar keystore Android + configurar `key.properties` + backup (feito pelo dev — keystore/`key.properties` ficam fora do repo, `.gitignore`)
 - [x] 15.2 `android/app/build.gradle.kts` lê `android/key.properties` (gitignored) e assina o release com a upload key; fallback p/ debug key quando o arquivo não existe
 - [x] 15.3 Bundle ID `com.am2.onebitdice` + `android:label="1-Bit Dice"` (configurado no `build.gradle.kts` namespace/applicationId + AndroidManifest)
 - [x] 15.4 iOS `PRODUCT_BUNDLE_IDENTIFIER = com.am2.onebitdice`, `CFBundleDisplayName/Name = "1-Bit Dice"`, `IPHONEOS_DEPLOYMENT_TARGET = 13.0` + Podfile `platform :ios, '13.0'`
