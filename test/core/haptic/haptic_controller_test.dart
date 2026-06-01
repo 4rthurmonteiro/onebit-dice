@@ -2,6 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 
+import '../../support/recording_analytics_service.dart';
+
 class _RecordingAppSettings extends InMemoryAppSettingsPreference {
   _RecordingAppSettings(this.events);
 
@@ -123,6 +125,34 @@ void main() {
 
       expect(notifications, 0);
       expect(pref.readHapticEnabled(), isNull);
+    });
+
+    test('setHapticEnabled logs haptic_toggled with the new flag', () async {
+      final analytics = RecordingAnalyticsService();
+      final controller = HapticController(
+        preference: InMemoryAppSettingsPreference(),
+        trigger: () async {},
+        analytics: analytics,
+      );
+
+      await controller.setHapticEnabled(value: false);
+
+      expect(analytics.eventNames, ['haptic_toggled']);
+      expect(analytics.events.single.parameters, {'enabled': false});
+    });
+
+    test('a no-op haptic toggle does not log', () async {
+      final analytics = RecordingAnalyticsService();
+      final controller = HapticController(
+        preference: InMemoryAppSettingsPreference(),
+        trigger: () async {},
+        analytics: analytics,
+      );
+
+      // Default hapticEnabled is true; setting true again is a no-op.
+      await controller.setHapticEnabled(value: true);
+
+      expect(analytics.events, isEmpty);
     });
   });
 }

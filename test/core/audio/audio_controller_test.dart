@@ -7,6 +7,8 @@ import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 
+import '../../support/recording_analytics_service.dart';
+
 class _FakeSoundPlayer implements SoundPlayer {
   _FakeSoundPlayer([this.events]);
 
@@ -308,6 +310,34 @@ void main() {
       ).dispose();
 
       expect(player.disposeCalls, 0);
+    });
+
+    test('setSoundEnabled logs sound_toggled with the new flag', () async {
+      final analytics = RecordingAnalyticsService();
+      final controller = AudioController(
+        preference: InMemoryAppSettingsPreference(),
+        player: _FakeSoundPlayer(),
+        analytics: analytics,
+      );
+
+      await controller.setSoundEnabled(value: false);
+
+      expect(analytics.eventNames, ['sound_toggled']);
+      expect(analytics.events.single.parameters, {'enabled': false});
+    });
+
+    test('a no-op sound toggle does not log', () async {
+      final analytics = RecordingAnalyticsService();
+      final controller = AudioController(
+        preference: InMemoryAppSettingsPreference(),
+        player: _FakeSoundPlayer(),
+        analytics: analytics,
+      );
+
+      // Default soundEnabled is true; setting true again is a no-op.
+      await controller.setSoundEnabled(value: true);
+
+      expect(analytics.events, isEmpty);
     });
   });
 }

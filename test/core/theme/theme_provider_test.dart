@@ -3,6 +3,8 @@ import 'package:onebit_dice/core/theme/palette.dart';
 import 'package:onebit_dice/core/theme/palette_preference.dart';
 import 'package:onebit_dice/core/theme/theme_provider.dart';
 
+import '../../support/recording_analytics_service.dart';
+
 class _RecordingPreference implements PalettePreference {
   _RecordingPreference([this._stored]);
 
@@ -65,6 +67,31 @@ void main() {
       expect(provider.current.id, PaletteId.macBeige);
       expect(notifications, 0);
       expect(pref.writes, isEmpty);
+    });
+
+    test('setPalette logs palette_changed with the palette id', () async {
+      final analytics = RecordingAnalyticsService();
+      final provider = ThemeProvider(
+        preference: _RecordingPreference(),
+        analytics: analytics,
+      );
+
+      await provider.setPalette(PaletteId.gameBoy);
+
+      expect(analytics.eventNames, ['palette_changed']);
+      expect(analytics.events.single.parameters, {'palette_id': 'gameBoy'});
+    });
+
+    test('a no-op setPalette does not log', () async {
+      final analytics = RecordingAnalyticsService();
+      final provider = ThemeProvider(
+        preference: _RecordingPreference(PaletteId.c64),
+        analytics: analytics,
+      );
+
+      await provider.setPalette(PaletteId.c64);
+
+      expect(analytics.events, isEmpty);
     });
   });
 }

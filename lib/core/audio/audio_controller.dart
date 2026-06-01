@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/audio/soloud_sound_player.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
@@ -18,6 +19,7 @@ class AudioController extends ChangeNotifier with WidgetsBindingObserver {
   AudioController({
     required AppSettingsPreference preference,
     SoundPlayer? player,
+    this._analytics = const NoOpAnalyticsService(),
   }) : _preference = preference,
        _player = player ?? SoLoudSoundPlayer(),
        _soundEnabled = preference.readSoundEnabled() ?? true;
@@ -35,6 +37,7 @@ class AudioController extends ChangeNotifier with WidgetsBindingObserver {
 
   final AppSettingsPreference _preference;
   final SoundPlayer _player;
+  final AnalyticsService _analytics;
   bool _soundEnabled;
   bool _initialized = false;
 
@@ -76,6 +79,9 @@ class AudioController extends ChangeNotifier with WidgetsBindingObserver {
     if (_soundEnabled == value) return;
     _soundEnabled = value;
     notifyListeners();
+    unawaited(
+      _analytics.logEvent('sound_toggled', parameters: {'enabled': value}),
+    );
     if (!value) {
       await _player.stopAll();
     }

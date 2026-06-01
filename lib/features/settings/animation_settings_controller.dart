@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/storage/models/animation_settings.dart';
 
@@ -10,12 +13,15 @@ import 'package:onebit_dice/core/storage/models/animation_settings.dart';
 /// and persists writes asynchronously after notifying listeners.
 class AnimationSettingsController extends ChangeNotifier {
   /// Creates an [AnimationSettingsController] backed by [preference].
-  AnimationSettingsController({required AppSettingsPreference preference})
-    : _preference = preference,
-      _style = preference.readAnimationStyle() ?? AnimationStyle.drum,
-      _speed = preference.readAnimationSpeed() ?? AnimationSpeed.medium;
+  AnimationSettingsController({
+    required AppSettingsPreference preference,
+    this._analytics = const NoOpAnalyticsService(),
+  }) : _preference = preference,
+       _style = preference.readAnimationStyle() ?? AnimationStyle.drum,
+       _speed = preference.readAnimationSpeed() ?? AnimationSpeed.medium;
 
   final AppSettingsPreference _preference;
+  final AnalyticsService _analytics;
   AnimationStyle _style;
   AnimationSpeed _speed;
 
@@ -31,6 +37,12 @@ class AnimationSettingsController extends ChangeNotifier {
     if (_style == value) return;
     _style = value;
     notifyListeners();
+    unawaited(
+      _analytics.logEvent(
+        'animation_style_changed',
+        parameters: {'style': value.name},
+      ),
+    );
     await _preference.writeAnimationStyle(value);
   }
 
@@ -40,6 +52,12 @@ class AnimationSettingsController extends ChangeNotifier {
     if (_speed == value) return;
     _speed = value;
     notifyListeners();
+    unawaited(
+      _analytics.logEvent(
+        'animation_speed_changed',
+        parameters: {'speed': value.name},
+      ),
+    );
     await _preference.writeAnimationSpeed(value);
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:onebit_dice/app_router.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
@@ -23,6 +24,8 @@ import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:onebit_dice/shared/widgets/mac_button.dart';
 import 'package:provider/provider.dart';
 
+import '../../support/recording_analytics_service.dart';
+
 class _NoopSoundPlayer implements SoundPlayer {
   @override
   Future<void> init() async {}
@@ -37,6 +40,7 @@ class _NoopSoundPlayer implements SoundPlayer {
 Widget _harness({
   required PresetsRepository repository,
   Locale locale = const Locale('en'),
+  AnalyticsService analytics = const NoOpAnalyticsService(),
 }) {
   final settings = InMemoryAppSettingsPreference();
   final router = GoRouter(
@@ -45,6 +49,7 @@ Widget _harness({
   );
   return MultiProvider(
     providers: [
+      Provider<AnalyticsService>.value(value: analytics),
       Provider<HistoryRepository>(create: (_) => InMemoryHistoryRepository()),
       Provider<PresetsRepository>.value(value: repository),
       Provider<LastDiceConfigPreference>(
@@ -152,7 +157,10 @@ void main() {
       'tab',
       (tester) async {
         final repo = InMemoryPresetsRepository();
-        await tester.pumpWidget(_harness(repository: repo));
+        final analytics = RecordingAnalyticsService();
+        await tester.pumpWidget(
+          _harness(repository: repo, analytics: analytics),
+        );
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('Percentile'));
@@ -164,6 +172,10 @@ void main() {
         expect(controller.selectedType, DiceType.d100);
         expect(controller.count, 1);
         expect(find.byType(DiceScreen), findsOneWidget);
+        final used = analytics.events
+            .where((e) => e.name == 'preset_used')
+            .single;
+        expect(used.parameters, {'preset_id': 'percentil', 'is_builtin': true});
       },
     );
 
@@ -171,8 +183,12 @@ void main() {
       'tapping a custom card applies its config and switches to the roll tab',
       (tester) async {
         final repo = InMemoryPresetsRepository();
+        final analytics = RecordingAnalyticsService();
         await repo.add(name: 'Boss', diceType: DiceType.d12, diceCount: 4);
-        await tester.pumpWidget(_harness(repository: repo));
+        final customId = repo.snapshot().single.id;
+        await tester.pumpWidget(
+          _harness(repository: repo, analytics: analytics),
+        );
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('Boss'));
@@ -183,6 +199,10 @@ void main() {
             .read<DiceController>();
         expect(controller.selectedType, DiceType.d12);
         expect(controller.count, 4);
+        final used = analytics.events
+            .where((e) => e.name == 'preset_used')
+            .single;
+        expect(used.parameters, {'preset_id': customId, 'is_builtin': false});
       },
     );
 

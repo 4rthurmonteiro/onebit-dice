@@ -36,11 +36,18 @@ Future<void> main() async {
 
   final prefs = await SharedPreferences.getInstance();
   final appSettings = SharedPreferencesAppSettingsPreference(prefs);
-  final audioController = AudioController(preference: appSettings);
+  final audioController = AudioController(
+    preference: appSettings,
+    analytics: analyticsService,
+  );
   await audioController.init();
-  final hapticController = HapticController(preference: appSettings);
+  final hapticController = HapticController(
+    preference: appSettings,
+    analytics: analyticsService,
+  );
   final animationSettingsController = AnimationSettingsController(
     preference: appSettings,
+    analytics: analyticsService,
   );
   runApp(
     App(

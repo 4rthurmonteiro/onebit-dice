@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
 import 'package:onebit_dice/core/models/dice_type.dart';
@@ -44,6 +45,7 @@ class DiceController extends ChangeNotifier {
     required AudioController audio,
     required HapticController haptic,
     required LastDiceConfigPreference lastDiceConfig,
+    AnalyticsService analytics = const NoOpAnalyticsService(),
     Random? rng,
   }) {
     final stored = lastDiceConfig.read();
@@ -52,6 +54,7 @@ class DiceController extends ChangeNotifier {
       audio,
       haptic,
       lastDiceConfig,
+      analytics,
       rng,
       stored?.diceType ?? DiceType.d6,
       stored?.count ?? 1,
@@ -63,6 +66,7 @@ class DiceController extends ChangeNotifier {
     this._audio,
     this._haptic,
     this._lastDiceConfig,
+    this._analytics,
     this._rng,
     this._selectedType,
     this._count,
@@ -72,6 +76,7 @@ class DiceController extends ChangeNotifier {
   final AudioController _audio;
   final HapticController _haptic;
   final LastDiceConfigPreference _lastDiceConfig;
+  final AnalyticsService _analytics;
   final Random? _rng;
 
   DiceType _selectedType;
@@ -113,6 +118,12 @@ class DiceController extends ChangeNotifier {
     _selectedType = type;
     _lastResult = null;
     notifyListeners();
+    unawaited(
+      _analytics.logEvent(
+        'dice_type_changed',
+        parameters: {'dice_type': type.name},
+      ),
+    );
     await _lastDiceConfig.write(LastDiceConfig(diceType: type, count: _count));
   }
 
@@ -171,6 +182,16 @@ class DiceController extends ChangeNotifier {
         values: values,
       );
       notifyListeners();
+      unawaited(
+        _analytics.logEvent(
+          'dice_rolled',
+          parameters: {
+            'dice_type': _selectedType.name,
+            'count': _count,
+            'total': values.fold<int>(0, (sum, value) => sum + value),
+          },
+        ),
+      );
       await _history.append(_lastResult!);
       unawaited(_audio.playRollSequence());
       _haptic.trigger();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/models/dice_type.dart';
 import 'package:onebit_dice/core/models/roll_result.dart';
 import 'package:onebit_dice/core/storage/history_repository.dart';
@@ -11,12 +12,18 @@ import 'package:onebit_dice/features/history/widgets/history_entry_tile.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import '../../support/recording_analytics_service.dart';
+
 Widget _harness({
   required HistoryRepository repository,
   Locale locale = const Locale('en'),
+  AnalyticsService analytics = const NoOpAnalyticsService(),
 }) {
-  return Provider<HistoryRepository>.value(
-    value: repository,
+  return MultiProvider(
+    providers: [
+      Provider<HistoryRepository>.value(value: repository),
+      Provider<AnalyticsService>.value(value: analytics),
+    ],
     child: MaterialApp(
       locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -85,10 +92,14 @@ void main() {
       expect(find.byType(HistoryEntryTile), findsOneWidget);
     });
 
-    testWidgets('confirm dialog flow clears the repository', (tester) async {
+    testWidgets('confirm dialog flow clears the repository and logs the '
+        'history_cleared event', (tester) async {
       final repository = InMemoryHistoryRepository();
+      final analytics = RecordingAnalyticsService();
       await repository.append(_result(4));
-      await tester.pumpWidget(_harness(repository: repository));
+      await tester.pumpWidget(
+        _harness(repository: repository, analytics: analytics),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(ClearHistoryButton));
@@ -98,6 +109,26 @@ void main() {
 
       expect(repository.snapshot(), isEmpty);
       expect(find.byKey(HistoryScreen.emptyKey), findsOneWidget);
+      expect(analytics.eventNames, ['history_cleared']);
+      expect(analytics.events.single.parameters, isNull);
+    });
+
+    testWidgets('cancelling the clear dialog logs nothing', (tester) async {
+      final repository = InMemoryHistoryRepository();
+      final analytics = RecordingAnalyticsService();
+      await repository.append(_result(4));
+      await tester.pumpWidget(
+        _harness(repository: repository, analytics: analytics),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(ClearHistoryButton));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(ClearHistoryButton.cancelKey));
+      await tester.pumpAndSettle();
+
+      expect(repository.snapshot(), isNotEmpty);
+      expect(analytics.events, isEmpty);
     });
 
     testWidgets('uses palette paper for the scaffold background', (

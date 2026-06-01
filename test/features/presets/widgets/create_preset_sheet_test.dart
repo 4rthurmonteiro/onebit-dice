@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/models/dice_type.dart';
 import 'package:onebit_dice/core/storage/presets_repository.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
@@ -9,23 +10,30 @@ import 'package:onebit_dice/features/dice/widgets/type_selector.dart';
 import 'package:onebit_dice/features/presets/widgets/create_preset_sheet.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:onebit_dice/shared/widgets/mac_button.dart';
+import 'package:provider/provider.dart';
+
+import '../../../support/recording_analytics_service.dart';
 
 Widget _harness(
   PresetsRepository repository, {
   Locale locale = const Locale('en'),
+  AnalyticsService analytics = const NoOpAnalyticsService(),
 }) {
-  return MaterialApp(
-    locale: locale,
-    supportedLocales: AppLocalizations.supportedLocales,
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
-    theme: buildThemeData(Palette.of(PaletteId.macClassic)),
-    home: Scaffold(
-      body: Builder(
-        builder: (context) => Center(
-          child: ElevatedButton(
-            onPressed: () =>
-                CreatePresetSheet.show(context, repository: repository),
-            child: const Text('OPEN'),
+  return Provider<AnalyticsService>.value(
+    value: analytics,
+    child: MaterialApp(
+      locale: locale,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      theme: buildThemeData(Palette.of(PaletteId.macClassic)),
+      home: Scaffold(
+        body: Builder(
+          builder: (context) => Center(
+            child: ElevatedButton(
+              onPressed: () =>
+                  CreatePresetSheet.show(context, repository: repository),
+              child: const Text('OPEN'),
+            ),
           ),
         ),
       ),
@@ -37,10 +45,11 @@ Future<void> _pumpAndOpen(
   WidgetTester tester,
   PresetsRepository repo, {
   Locale locale = const Locale('en'),
+  AnalyticsService analytics = const NoOpAnalyticsService(),
 }) async {
   await tester.binding.setSurfaceSize(const Size(600, 1200));
   addTearDown(() => tester.binding.setSurfaceSize(null));
-  await tester.pumpWidget(_harness(repo, locale: locale));
+  await tester.pumpWidget(_harness(repo, locale: locale, analytics: analytics));
   await tester.tap(find.text('OPEN'));
   await tester.pumpAndSettle();
 }
@@ -98,7 +107,8 @@ void main() {
       'tapping Save adds the preset to the repository and pops the sheet',
       (tester) async {
         final repo = InMemoryPresetsRepository();
-        await _pumpAndOpen(tester, repo);
+        final analytics = RecordingAnalyticsService();
+        await _pumpAndOpen(tester, repo, analytics: analytics);
 
         await tester.enterText(find.byType(TextField), 'Custom 1');
         await tester.pump();
@@ -120,6 +130,11 @@ void main() {
         expect(saved.diceType, DiceType.d20);
         expect(saved.diceCount, 2);
         expect(find.byType(CreatePresetSheet), findsNothing);
+        expect(analytics.eventNames, ['preset_created']);
+        expect(analytics.events.single.parameters, {
+          'dice_type': 'd20',
+          'count': 2,
+        });
       },
     );
 

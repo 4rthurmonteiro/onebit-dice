@@ -3,6 +3,8 @@ import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/storage/models/animation_settings.dart';
 import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 
+import '../../support/recording_analytics_service.dart';
+
 class _RecordingAppSettings extends InMemoryAppSettingsPreference {
   _RecordingAppSettings(this.events);
 
@@ -90,6 +92,45 @@ void main() {
 
       expect(notifications, 0);
       expect(pref.readAnimationSpeed(), isNull);
+    });
+
+    test('setStyle logs animation_style_changed with the style name', () async {
+      final analytics = RecordingAnalyticsService();
+      final controller = AnimationSettingsController(
+        preference: InMemoryAppSettingsPreference(),
+        analytics: analytics,
+      );
+
+      await controller.setStyle(AnimationStyle.tabletop);
+
+      expect(analytics.eventNames, ['animation_style_changed']);
+      expect(analytics.events.single.parameters, {'style': 'tabletop'});
+    });
+
+    test('setSpeed logs animation_speed_changed with the speed name', () async {
+      final analytics = RecordingAnalyticsService();
+      final controller = AnimationSettingsController(
+        preference: InMemoryAppSettingsPreference(),
+        analytics: analytics,
+      );
+
+      await controller.setSpeed(AnimationSpeed.slow);
+
+      expect(analytics.eventNames, ['animation_speed_changed']);
+      expect(analytics.events.single.parameters, {'speed': 'slow'});
+    });
+
+    test('no-op style/speed changes do not log', () async {
+      final analytics = RecordingAnalyticsService();
+      final controller = AnimationSettingsController(
+        preference: InMemoryAppSettingsPreference(),
+        analytics: analytics,
+      );
+
+      await controller.setStyle(AnimationStyle.drum);
+      await controller.setSpeed(AnimationSpeed.medium);
+
+      expect(analytics.events, isEmpty);
     });
   });
 }

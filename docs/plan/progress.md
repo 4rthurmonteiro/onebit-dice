@@ -85,13 +85,14 @@
 
 > Bootstrap entregue junto com **0.6**. Interface `AnalyticsService` +
 > `NoOpAnalyticsService` + `FirebaseAnalyticsService` (Analytics +
-> Crashlytics injetados via construtor) cobertos por testes. Call sites
-> de eventos específicos (dice rolled, palette changed etc.) ficam para
-> uma iteração futura — fora do escopo deste bootstrap.
+> Crashlytics injetados via construtor) cobertos por testes. Os call sites
+> de eventos específicos (dice rolled, palette changed etc.) e os
+> `screen_view` foram cablados na iteração 5.4.
 
 - [x] 5.1 `lib/core/analytics/analytics_service.dart` + `firebase_analytics_service.dart` — interface + `NoOpAnalyticsService` + impl Firebase
 - [x] 5.2 `lib/main.dart` — `Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)` + `FlutterError.onError` → `crashlytics.recordFlutterFatalError` + `PlatformDispatcher.onError` → `crashlytics.recordError(fatal: true)` + `setCrashlyticsCollectionEnabled(!kDebugMode)`. `App` recebe `analyticsService` e expõe via `Provider<AnalyticsService>`.
 - [x] 5.3 `test/core/analytics/analytics_service_test.dart` — `NoOpAnalyticsService` smoke + `FirebaseAnalyticsService` forwarding (mocktail mocks de `FirebaseAnalytics` / `FirebaseCrashlytics`)
+- [x] 5.4 Call sites instrumentados (Analytics). **Screen views**: `AppShell` registra `screen_view` por branch (dice/history/presets/settings) e `SplashScreen` registra `splash`. **Eventos de produto**: `dice_rolled` / `dice_type_changed` (`DiceController`), `palette_changed` (`ThemeProvider`), `language_changed` (`LocaleController`), `animation_style_changed` / `animation_speed_changed` (`AnimationSettingsController`), `sound_toggled` / `haptic_toggled` (`Audio`/`HapticController`), `preset_used` (`PresetsScreen`), `preset_created` (`CreatePresetSheet`), `history_cleared` (`HistoryScreen`). `AnalyticsService` injetado nos controllers com default `NoOpAnalyticsService`; `bool` codificado como `1`/`0` no `FirebaseAnalyticsService`. Política de privacidade (`docs/privacy/`) atualizada para declarar a coleta anônima via Firebase (exigência do "Data safety" da Play Store). Coleta segue sempre ligada em release (`!kDebugMode`), sem opt-out.
 
 ---
 

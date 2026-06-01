@@ -64,6 +64,27 @@ void main() {
       ).called(1);
     });
 
+    test('logEvent encodes bool parameters as 1/0 for Firebase', () async {
+      when(
+        () => analytics.logEvent(
+          name: any(named: 'name'),
+          parameters: any(named: 'parameters'),
+        ),
+      ).thenAnswer((_) async {});
+
+      await service.logEvent(
+        'sound_toggled',
+        parameters: const {'enabled': true, 'muted': false, 'count': 3},
+      );
+
+      verify(
+        () => analytics.logEvent(
+          name: 'sound_toggled',
+          parameters: const {'enabled': 1, 'muted': 0, 'count': 3},
+        ),
+      ).called(1);
+    });
+
     test('logEvent forwards null parameters when omitted', () async {
       when(
         () => analytics.logEvent(

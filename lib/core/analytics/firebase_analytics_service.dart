@@ -20,7 +20,21 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logEvent(String name, {Map<String, Object>? parameters}) {
-    return analytics.logEvent(name: name, parameters: parameters);
+    return analytics.logEvent(name: name, parameters: _coerce(parameters));
+  }
+
+  /// Firebase Analytics only accepts `String`/`num` parameter values, so any
+  /// `bool` flag callers pass through the [AnalyticsService] seam (e.g.
+  /// `is_builtin`, `enabled`) is encoded as `1`/`0` before forwarding.
+  Map<String, Object>? _coerce(Map<String, Object>? parameters) {
+    if (parameters == null) return null;
+    return {
+      for (final entry in parameters.entries)
+        entry.key: switch (entry.value) {
+          final bool flag => flag ? 1 : 0,
+          final Object value => value,
+        },
+    };
   }
 
   @override

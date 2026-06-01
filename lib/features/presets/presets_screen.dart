@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:onebit_dice/app_router.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/i18n/l10n_extension.dart';
 import 'package:onebit_dice/core/models/dice_type.dart';
 import 'package:onebit_dice/core/storage/models/custom_preset.dart';
@@ -53,6 +56,8 @@ class PresetsScreen extends StatelessWidget {
                           notation: preset.notation,
                           onTap: () => _applyAndGo(
                             context,
+                            presetId: preset.id,
+                            isBuiltin: true,
                             diceType: preset.diceType,
                             count: preset.diceCount,
                           ),
@@ -70,6 +75,8 @@ class PresetsScreen extends StatelessWidget {
                               '${preset.diceCount}${preset.diceType.label}',
                           onTap: () => _applyAndGo(
                             context,
+                            presetId: preset.id,
+                            isBuiltin: false,
                             diceType: preset.diceType,
                             count: preset.diceCount,
                           ),
@@ -96,12 +103,20 @@ class PresetsScreen extends StatelessWidget {
 
   void _applyAndGo(
     BuildContext context, {
+    required String presetId,
+    required bool isBuiltin,
     required DiceType diceType,
     required int count,
   }) {
     context.read<DiceController>().applyConfig(
       diceType: diceType,
       count: count,
+    );
+    unawaited(
+      context.read<AnalyticsService>().logEvent(
+        'preset_used',
+        parameters: {'preset_id': presetId, 'is_builtin': isBuiltin},
+      ),
     );
     const DiceRoute().go(context);
   }

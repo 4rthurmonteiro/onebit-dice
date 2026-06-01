@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:onebit_dice/app_router.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
@@ -19,6 +20,8 @@ import 'package:onebit_dice/shared/widgets/pixel_divider.dart';
 import 'package:onebit_dice/shared/widgets/pixel_icon.dart';
 import 'package:provider/provider.dart';
 
+import '../../support/recording_analytics_service.dart';
+
 class _NoopSoundPlayer implements SoundPlayer {
   @override
   Future<void> init() async {}
@@ -30,11 +33,15 @@ class _NoopSoundPlayer implements SoundPlayer {
   Future<void> dispose() async {}
 }
 
-Widget _harness({Locale locale = const Locale('en')}) {
+Widget _harness({
+  Locale locale = const Locale('en'),
+  AnalyticsService analytics = const NoOpAnalyticsService(),
+}) {
   // Wire just enough providers for `/dice` to mount when the splash navigates.
   final settings = InMemoryAppSettingsPreference();
   return MultiProvider(
     providers: [
+      Provider<AnalyticsService>.value(value: analytics),
       Provider<HistoryRepository>(create: (_) => InMemoryHistoryRepository()),
       Provider<LastDiceConfigPreference>(
         create: (_) => InMemoryLastDiceConfigPreference(),
@@ -164,6 +171,14 @@ void main() {
     testWidgets('splashDuration is exactly 1500ms', (tester) async {
       expect(SplashScreen.splashDuration, const Duration(milliseconds: 1500));
     });
+
+    testWidgets('logs a splash screen_view on mount', (tester) async {
+      final analytics = RecordingAnalyticsService();
+      await _pump(tester, _harness(analytics: analytics));
+      await tester.pump();
+
+      expect(analytics.screenViews.first, 'splash');
+    });
   });
 
   group('GoRouter integration', () {
@@ -176,8 +191,15 @@ void main() {
       );
       await _pump(
         tester,
-        Provider<HistoryRepository>(
-          create: (_) => InMemoryHistoryRepository(),
+        MultiProvider(
+          providers: [
+            Provider<AnalyticsService>.value(
+              value: const NoOpAnalyticsService(),
+            ),
+            Provider<HistoryRepository>(
+              create: (_) => InMemoryHistoryRepository(),
+            ),
+          ],
           child: MaterialApp.router(
             locale: const Locale('en'),
             supportedLocales: AppLocalizations.supportedLocales,

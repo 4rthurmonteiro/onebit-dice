@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/i18n/locale_preference.dart';
 import 'package:onebit_dice/core/i18n/supported_locales.dart';
 
@@ -15,12 +18,15 @@ class LocaleController extends ChangeNotifier {
   /// Creates a [LocaleController] backed by [preference] (defaults to an
   /// in-memory store). The initial override is read synchronously from
   /// `preference.read()`.
-  LocaleController({LocalePreference? preference})
-    : _preference = preference ?? InMemoryLocalePreference() {
+  LocaleController({
+    LocalePreference? preference,
+    this._analytics = const NoOpAnalyticsService(),
+  }) : _preference = preference ?? InMemoryLocalePreference() {
     _override = _preference.read();
   }
 
   final LocalePreference _preference;
+  final AnalyticsService _analytics;
   Locale? _override;
 
   /// The active locale override, or `null` when the app follows the system
@@ -45,6 +51,12 @@ class LocaleController extends ChangeNotifier {
     if (_override == locale) return;
     _override = locale;
     notifyListeners();
+    unawaited(
+      _analytics.logEvent(
+        'language_changed',
+        parameters: {'locale': locale.toLanguageTag()},
+      ),
+    );
     await _preference.write(locale);
   }
 
@@ -54,6 +66,12 @@ class LocaleController extends ChangeNotifier {
     if (_override == null) return;
     _override = null;
     notifyListeners();
+    unawaited(
+      _analytics.logEvent(
+        'language_changed',
+        parameters: {'locale': 'system'},
+      ),
+    );
     await _preference.write(null);
   }
 }

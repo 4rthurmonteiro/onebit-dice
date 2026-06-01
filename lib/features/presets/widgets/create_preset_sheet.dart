@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/i18n/l10n_extension.dart';
 import 'package:onebit_dice/core/models/dice_type.dart';
 import 'package:onebit_dice/core/storage/models/custom_preset.dart';
@@ -10,6 +13,7 @@ import 'package:onebit_dice/features/dice/widgets/quantity_selector.dart';
 import 'package:onebit_dice/features/dice/widgets/type_selector.dart';
 import 'package:onebit_dice/shared/widgets/mac_button.dart';
 import 'package:onebit_dice/shared/widgets/mac_window.dart';
+import 'package:provider/provider.dart';
 
 /// Bottom-sheet body for creating a new [CustomPreset].
 ///
@@ -63,10 +67,17 @@ class _CreatePresetSheetState extends State<CreatePresetSheet> {
   bool get _isValid => _nameController.text.trim().isNotEmpty;
 
   Future<void> _save() async {
+    final analytics = context.read<AnalyticsService>();
     await widget.repository.add(
       name: _nameController.text.trim(),
       diceType: _diceType,
       diceCount: _count,
+    );
+    unawaited(
+      analytics.logEvent(
+        'preset_created',
+        parameters: {'dice_type': _diceType.name, 'count': _count},
+      ),
     );
     if (!mounted) return;
     Navigator.of(context).pop();

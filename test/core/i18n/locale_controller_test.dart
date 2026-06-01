@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:onebit_dice/core/i18n/locale_controller.dart';
 import 'package:onebit_dice/core/i18n/locale_preference.dart';
 
+import '../../support/recording_analytics_service.dart';
+
 class _RecordingPreference implements LocalePreference {
   _RecordingPreference([this._stored]);
 
@@ -119,6 +121,45 @@ void main() {
         controller.override,
         const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
       );
+    });
+
+    test('setOverride logs language_changed with the language tag', () async {
+      final analytics = RecordingAnalyticsService();
+      final controller = LocaleController(
+        preference: _RecordingPreference(),
+        analytics: analytics,
+      );
+
+      await controller.setOverride(const Locale('pt', 'BR'));
+
+      expect(analytics.eventNames, ['language_changed']);
+      expect(analytics.events.single.parameters, {'locale': 'pt-BR'});
+    });
+
+    test('clearOverride logs language_changed with "system"', () async {
+      final analytics = RecordingAnalyticsService();
+      final controller = LocaleController(
+        preference: _RecordingPreference(const Locale('ja')),
+        analytics: analytics,
+      );
+
+      await controller.clearOverride();
+
+      expect(analytics.eventNames, ['language_changed']);
+      expect(analytics.events.single.parameters, {'locale': 'system'});
+    });
+
+    test('no-op locale changes do not log', () async {
+      final analytics = RecordingAnalyticsService();
+      final controller = LocaleController(
+        preference: _RecordingPreference(),
+        analytics: analytics,
+      );
+
+      // clearOverride from null and setOverride to... nothing changes.
+      await controller.clearOverride();
+
+      expect(analytics.events, isEmpty);
     });
   });
 }

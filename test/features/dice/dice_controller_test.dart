@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
@@ -13,6 +14,8 @@ import 'package:onebit_dice/core/storage/history_repository.dart';
 import 'package:onebit_dice/core/storage/last_dice_config_preference.dart';
 import 'package:onebit_dice/core/storage/models/roll_entry.dart';
 import 'package:onebit_dice/features/dice/dice_controller.dart';
+
+import '../../support/recording_analytics_service.dart';
 
 class _RecordingHistory implements HistoryRepository {
   _RecordingHistory(this.events);
@@ -103,12 +106,14 @@ DiceController _build({
   required List<String> events,
   LastDiceConfig? seed,
   Random? rng,
+  AnalyticsService analytics = const NoOpAnalyticsService(),
 }) {
   return DiceController(
     history: _RecordingHistory(events),
     audio: _RecordingAudio(events),
     haptic: _RecordingHaptic(events),
     lastDiceConfig: _RecordingLastDice(events, seed),
+    analytics: analytics,
     rng: rng,
   );
 }
@@ -406,6 +411,53 @@ void main() {
           expect(events.where((e) => e == 'haptic.trigger'), hasLength(1));
         },
       );
+    });
+
+    group('analytics', () {
+      test('roll() logs dice_rolled with type, count, and total', () async {
+        final analytics = RecordingAnalyticsService();
+        final controller = _build(
+          events: <String>[],
+          rng: Random(0),
+          analytics: analytics,
+        );
+        await controller.setType(DiceType.d20);
+        await controller.setCount(3);
+        analytics.events.clear();
+
+        await controller.roll();
+
+        final total = controller.lastResult!.values.fold<int>(
+          0,
+          (sum, value) => sum + value,
+        );
+        expect(analytics.events, hasLength(1));
+        expect(analytics.events.single.name, 'dice_rolled');
+        expect(analytics.events.single.parameters, {
+          'dice_type': 'd20',
+          'count': 3,
+          'total': total,
+        });
+      });
+
+      test('setType logs dice_type_changed with the new type', () async {
+        final analytics = RecordingAnalyticsService();
+        final controller = _build(events: <String>[], analytics: analytics);
+
+        await controller.setType(DiceType.d12);
+
+        expect(analytics.eventNames, ['dice_type_changed']);
+        expect(analytics.events.single.parameters, {'dice_type': 'd12'});
+      });
+
+      test('a no-op setType does not log', () async {
+        final analytics = RecordingAnalyticsService();
+        final controller = _build(events: <String>[], analytics: analytics);
+
+        await controller.setType(DiceType.d6);
+
+        expect(analytics.events, isEmpty);
+      });
     });
   });
 }

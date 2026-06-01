@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:onebit_dice/app_router.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
@@ -39,6 +40,7 @@ Widget _harness(GoRouter router) {
   final settings = InMemoryAppSettingsPreference();
   return MultiProvider(
     providers: [
+      Provider<AnalyticsService>.value(value: const NoOpAnalyticsService()),
       Provider<HistoryRepository>(create: (_) => InMemoryHistoryRepository()),
       Provider<PresetsRepository>(create: (_) => InMemoryPresetsRepository()),
       Provider<LastDiceConfigPreference>(

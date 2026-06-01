@@ -69,9 +69,13 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<AnimationSettingsController>.value(
           value: animationSettingsController,
         ),
-        ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider<ThemeProvider>(
+          create: (context) =>
+              ThemeProvider(analytics: context.read<AnalyticsService>()),
+        ),
         ChangeNotifierProvider<LocaleController>(
-          create: (_) => LocaleController(),
+          create: (context) =>
+              LocaleController(analytics: context.read<AnalyticsService>()),
         ),
         Provider<HistoryRepository>(create: (_) => InMemoryHistoryRepository()),
         Provider<PresetsRepository>(create: (_) => InMemoryPresetsRepository()),
@@ -84,6 +88,7 @@ class App extends StatelessWidget {
             audio: context.read<AudioController>(),
             haptic: context.read<HapticController>(),
             lastDiceConfig: context.read<LastDiceConfigPreference>(),
+            analytics: context.read<AnalyticsService>(),
           ),
         ),
       ],
