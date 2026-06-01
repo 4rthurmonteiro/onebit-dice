@@ -220,10 +220,10 @@
 ## EPIC 15 — Release Preparation
 
 - [!] 15.1 Gerar keystore Android + configurar `key.properties` + backup (intervenção humana)
-- [ ] 15.2 Atualizar `android/app/build.gradle` com signing config
+- [x] 15.2 `android/app/build.gradle.kts` lê `android/key.properties` (gitignored) e assina o release com a upload key; fallback p/ debug key quando o arquivo não existe
 - [x] 15.3 Bundle ID `com.am2.onebitdice` + `android:label="1-Bit Dice"` (configurado no `build.gradle.kts` namespace/applicationId + AndroidManifest)
 - [x] 15.4 iOS `PRODUCT_BUNDLE_IDENTIFIER = com.am2.onebitdice`, `CFBundleDisplayName/Name = "1-Bit Dice"`, `IPHONEOS_DEPLOYMENT_TARGET = 13.0` + Podfile `platform :ios, '13.0'`
-- [ ] 15.5 `flutter build appbundle --release` — verificar build sem erros
+- [x] 15.5 `flutter build appbundle --release` OK → `app-release.aab` (57 MB) assinado com a upload key (SHA1 confere; `jarsigner` verified). Exigiu subir `google-services` 4.3.15 → 4.4.2 p/ compat com Crashlytics plugin v3
 - [ ] 15.6 `flutter build ipa --release` — verificar build sem erros
 - [!] 15.7 Capturar screenshots nas resoluções corretas (intervenção humana — device físico)
 - [!] 15.8 Criar app records no Play Console + App Store Connect (intervenção humana)
