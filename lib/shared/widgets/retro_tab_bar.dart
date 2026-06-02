@@ -38,22 +38,25 @@ class RetroTabBar extends StatelessWidget {
         color: colors.paper,
         border: Border(top: BorderSide(color: colors.ink, width: 2)),
       ),
-      child: SizedBox(
-        height: height,
-        child: Row(
-          children: [
-            for (var i = 0; i < items.length; i++)
-              Expanded(
-                child: _TabItem(
-                  spec: items[i],
-                  isActive: shell.currentIndex == i,
-                  onTap: () => shell.goBranch(
-                    i,
-                    initialLocation: i == shell.currentIndex,
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: height,
+          child: Row(
+            children: [
+              for (var i = 0; i < items.length; i++)
+                Expanded(
+                  child: _TabItem(
+                    spec: items[i],
+                    isActive: shell.currentIndex == i,
+                    onTap: () => shell.goBranch(
+                      i,
+                      initialLocation: i == shell.currentIndex,
+                    ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
