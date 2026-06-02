@@ -22,19 +22,41 @@ pipeline described here.
 3. Each tester accepts the e-mail invite and installs the Firebase App Tester
    app on their device.
 
-## 2. Manual distribution via CLI (validate before relying on CI)
+## 2. Release from your machine
+
+CI and local share **one script** —
+[`tools/release/distribute.sh`](../../tools/release/distribute.sh). It builds a
+signed release APK and distributes it to App Distribution. The only thing that
+differs between your machine and CI is where the credentials come from:
+
+| | Signing | Firebase auth |
+| --- | --- | --- |
+| **Local** | `android/key.properties` (already on disk, from task 15.1) | `firebase login` session |
+| **CI** | GitHub Secrets → written into the same `key.properties` | `FIREBASE_SERVICE_ACCOUNT` secret |
+
+One-time local setup:
 
 ```bash
-firebase login            # or use a CI token / service account
-flutter build apk --release
-firebase appdistribution:distribute \
-  build/app/outputs/flutter-apk/app-release.apk \
-  --app 1:590407408363:android:9dd0c4e47f9c2f664b7cae \
-  --groups "qa" \
-  --release-notes "Manual test build — 1-Bit Dice"
+npm install -g firebase-tools   # or rely on `npx firebase-tools`
+firebase login
 ```
 
-Confirm a tester receives the invite and can install the build.
+Then release:
+
+```bash
+# build current version and distribute (no version bump)
+tools/release/distribute.sh --notes "smoke test"
+
+# or bump the version first, then distribute
+tools/release/distribute.sh --bump patch --notes "release candidate"
+```
+
+Flags: `--bump major|minor|patch` (default: none), `--groups qa,beta`
+(default `qa`), `--notes "..."` (default `1-Bit Dice <version>`).
+
+Confirm a tester receives the invite and can install the build. A local run
+modifies `pubspec.yaml` only if you pass `--bump`; revert with
+`git checkout pubspec.yaml` if it was just a test.
 
 ## 3. Automated release on merge to `main`
 
@@ -44,10 +66,9 @@ every branch and PR. The release job runs in order:
 
 1. **Gates** — `flutter analyze --fatal-infos`, `flutter test --coverage`, and
    the 100 % coverage check. A broken build is never distributed.
-2. **Semver bump** — [`tools/release/bump_version.sh`](../../tools/release/bump_version.sh)
-   rewrites `version:` in `pubspec.yaml`. The **`+build` number always
-   increments**; the semver part follows the merge commit message
-   (Conventional Commits):
+2. **Determine bump level** from the merge commit message (Conventional
+   Commits) and pass it to the shared script. The **`+build` number always
+   increments**; the semver part follows the message:
 
    | Commit message               | Bump  | Example           |
    | ---------------------------- | ----- | ----------------- |
@@ -55,13 +76,14 @@ every branch and PR. The release job runs in order:
    | `feat:`                      | minor | `1.0.0+1 → 1.1.0+2` |
    | anything else                | patch | `1.0.0+1 → 1.0.1+2` |
 
-3. **Build** — `flutter build apk --release`. Signed with the upload key when
-   the keystore secrets are present; otherwise falls back to the debug key
-   (acceptable for test distribution).
-4. **Distribute** — uploads the APK to App Distribution group `qa` via the
-   `wzieba/Firebase-Distribution-Github-Action`, using the merge commit message
-   as the release notes.
-5. **Commit the bump** — pushes `chore(release): bump version to <v> [skip ci]`
+3. **Build & distribute** — runs the same
+   [`tools/release/distribute.sh`](../../tools/release/distribute.sh) you run
+   locally. It bumps the version (via
+   [`bump_version.sh`](../../tools/release/bump_version.sh)), builds a release
+   APK (upload-key signed when the keystore secrets are set; debug-key fallback
+   otherwise), and distributes it to App Distribution group `qa` with the merge
+   commit message as the release notes.
+4. **Commit the bump** — pushes `chore(release): bump version to <v> [skip ci]`
    back to `main`. The `chore(release):` prefix (`if:` guard) **and** `[skip
    ci]` both prevent this commit from re-triggering the workflow.
 
