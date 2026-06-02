@@ -6,8 +6,8 @@
 # and CI (.github/workflows/release.yml) runs the exact same script. The only
 # difference is where the credentials come from:
 #
-#   Local  — android/key.properties (already on disk) + `firebase login`.
-#   CI     — GitHub Secrets, which the workflow exports as the env vars below;
+#   Local  - android/key.properties (already on disk) + `firebase login`.
+#   CI     - GitHub Secrets, which the workflow exports as the env vars below;
 #            this script then materializes them into the same key.properties +
 #            service-account file it would find locally.
 #
@@ -33,13 +33,18 @@
 #   FIREBASE_SERVICE_ACCOUNT  service-account JSON *content* (auth for the CLI)
 #   FIREBASE_TOKEN            alternative CI auth (firebase CLI reads it natively)
 #   FIREBASE_ANDROID_APP_ID   override the default Android App ID
+#   FIREBASE_PROJECT          override the default project (onebit-dice-am2)
 set -euo pipefail
 
 BUMP="none"
-GROUPS="${FIREBASE_GROUPS:-}"
-TESTERS="${FIREBASE_TESTERS:-}"
+# NOTE: do NOT name this variable GROUPS. `GROUPS` is a reserved bash array (the
+# current user's group IDs); assignments to it are silently ignored and it reads
+# back as your primary GID (e.g. 20 = staff on macOS).
+GROUP_ALIASES=""
+TESTERS=""
 NOTES=""
 APP_ID="${FIREBASE_ANDROID_APP_ID:-1:590407408363:android:9dd0c4e47f9c2f664b7cae}"
+PROJECT="${FIREBASE_PROJECT:-onebit-dice-am2}"
 
 usage() {
   sed -n '2,30p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
@@ -48,7 +53,7 @@ usage() {
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --bump) BUMP="${2:?--bump needs a value}"; shift 2 ;;
-    --groups) GROUPS="${2:?--groups needs a value}"; shift 2 ;;
+    --groups) GROUP_ALIASES="${2:?--groups needs a value}"; shift 2 ;;
     --testers) TESTERS="${2:?--testers needs a value}"; shift 2 ;;
     --notes) NOTES="${2:?--notes needs a value}"; shift 2 ;;
     -h | --help) usage; exit 0 ;;
@@ -120,15 +125,15 @@ apk="build/app/outputs/flutter-apk/app-arm64-v8a-release.apk"
 
 # --- Distribute -------------------------------------------------------------
 # Default to the `qa` group only when no audience was specified at all.
-if [[ -z "$GROUPS" && -z "$TESTERS" ]]; then
-  GROUPS="qa"
+if [[ -z "$GROUP_ALIASES" && -z "$TESTERS" ]]; then
+  GROUP_ALIASES="qa"
 fi
 
-dist_args=(--app "$APP_ID" --release-notes "$NOTES")
-[[ -n "$GROUPS" ]] && dist_args+=(--groups "$GROUPS")
+dist_args=(--app "$APP_ID" --project "$PROJECT" --release-notes "$NOTES")
+[[ -n "$GROUP_ALIASES" ]] && dist_args+=(--groups "$GROUP_ALIASES")
 [[ -n "$TESTERS" ]] && dist_args+=(--testers "$TESTERS")
 
-echo "==> Distributing $apk (groups: ${GROUPS:-none}, testers: ${TESTERS:-none})"
+echo "==> Distributing $apk (groups: ${GROUP_ALIASES:-none}, testers: ${TESTERS:-none})"
 if ! "${FIREBASE[@]}" appdistribution:distribute "$apk" "${dist_args[@]}"; then
   echo "" >&2
   echo "error: distribution failed." >&2
@@ -140,4 +145,4 @@ if ! "${FIREBASE[@]}" appdistribution:distribute "$apk" "${dist_args[@]}"; then
   exit 1
 fi
 
-echo "==> Done: $version distributed (groups: ${GROUPS:-none}, testers: ${TESTERS:-none})"
+echo "==> Done: $version distributed (groups: ${GROUP_ALIASES:-none}, testers: ${TESTERS:-none})"
