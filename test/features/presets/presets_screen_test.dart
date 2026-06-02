@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide AnimationStyle;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/app_router.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
@@ -23,6 +25,10 @@ import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:onebit_dice/shared/widgets/mac_button.dart';
 import 'package:provider/provider.dart';
 
+import '../../support/mock_analytics_service.dart';
+import '../../support/mock_history_repository.dart';
+import '../../support/mock_presets_repository.dart';
+
 class _NoopSoundPlayer implements SoundPlayer {
   @override
   Future<void> init() async {}
@@ -34,32 +40,57 @@ class _NoopSoundPlayer implements SoundPlayer {
   Future<void> dispose() async {}
 }
 
+class _MockAppSettings extends Mock implements AppSettingsPreference {}
+
+class _MockLastDice extends Mock implements LastDiceConfigPreference {}
+
 Widget _harness({
   required PresetsRepository repository,
   Locale locale = const Locale('en'),
+  MockAnalyticsService? analytics,
 }) {
-  final settings = InMemoryAppSettingsPreference();
+  registerFallbackValue(const LastDiceConfig(diceType: DiceType.d6, count: 1));
+
+  final analyticsService = analytics ?? createStubbedAnalytics();
+  final settings = _MockAppSettings();
+  when(settings.readSoundEnabled).thenReturn(null);
+  when(settings.readHapticEnabled).thenReturn(null);
+  when(settings.readAnimationStyle).thenReturn(null);
+  when(settings.readAnimationSpeed).thenReturn(null);
+
+  final lastDice = _MockLastDice();
+  when(lastDice.read).thenReturn(null);
+  when(() => lastDice.write(any())).thenAnswer((_) async {});
+
   final router = GoRouter(
     initialLocation: PresetsRoute.path,
     routes: $appRoutes,
   );
   return MultiProvider(
     providers: [
-      Provider<HistoryRepository>(create: (_) => InMemoryHistoryRepository()),
+      Provider<AnalyticsService>.value(value: analyticsService),
+      Provider<HistoryRepository>.value(value: createFakeHistory()),
       Provider<PresetsRepository>.value(value: repository),
-      Provider<LastDiceConfigPreference>(
-        create: (_) => InMemoryLastDiceConfigPreference(),
-      ),
+      Provider<LastDiceConfigPreference>.value(value: lastDice),
       ChangeNotifierProvider<AudioController>(
-        create: (_) =>
-            AudioController(preference: settings, player: _NoopSoundPlayer()),
+        create: (_) => AudioController(
+          preference: settings,
+          analytics: analyticsService,
+          player: _NoopSoundPlayer(),
+        ),
       ),
       ChangeNotifierProvider<HapticController>(
-        create: (_) =>
-            HapticController(preference: settings, trigger: () async {}),
+        create: (_) => HapticController(
+          preference: settings,
+          analytics: analyticsService,
+          trigger: () async {},
+        ),
       ),
       ChangeNotifierProvider<AnimationSettingsController>(
-        create: (_) => AnimationSettingsController(preference: settings),
+        create: (_) => AnimationSettingsController(
+          preference: settings,
+          analytics: analyticsService,
+        ),
       ),
       ChangeNotifierProvider<DiceController>(
         create: (ctx) => DiceController(
@@ -67,6 +98,7 @@ Widget _harness({
           audio: ctx.read(),
           haptic: ctx.read(),
           lastDiceConfig: ctx.read(),
+          analytics: ctx.read(),
         ),
       ),
     ],
@@ -83,7 +115,7 @@ Widget _harness({
 void main() {
   group('PresetsScreen', () {
     testWidgets('renders both section headers in EN', (tester) async {
-      final repo = InMemoryPresetsRepository();
+      final repo = createFakePresets();
       await tester.pumpWidget(_harness(repository: repo));
       await tester.pumpAndSettle();
 
@@ -92,7 +124,7 @@ void main() {
     });
 
     testWidgets('renders the 7 built-in presets in EN', (tester) async {
-      final repo = InMemoryPresetsRepository();
+      final repo = createFakePresets();
       await tester.pumpWidget(_harness(repository: repo));
       await tester.pumpAndSettle();
 
@@ -105,7 +137,7 @@ void main() {
     testWidgets('renders pt-BR section headers when locale is pt-BR', (
       tester,
     ) async {
-      final repo = InMemoryPresetsRepository();
+      final repo = createFakePresets();
       await tester.pumpWidget(
         _harness(repository: repo, locale: const Locale('pt', 'BR')),
       );
@@ -116,7 +148,7 @@ void main() {
     });
 
     testWidgets('shows + NEW button when canAddMore is true', (tester) async {
-      final repo = InMemoryPresetsRepository();
+      final repo = createFakePresets();
       await tester.pumpWidget(_harness(repository: repo));
       await tester.pumpAndSettle();
 
@@ -126,7 +158,7 @@ void main() {
     testWidgets('hides + NEW button when the preset cap is reached', (
       tester,
     ) async {
-      final repo = InMemoryPresetsRepository();
+      final repo = createFakePresets();
       for (var i = 0; i < PresetsRepository.maxPresets; i++) {
         await repo.add(name: 'P$i', diceType: DiceType.d6, diceCount: 1);
       }
@@ -137,7 +169,7 @@ void main() {
     });
 
     testWidgets('renders a card for every custom preset', (tester) async {
-      final repo = InMemoryPresetsRepository();
+      final repo = createFakePresets();
       await repo.add(name: 'My D8', diceType: DiceType.d8, diceCount: 3);
       await tester.pumpWidget(_harness(repository: repo));
       await tester.pumpAndSettle();
@@ -151,8 +183,11 @@ void main() {
       'tapping a built-in card applies the config and switches to the roll '
       'tab',
       (tester) async {
-        final repo = InMemoryPresetsRepository();
-        await tester.pumpWidget(_harness(repository: repo));
+        final repo = createFakePresets();
+        final analytics = createStubbedAnalytics();
+        await tester.pumpWidget(
+          _harness(repository: repo, analytics: analytics),
+        );
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('Percentile'));
@@ -164,15 +199,25 @@ void main() {
         expect(controller.selectedType, DiceType.d100);
         expect(controller.count, 1);
         expect(find.byType(DiceScreen), findsOneWidget);
+        verify(
+          () => analytics.logEvent(
+            'preset_used',
+            parameters: {'preset_id': 'percentil', 'is_builtin': true},
+          ),
+        ).called(1);
       },
     );
 
     testWidgets(
       'tapping a custom card applies its config and switches to the roll tab',
       (tester) async {
-        final repo = InMemoryPresetsRepository();
+        final repo = createFakePresets();
+        final analytics = createStubbedAnalytics();
         await repo.add(name: 'Boss', diceType: DiceType.d12, diceCount: 4);
-        await tester.pumpWidget(_harness(repository: repo));
+        final customId = repo.snapshot().single.id;
+        await tester.pumpWidget(
+          _harness(repository: repo, analytics: analytics),
+        );
         await tester.pumpAndSettle();
 
         await tester.tap(find.text('Boss'));
@@ -183,6 +228,12 @@ void main() {
             .read<DiceController>();
         expect(controller.selectedType, DiceType.d12);
         expect(controller.count, 4);
+        verify(
+          () => analytics.logEvent(
+            'preset_used',
+            parameters: {'preset_id': customId, 'is_builtin': false},
+          ),
+        ).called(1);
       },
     );
 
@@ -191,7 +242,7 @@ void main() {
       (tester) async {
         await tester.binding.setSurfaceSize(const Size(600, 1200));
         addTearDown(() => tester.binding.setSurfaceSize(null));
-        final repo = InMemoryPresetsRepository();
+        final repo = createFakePresets();
         await tester.pumpWidget(_harness(repository: repo));
         await tester.pumpAndSettle();
 

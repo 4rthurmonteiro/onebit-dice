@@ -85,13 +85,14 @@
 
 > Bootstrap entregue junto com **0.6**. Interface `AnalyticsService` +
 > `NoOpAnalyticsService` + `FirebaseAnalyticsService` (Analytics +
-> Crashlytics injetados via construtor) cobertos por testes. Call sites
-> de eventos específicos (dice rolled, palette changed etc.) ficam para
-> uma iteração futura — fora do escopo deste bootstrap.
+> Crashlytics injetados via construtor) cobertos por testes. Os call sites
+> de eventos específicos (dice rolled, palette changed etc.) e os
+> `screen_view` foram cablados na iteração 5.4.
 
 - [x] 5.1 `lib/core/analytics/analytics_service.dart` + `firebase_analytics_service.dart` — interface + `NoOpAnalyticsService` + impl Firebase
 - [x] 5.2 `lib/main.dart` — `Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)` + `FlutterError.onError` → `crashlytics.recordFlutterFatalError` + `PlatformDispatcher.onError` → `crashlytics.recordError(fatal: true)` + `setCrashlyticsCollectionEnabled(!kDebugMode)`. `App` recebe `analyticsService` e expõe via `Provider<AnalyticsService>`.
 - [x] 5.3 `test/core/analytics/analytics_service_test.dart` — `NoOpAnalyticsService` smoke + `FirebaseAnalyticsService` forwarding (mocktail mocks de `FirebaseAnalytics` / `FirebaseCrashlytics`)
+- [x] 5.4 Call sites instrumentados (Analytics). **Screen views**: `AppShell` registra `screen_view` por branch (dice/history/presets/settings) e `SplashScreen` registra `splash`. **Eventos de produto**: `dice_rolled` / `dice_type_changed` (`DiceController`), `palette_changed` (`ThemeProvider`), `language_changed` (`LocaleController`), `animation_style_changed` / `animation_speed_changed` (`AnimationSettingsController`), `sound_toggled` / `haptic_toggled` (`Audio`/`HapticController`), `preset_used` (`PresetsScreen`), `preset_created` (`CreatePresetSheet`), `history_cleared` (`HistoryScreen`). `AnalyticsService` injetado nos controllers com default `NoOpAnalyticsService`; `bool` codificado como `1`/`0` no `FirebaseAnalyticsService`. Política de privacidade (`docs/privacy/`) atualizada para declarar a coleta anônima via Firebase (exigência do "Data safety" da Play Store). Coleta segue sempre ligada em release (`!kDebugMode`), sem opt-out.
 
 ---
 
@@ -219,7 +220,7 @@
 
 ## EPIC 15 — Release Preparation
 
-- [!] 15.1 Gerar keystore Android + configurar `key.properties` + backup (intervenção humana)
+- [x] 15.1 Gerar keystore Android + configurar `key.properties` + backup (feito pelo dev — keystore/`key.properties` ficam fora do repo, `.gitignore`)
 - [x] 15.2 `android/app/build.gradle.kts` lê `android/key.properties` (gitignored) e assina o release com a upload key; fallback p/ debug key quando o arquivo não existe
 - [x] 15.3 Bundle ID `com.am2.onebitdice` + `android:label="1-Bit Dice"` (configurado no `build.gradle.kts` namespace/applicationId + AndroidManifest)
 - [x] 15.4 iOS `PRODUCT_BUNDLE_IDENTIFIER = com.am2.onebitdice`, `CFBundleDisplayName/Name = "1-Bit Dice"`, `IPHONEOS_DEPLOYMENT_TARGET = 13.0` + Podfile `platform :ios, '13.0'`
@@ -230,3 +231,4 @@
 - [x] 15.9 Política de privacidade redigida em PT-BR + EN ([docs/privacy/index.html](../privacy/index.html) + [en.html](../privacy/en.html)) — falta habilitar GH Pages no GitHub: Settings → Pages → Source: `main` / `/docs`. URL final: `https://4rthurmonteiro.github.io/onebit-dice/privacy/`
 - [ ] 15.10 Upload AAB no Play Console (faixa de testes internos)
 - [ ] 15.11 Upload IPA no App Store Connect
+- [ ] 15.12 Firebase App Distribution ("App Tester") + esteira de release no merge para `main` (gates → bump semver → build → distribui aos testadores → commita nova versão no `pubspec.yaml`, sem loop de CI) — projeto `onebit-dice-am2` já existe ([issue #24](https://github.com/4rthurmonteiro/onebit-dice/issues/24))

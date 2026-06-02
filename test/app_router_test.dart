@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/app_router.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
 import 'package:onebit_dice/core/i18n/locale_controller.dart';
+import 'package:onebit_dice/core/i18n/locale_preference.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/storage/history_repository.dart';
 import 'package:onebit_dice/core/storage/last_dice_config_preference.dart';
 import 'package:onebit_dice/core/storage/presets_repository.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
+import 'package:onebit_dice/core/theme/palette_preference.dart';
 import 'package:onebit_dice/core/theme/theme_provider.dart';
 import 'package:onebit_dice/features/dice/dice_controller.dart';
 import 'package:onebit_dice/features/dice/dice_screen.dart';
@@ -24,6 +28,10 @@ import 'package:onebit_dice/features/splash/splash_screen.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import 'support/mock_analytics_service.dart';
+import 'support/mock_history_repository.dart';
+import 'support/mock_presets_repository.dart';
+
 class _NoopSoundPlayer implements SoundPlayer {
   @override
   Future<void> init() async {}
@@ -35,29 +43,64 @@ class _NoopSoundPlayer implements SoundPlayer {
   Future<void> dispose() async {}
 }
 
+class _MockAppSettings extends Mock implements AppSettingsPreference {}
+
+class _MockLastDice extends Mock implements LastDiceConfigPreference {}
+
+class _MockPalettePreference extends Mock implements PalettePreference {}
+
+class _MockLocalePreference extends Mock implements LocalePreference {}
+
 Widget _harness(GoRouter router) {
-  final settings = InMemoryAppSettingsPreference();
+  final analytics = createStubbedAnalytics();
+  final settings = _MockAppSettings();
+  when(settings.readSoundEnabled).thenReturn(null);
+  when(settings.readHapticEnabled).thenReturn(null);
+  when(settings.readAnimationStyle).thenReturn(null);
+  when(settings.readAnimationSpeed).thenReturn(null);
+
+  final lastDice = _MockLastDice();
+  when(lastDice.read).thenReturn(null);
+
+  final palettePref = _MockPalettePreference();
+  when(palettePref.read).thenReturn(null);
+
+  final localePref = _MockLocalePreference();
+  when(localePref.read).thenReturn(null);
+
   return MultiProvider(
     providers: [
-      Provider<HistoryRepository>(create: (_) => InMemoryHistoryRepository()),
-      Provider<PresetsRepository>(create: (_) => InMemoryPresetsRepository()),
-      Provider<LastDiceConfigPreference>(
-        create: (_) => InMemoryLastDiceConfigPreference(),
-      ),
+      Provider<AnalyticsService>.value(value: analytics),
+      Provider<HistoryRepository>.value(value: createFakeHistory()),
+      Provider<PresetsRepository>.value(value: createFakePresets()),
+      Provider<LastDiceConfigPreference>.value(value: lastDice),
       ChangeNotifierProvider<AudioController>(
-        create: (_) =>
-            AudioController(preference: settings, player: _NoopSoundPlayer()),
+        create: (_) => AudioController(
+          preference: settings,
+          analytics: analytics,
+          player: _NoopSoundPlayer(),
+        ),
       ),
       ChangeNotifierProvider<HapticController>(
-        create: (_) =>
-            HapticController(preference: settings, trigger: () async {}),
+        create: (_) => HapticController(
+          preference: settings,
+          analytics: analytics,
+          trigger: () async {},
+        ),
       ),
       ChangeNotifierProvider<AnimationSettingsController>(
-        create: (_) => AnimationSettingsController(preference: settings),
+        create: (_) => AnimationSettingsController(
+          preference: settings,
+          analytics: analytics,
+        ),
       ),
-      ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
+      ChangeNotifierProvider<ThemeProvider>(
+        create: (_) =>
+            ThemeProvider(analytics: analytics, preference: palettePref),
+      ),
       ChangeNotifierProvider<LocaleController>(
-        create: (_) => LocaleController(),
+        create: (_) =>
+            LocaleController(analytics: analytics, preference: localePref),
       ),
       ChangeNotifierProvider<DiceController>(
         create: (ctx) => DiceController(
@@ -65,6 +108,7 @@ Widget _harness(GoRouter router) {
           audio: ctx.read(),
           haptic: ctx.read(),
           lastDiceConfig: ctx.read(),
+          analytics: ctx.read(),
         ),
       ),
     ],

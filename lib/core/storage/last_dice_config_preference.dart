@@ -29,19 +29,6 @@ abstract interface class LastDiceConfigPreference {
   Future<void> write(LastDiceConfig config);
 }
 
-/// In-memory [LastDiceConfigPreference] used as a default / test double.
-class InMemoryLastDiceConfigPreference implements LastDiceConfigPreference {
-  LastDiceConfig? _stored;
-
-  @override
-  LastDiceConfig? read() => _stored;
-
-  @override
-  Future<void> write(LastDiceConfig config) async {
-    _stored = config;
-  }
-}
-
 /// [LastDiceConfigPreference] backed by `SharedPreferences`.
 ///
 /// Persists two ints: `last_dice_type` (a [DiceType] index) and

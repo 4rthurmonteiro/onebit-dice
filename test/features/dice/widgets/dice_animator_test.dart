@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide AnimationStyle;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/storage/models/animation_settings.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
@@ -11,20 +12,32 @@ import 'package:onebit_dice/features/dice/widgets/dice_animator.dart';
 import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 import 'package:provider/provider.dart';
 
-class _Pref extends InMemoryAppSettingsPreference {
-  _Pref({AnimationStyle? style, AnimationSpeed? speed}) {
-    if (style != null) writeAnimationStyle(style);
-    if (speed != null) writeAnimationSpeed(speed);
-  }
+import '../../../support/mock_analytics_service.dart';
+
+class _MockAppSettings extends Mock implements AppSettingsPreference {}
+
+AnimationSettingsController _buildController({
+  required AnimationStyle style,
+  AnimationSpeed speed = AnimationSpeed.medium,
+}) {
+  registerFallbackValue(AnimationStyle.drum);
+  registerFallbackValue(AnimationSpeed.medium);
+  final preference = _MockAppSettings();
+  when(preference.readAnimationStyle).thenReturn(style);
+  when(preference.readAnimationSpeed).thenReturn(speed);
+  when(() => preference.writeAnimationStyle(any())).thenAnswer((_) async {});
+  when(() => preference.writeAnimationSpeed(any())).thenAnswer((_) async {});
+  return AnimationSettingsController(
+    preference: preference,
+    analytics: createStubbedAnalytics(),
+  );
 }
 
 Widget _harness({
   required AnimationStyle style,
   AnimationSpeed speed = AnimationSpeed.medium,
 }) {
-  final controller = AnimationSettingsController(
-    preference: _Pref(style: style, speed: speed),
-  );
+  final controller = _buildController(style: style, speed: speed);
   return MaterialApp(
     theme: buildThemeData(Palette.of(PaletteId.macClassic)),
     home: Scaffold(
@@ -60,9 +73,7 @@ void main() {
     testWidgets('switching style at runtime swaps the strategy', (
       tester,
     ) async {
-      final controller = AnimationSettingsController(
-        preference: _Pref(style: AnimationStyle.fast),
-      );
+      final controller = _buildController(style: AnimationStyle.fast);
       await tester.pumpWidget(
         MaterialApp(
           theme: buildThemeData(Palette.of(PaletteId.macClassic)),

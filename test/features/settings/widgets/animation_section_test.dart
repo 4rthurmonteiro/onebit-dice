@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide AnimationStyle;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/storage/models/animation_settings.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
@@ -8,6 +9,24 @@ import 'package:onebit_dice/features/settings/animation_settings_controller.dart
 import 'package:onebit_dice/features/settings/widgets/animation_section.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+
+import '../../../support/mock_analytics_service.dart';
+
+class _MockAppSettings extends Mock implements AppSettingsPreference {}
+
+AnimationSettingsController _buildController() {
+  registerFallbackValue(AnimationStyle.drum);
+  registerFallbackValue(AnimationSpeed.medium);
+  final preference = _MockAppSettings();
+  when(preference.readAnimationStyle).thenReturn(null);
+  when(preference.readAnimationSpeed).thenReturn(null);
+  when(() => preference.writeAnimationStyle(any())).thenAnswer((_) async {});
+  when(() => preference.writeAnimationSpeed(any())).thenAnswer((_) async {});
+  return AnimationSettingsController(
+    preference: preference,
+    analytics: createStubbedAnalytics(),
+  );
+}
 
 Widget _harness(AnimationSettingsController controller) {
   return ChangeNotifierProvider<AnimationSettingsController>.value(
@@ -31,18 +50,14 @@ void main() {
     testWidgets('renders three style radios and three speed radios', (
       tester,
     ) async {
-      final controller = AnimationSettingsController(
-        preference: InMemoryAppSettingsPreference(),
-      );
+      final controller = _buildController();
       await tester.pumpWidget(_harness(controller));
       await tester.pumpAndSettle();
       expect(find.byType(RadioRow), findsNWidgets(6));
     });
 
     testWidgets('selects drum + medium by default', (tester) async {
-      final controller = AnimationSettingsController(
-        preference: InMemoryAppSettingsPreference(),
-      );
+      final controller = _buildController();
       await tester.pumpWidget(_harness(controller));
       await tester.pumpAndSettle();
 
@@ -54,9 +69,7 @@ void main() {
     });
 
     testWidgets('tapping a style row calls setStyle', (tester) async {
-      final controller = AnimationSettingsController(
-        preference: InMemoryAppSettingsPreference(),
-      );
+      final controller = _buildController();
       await tester.pumpWidget(_harness(controller));
       await tester.pumpAndSettle();
 
@@ -67,9 +80,7 @@ void main() {
     });
 
     testWidgets('tapping a speed row calls setSpeed', (tester) async {
-      final controller = AnimationSettingsController(
-        preference: InMemoryAppSettingsPreference(),
-      );
+      final controller = _buildController();
       await tester.pumpWidget(_harness(controller));
       await tester.pumpAndSettle();
 

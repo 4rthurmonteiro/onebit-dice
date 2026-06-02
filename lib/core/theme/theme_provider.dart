@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
 import 'package:onebit_dice/core/theme/palette_preference.dart';
 
@@ -9,14 +12,17 @@ import 'package:onebit_dice/core/theme/palette_preference.dart';
 /// app (see `lib/app.dart`). Consumers read it with `context.watch` and
 /// rebuild the `MaterialApp` theme on change.
 class ThemeProvider extends ChangeNotifier {
-  /// Creates a [ThemeProvider] backed by [preference] (defaults to an
-  /// in-memory store). The initial palette comes from `preference.read()`
-  /// when present; otherwise [PaletteId.macClassic].
-  ThemeProvider({PalettePreference? preference})
-    : _preference = preference ?? InMemoryPalettePreference(),
-      _current = Palette.of(preference?.read() ?? PaletteId.macClassic);
+  /// Creates a [ThemeProvider] backed by [preference]. The initial palette
+  /// comes from `preference.read()` when present; otherwise
+  /// [PaletteId.macClassic].
+  ThemeProvider({
+    required this._analytics,
+    required PalettePreference preference,
+  }) : _preference = preference,
+       _current = Palette.of(preference.read() ?? PaletteId.macClassic);
 
   final PalettePreference _preference;
+  final AnalyticsService _analytics;
   Palette _current;
 
   /// The active palette.
@@ -28,6 +34,12 @@ class ThemeProvider extends ChangeNotifier {
     if (_current.id == id) return;
     _current = Palette.of(id);
     notifyListeners();
+    unawaited(
+      _analytics.logEvent(
+        'palette_changed',
+        parameters: {'palette_id': id.name},
+      ),
+    );
     await _preference.write(id);
   }
 }

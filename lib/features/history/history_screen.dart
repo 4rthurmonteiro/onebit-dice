@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/i18n/l10n_extension.dart';
 import 'package:onebit_dice/core/storage/history_repository.dart';
 import 'package:onebit_dice/core/storage/models/roll_entry.dart';
@@ -34,6 +35,7 @@ class HistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<OneBitColors>()!;
     final repository = context.read<HistoryRepository>();
+    final analytics = context.read<AnalyticsService>();
     return Scaffold(
       backgroundColor: colors.paper,
       appBar: AppBar(title: Text(context.l10n.historyTitle)),
@@ -43,7 +45,13 @@ class HistoryScreen extends StatelessWidget {
         builder: (context, snapshot) {
           final entries = snapshot.data ?? const <RollEntry>[];
           if (entries.isEmpty) return _Empty(colors: colors);
-          return _List(entries: entries, onClear: repository.clear);
+          return _List(
+            entries: entries,
+            onClear: () async {
+              await repository.clear();
+              unawaited(analytics.logEvent('history_cleared'));
+            },
+          );
         },
       ),
     );

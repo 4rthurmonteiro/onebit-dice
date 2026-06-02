@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
@@ -23,6 +24,9 @@ import 'package:onebit_dice/features/settings/animation_settings_controller.dart
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import '../../support/mock_analytics_service.dart';
+import '../../support/mock_history_repository.dart';
+
 class _NoopSoundPlayer implements SoundPlayer {
   @override
   Future<void> init() async {}
@@ -37,10 +41,38 @@ class _NoopSoundPlayer implements SoundPlayer {
   Future<void> dispose() async {}
 }
 
+class _MockAppSettings extends Mock implements AppSettingsPreference {}
+
+class _MockLastDice extends Mock implements LastDiceConfigPreference {}
+
+/// A stubbed [AppSettingsPreference] whose reads all return `null`, suitable
+/// for controllers that only hydrate from it.
+AppSettingsPreference _stubAppSettings() {
+  final preference = _MockAppSettings();
+  when(preference.readSoundEnabled).thenReturn(null);
+  when(preference.readHapticEnabled).thenReturn(null);
+  when(preference.readAnimationStyle).thenReturn(null);
+  when(preference.readAnimationSpeed).thenReturn(null);
+  return preference;
+}
+
+/// A stateful [LastDiceConfigPreference] mock: writes update what reads return.
+LastDiceConfigPreference _buildLastDice() {
+  registerFallbackValue(const LastDiceConfig(diceType: DiceType.d6, count: 1));
+  LastDiceConfig? stored;
+  final mock = _MockLastDice();
+  when(mock.read).thenAnswer((_) => stored);
+  when(() => mock.write(any())).thenAnswer((invocation) async {
+    stored = invocation.positionalArguments.first as LastDiceConfig;
+  });
+  return mock;
+}
+
 class _RecordingAudio extends AudioController {
   _RecordingAudio()
     : super(
-        preference: InMemoryAppSettingsPreference(),
+        preference: _stubAppSettings(),
+        analytics: createStubbedAnalytics(),
         player: _NoopSoundPlayer(),
       );
 
@@ -54,13 +86,19 @@ class _RecordingAudio extends AudioController {
 
 class _RecordingHaptic extends HapticController {
   _RecordingHaptic()
-    : super(preference: InMemoryAppSettingsPreference(), trigger: () async {});
+    : super(
+        preference: _stubAppSettings(),
+        analytics: createStubbedAnalytics(),
+        trigger: _noopTrigger,
+      );
 
   int triggers = 0;
 
   @override
   void trigger() => triggers++;
 }
+
+Future<void> _noopTrigger() async {}
 
 /// History repo whose [append] blocks on a gate, letting a test hold a roll
 /// in flight (keeping `DiceController.isRolling` true) across pumps.
@@ -105,7 +143,8 @@ Widget _harness({
         ChangeNotifierProvider<HapticController>.value(value: haptic),
         ChangeNotifierProvider<AnimationSettingsController>(
           create: (_) => AnimationSettingsController(
-            preference: InMemoryAppSettingsPreference(),
+            preference: _stubAppSettings(),
+            analytics: createStubbedAnalytics(),
           ),
         ),
         Provider<LastDiceConfigPreference>.value(value: lastDicePref),
@@ -115,6 +154,7 @@ Widget _harness({
             audio: ctx.read(),
             haptic: ctx.read(),
             lastDiceConfig: ctx.read(),
+            analytics: createStubbedAnalytics(),
             rng: rng,
           ),
         ),
@@ -141,10 +181,10 @@ void main() {
       await _pump(
         tester,
         _harness(
-          history: InMemoryHistoryRepository(),
+          history: createFakeHistory(),
           audio: _RecordingAudio(),
           haptic: _RecordingHaptic(),
-          lastDicePref: InMemoryLastDiceConfigPreference(),
+          lastDicePref: _buildLastDice(),
         ),
       );
 
@@ -157,10 +197,10 @@ void main() {
     testWidgets('tapping the canvas rolls: grid + side effects + hint gone', (
       tester,
     ) async {
-      final history = InMemoryHistoryRepository();
+      final history = createFakeHistory();
       final audio = _RecordingAudio();
       final haptic = _RecordingHaptic();
-      final pref = InMemoryLastDiceConfigPreference();
+      final pref = _buildLastDice();
       await _pump(
         tester,
         _harness(
@@ -188,11 +228,11 @@ void main() {
     testWidgets('tap +: count goes to 2 and two "?" slots show', (
       tester,
     ) async {
-      final pref = InMemoryLastDiceConfigPreference();
+      final pref = _buildLastDice();
       await _pump(
         tester,
         _harness(
-          history: InMemoryHistoryRepository(),
+          history: createFakeHistory(),
           audio: _RecordingAudio(),
           haptic: _RecordingHaptic(),
           lastDicePref: pref,
@@ -213,10 +253,10 @@ void main() {
       await _pump(
         tester,
         _harness(
-          history: InMemoryHistoryRepository(),
+          history: createFakeHistory(),
           audio: _RecordingAudio(),
           haptic: _RecordingHaptic(),
-          lastDicePref: InMemoryLastDiceConfigPreference(),
+          lastDicePref: _buildLastDice(),
           rng: Random(0),
         ),
       );
@@ -235,14 +275,14 @@ void main() {
     testWidgets('after roll, tap +: result discarded; history unchanged', (
       tester,
     ) async {
-      final history = InMemoryHistoryRepository();
+      final history = createFakeHistory();
       await _pump(
         tester,
         _harness(
           history: history,
           audio: _RecordingAudio(),
           haptic: _RecordingHaptic(),
-          lastDicePref: InMemoryLastDiceConfigPreference(),
+          lastDicePref: _buildLastDice(),
           rng: Random(0),
         ),
       );
@@ -260,13 +300,13 @@ void main() {
     testWidgets('restores last config from pre-populated preference', (
       tester,
     ) async {
-      final pref = InMemoryLastDiceConfigPreference();
+      final pref = _buildLastDice();
       await pref.write(const LastDiceConfig(diceType: DiceType.d12, count: 4));
 
       await _pump(
         tester,
         _harness(
-          history: InMemoryHistoryRepository(),
+          history: createFakeHistory(),
           audio: _RecordingAudio(),
           haptic: _RecordingHaptic(),
           lastDicePref: pref,
@@ -285,10 +325,10 @@ void main() {
       await _pump(
         tester,
         _harness(
-          history: InMemoryHistoryRepository(),
+          history: createFakeHistory(),
           audio: _RecordingAudio(),
           haptic: _RecordingHaptic(),
-          lastDicePref: InMemoryLastDiceConfigPreference(),
+          lastDicePref: _buildLastDice(),
         ),
       );
 
@@ -308,7 +348,7 @@ void main() {
           history: history,
           audio: _RecordingAudio(),
           haptic: _RecordingHaptic(),
-          lastDicePref: InMemoryLastDiceConfigPreference(),
+          lastDicePref: _buildLastDice(),
           rng: Random(0),
         ),
       );
@@ -326,16 +366,49 @@ void main() {
       expect(history.appendCount, 1);
     });
 
+    testWidgets('canvas stays tappable after an in-flight roll settles', (
+      tester,
+    ) async {
+      // Regression: a rebuild that lands while `isRolling` is true must not
+      // leave the canvas permanently dead. `roll` flips `isRolling` back to
+      // false in its `finally` without notifying, so `onTap` is wired
+      // unconditionally — the canvas must keep rolling on every tap.
+      final history = _BlockingHistory();
+      await _pump(
+        tester,
+        _harness(
+          history: history,
+          audio: _RecordingAudio(),
+          haptic: _RecordingHaptic(),
+          lastDicePref: _buildLastDice(),
+          rng: Random(0),
+        ),
+      );
+
+      // First tap starts a roll; the pump rebuilds the screen while the roll
+      // is still in flight (gate closed, `isRolling` true).
+      await tester.tap(find.byType(DiceWidget));
+      await tester.pump();
+      history.release();
+      await tester.pumpAndSettle();
+      expect(history.appendCount, 1);
+
+      // The canvas must still respond once the first roll has settled.
+      await tester.tap(find.byType(DiceWidget));
+      await tester.pumpAndSettle();
+      expect(history.appendCount, 2);
+    });
+
     testWidgets('selecting the current type closes the sheet, keeps result', (
       tester,
     ) async {
       await _pump(
         tester,
         _harness(
-          history: InMemoryHistoryRepository(),
+          history: createFakeHistory(),
           audio: _RecordingAudio(),
           haptic: _RecordingHaptic(),
-          lastDicePref: InMemoryLastDiceConfigPreference(),
+          lastDicePref: _buildLastDice(),
           rng: Random(0),
         ),
       );
@@ -363,14 +436,14 @@ void main() {
     testWidgets('tapping the scrim dismisses the sheet without rolling', (
       tester,
     ) async {
-      final history = InMemoryHistoryRepository();
+      final history = createFakeHistory();
       await _pump(
         tester,
         _harness(
           history: history,
           audio: _RecordingAudio(),
           haptic: _RecordingHaptic(),
-          lastDicePref: InMemoryLastDiceConfigPreference(),
+          lastDicePref: _buildLastDice(),
         ),
       );
 

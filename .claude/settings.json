@@ -75,10 +75,19 @@
       "Bash(awk '/^SF:/{f=$1} /^DA:[0-9]+,0$/{print f\" \"$0}' coverage/lcov.info)",
       "Bash(awk '/^SF:/{f=$1} /^DA:[0-9]+,0$/{print f}' coverage/lcov.info)",
       "Bash(keytool -help)",
-      "Bash(xcodebuild -showComponents)",
-      "Read(//Library/Developer/CoreSimulator/Profiles/**)",
-      "Read(//Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/**)",
-      "Read(//Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/DeviceSupport/**)"
+      "Bash(perl -0pi -e 's/final controller = AnimationSettingsController\\\\\\(\\\\n\\\\s*preference: InMemoryAppSettingsPreference\\\\\\(\\\\\\),\\\\n\\\\s*\\\\\\);/final controller = _buildController\\(\\);/g' test/features/settings/widgets/animation_section_test.dart)",
+      "Bash(perl -pi -e 's/ThemeProvider\\\\\\(\\\\\\)/_buildProvider\\(\\)/g unless /_buildProvider\\\\\\(\\\\\\)/ && 0' test/features/settings/widgets/palette_selector_test.dart)",
+      "Bash(perl -pi -e 's/\\\\bLocaleController\\\\\\(\\\\\\)/_buildController\\(\\)/g' test/features/settings/widgets/language_picker_test.dart)",
+      "Bash(perl -pi -e 's/InMemoryHistoryRepository\\\\\\(\\\\\\)/createFakeHistory\\(\\)/g; s/RecordingAnalyticsService\\\\\\(\\\\\\)/createStubbedAnalytics\\(\\)/g' test/features/history/history_screen_test.dart)",
+      "Bash(perl -pi -e 's/InMemoryPresetsRepository\\\\\\(\\\\\\)/createFakePresets\\(\\)/g; s/RecordingAnalyticsService\\\\\\(\\\\\\)/createStubbedAnalytics\\(\\)/g' test/features/presets/presets_screen_test.dart)",
+      "Bash(perl -pi -e 's/InMemoryPresetsRepository\\\\\\(\\\\\\)/createFakePresets\\(\\)/g; s/RecordingAnalyticsService\\\\\\(\\\\\\)/createStubbedAnalytics\\(\\)/g' test/features/presets/widgets/create_preset_sheet_test.dart)",
+      "Bash(perl -pi -e 's/InMemoryHistoryRepository\\\\\\(\\\\\\)/createFakeHistory\\(\\)/g; s/InMemoryLastDiceConfigPreference\\\\\\(\\\\\\)/_buildLastDice\\(\\)/g; s/InMemoryAppSettingsPreference\\\\\\(\\\\\\)/_stubAppSettings\\(\\)/g' test/features/dice/dice_screen_test.dart)",
+      "Bash(sed -n '1,6p' test/features/dice/dice_screen_test.dart)",
+      "Bash(sed -n '136,160p' test/features/dice/dice_screen_test.dart)",
+      "Bash(awk '/^SF:/{f=$0; sub\\(\"SF:\",\"\",f\\)} /^DA:/{split\\($0,a,\",\"\\); sub\\(\"DA:\",\"\",a[1]\\); if\\(a[2]==0\\) print f}' coverage/lcov.info)",
+      "Bash(awk '/^SF:.*dice_screen.dart/{p=1} p&&/^DA:/{split\\($0,a,\",\"\\);sub\\(\"DA:\",\"\",a[1]\\); if\\(a[2]==0\\) print \"UNCOVERED \"a[1]} /^end_of_record/{p=0}' coverage/lcov.info)",
+      "Bash(awk '/^SF:.*\\\\/dice_screen.dart/{p=1} p&&/^LH:/{print \"lines hit \"$0} p&&/^LF:/{print \"lines found \"$0; p=0}' coverage/lcov.info)",
+      "mcp__plugin_vgv-ai-flutter-plugin_dart__pub"
     ]
   }
 }

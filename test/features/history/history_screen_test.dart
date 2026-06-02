@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/models/dice_type.dart';
 import 'package:onebit_dice/core/models/roll_result.dart';
 import 'package:onebit_dice/core/storage/history_repository.dart';
@@ -11,12 +13,21 @@ import 'package:onebit_dice/features/history/widgets/history_entry_tile.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import '../../support/mock_analytics_service.dart';
+import '../../support/mock_history_repository.dart';
+
 Widget _harness({
   required HistoryRepository repository,
   Locale locale = const Locale('en'),
+  MockAnalyticsService? analytics,
 }) {
-  return Provider<HistoryRepository>.value(
-    value: repository,
+  return MultiProvider(
+    providers: [
+      Provider<HistoryRepository>.value(value: repository),
+      Provider<AnalyticsService>.value(
+        value: analytics ?? createStubbedAnalytics(),
+      ),
+    ],
     child: MaterialApp(
       locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -39,7 +50,7 @@ void main() {
     testWidgets('renders empty state when the repository is empty', (
       tester,
     ) async {
-      final repository = InMemoryHistoryRepository();
+      final repository = createFakeHistory();
       await tester.pumpWidget(_harness(repository: repository));
       await tester.pumpAndSettle();
 
@@ -52,7 +63,7 @@ void main() {
     testWidgets('renders entries newest-first plus the clear button', (
       tester,
     ) async {
-      final repository = InMemoryHistoryRepository();
+      final repository = createFakeHistory();
       await repository.append(_result(3));
       await repository.append(_result(11));
 
@@ -73,7 +84,7 @@ void main() {
     testWidgets('reactively updates when the repository appends a new entry', (
       tester,
     ) async {
-      final repository = InMemoryHistoryRepository();
+      final repository = createFakeHistory();
       await tester.pumpWidget(_harness(repository: repository));
       await tester.pumpAndSettle();
 
@@ -85,10 +96,14 @@ void main() {
       expect(find.byType(HistoryEntryTile), findsOneWidget);
     });
 
-    testWidgets('confirm dialog flow clears the repository', (tester) async {
-      final repository = InMemoryHistoryRepository();
+    testWidgets('confirm dialog flow clears the repository and logs the '
+        'history_cleared event', (tester) async {
+      final repository = createFakeHistory();
+      final analytics = createStubbedAnalytics();
       await repository.append(_result(4));
-      await tester.pumpWidget(_harness(repository: repository));
+      await tester.pumpWidget(
+        _harness(repository: repository, analytics: analytics),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(ClearHistoryButton));
@@ -98,12 +113,33 @@ void main() {
 
       expect(repository.snapshot(), isEmpty);
       expect(find.byKey(HistoryScreen.emptyKey), findsOneWidget);
+      verify(() => analytics.logEvent('history_cleared')).called(1);
+    });
+
+    testWidgets('cancelling the clear dialog logs nothing', (tester) async {
+      final repository = createFakeHistory();
+      final analytics = createStubbedAnalytics();
+      await repository.append(_result(4));
+      await tester.pumpWidget(
+        _harness(repository: repository, analytics: analytics),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(ClearHistoryButton));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(ClearHistoryButton.cancelKey));
+      await tester.pumpAndSettle();
+
+      expect(repository.snapshot(), isNotEmpty);
+      verifyNever(
+        () => analytics.logEvent(any(), parameters: any(named: 'parameters')),
+      );
     });
 
     testWidgets('uses palette paper for the scaffold background', (
       tester,
     ) async {
-      final repository = InMemoryHistoryRepository();
+      final repository = createFakeHistory();
       await tester.pumpWidget(_harness(repository: repository));
       await tester.pumpAndSettle();
 
@@ -112,7 +148,7 @@ void main() {
     });
 
     testWidgets('renders localized empty state in PT-BR', (tester) async {
-      final repository = InMemoryHistoryRepository();
+      final repository = createFakeHistory();
       await tester.pumpWidget(
         _harness(repository: repository, locale: const Locale('pt', 'BR')),
       );

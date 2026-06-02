@@ -1,12 +1,16 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide AnimationStyle;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
 import 'package:onebit_dice/core/i18n/locale_controller.dart';
+import 'package:onebit_dice/core/i18n/locale_preference.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
+import 'package:onebit_dice/core/storage/models/animation_settings.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
+import 'package:onebit_dice/core/theme/palette_preference.dart';
 import 'package:onebit_dice/core/theme/theme_provider.dart';
 import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 import 'package:onebit_dice/features/settings/settings_screen.dart';
@@ -18,6 +22,8 @@ import 'package:onebit_dice/features/settings/widgets/settings_section.dart';
 import 'package:onebit_dice/features/settings/widgets/toggle_tile.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+
+import '../../support/mock_analytics_service.dart';
 
 class _NoopPlayer implements SoundPlayer {
   @override
@@ -33,24 +39,70 @@ class _NoopPlayer implements SoundPlayer {
   Future<void> dispose() async {}
 }
 
+class _MockAppSettings extends Mock implements AppSettingsPreference {}
+
+class _MockPalettePreference extends Mock implements PalettePreference {}
+
+class _MockLocalePreference extends Mock implements LocalePreference {}
+
 Widget _harness({Locale locale = const Locale('en')}) {
-  final prefs = InMemoryAppSettingsPreference();
+  registerFallbackValue(AnimationStyle.drum);
+  registerFallbackValue(AnimationSpeed.medium);
+  registerFallbackValue(PaletteId.macClassic);
+  registerFallbackValue(const Locale('en'));
+
+  final analytics = createStubbedAnalytics();
+  final prefs = _MockAppSettings();
+  when(prefs.readSoundEnabled).thenReturn(null);
+  when(prefs.readHapticEnabled).thenReturn(null);
+  when(prefs.readAnimationStyle).thenReturn(null);
+  when(prefs.readAnimationSpeed).thenReturn(null);
+  when(
+    () => prefs.writeSoundEnabled(value: any(named: 'value')),
+  ).thenAnswer((_) async {});
+  when(
+    () => prefs.writeHapticEnabled(value: any(named: 'value')),
+  ).thenAnswer((_) async {});
+  when(() => prefs.writeAnimationStyle(any())).thenAnswer((_) async {});
+  when(() => prefs.writeAnimationSpeed(any())).thenAnswer((_) async {});
+
+  final palettePref = _MockPalettePreference();
+  when(palettePref.read).thenReturn(null);
+  when(() => palettePref.write(any())).thenAnswer((_) async {});
+
+  final localePref = _MockLocalePreference();
+  when(localePref.read).thenReturn(null);
+  when(() => localePref.write(any())).thenAnswer((_) async {});
+
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<AudioController>(
-        create: (_) =>
-            AudioController(preference: prefs, player: _NoopPlayer()),
+        create: (_) => AudioController(
+          preference: prefs,
+          analytics: analytics,
+          player: _NoopPlayer(),
+        ),
       ),
       ChangeNotifierProvider<HapticController>(
-        create: (_) =>
-            HapticController(preference: prefs, trigger: () async {}),
+        create: (_) => HapticController(
+          preference: prefs,
+          analytics: analytics,
+          trigger: () async {},
+        ),
       ),
       ChangeNotifierProvider<AnimationSettingsController>(
-        create: (_) => AnimationSettingsController(preference: prefs),
+        create: (_) => AnimationSettingsController(
+          preference: prefs,
+          analytics: analytics,
+        ),
       ),
-      ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
+      ChangeNotifierProvider<ThemeProvider>(
+        create: (_) =>
+            ThemeProvider(analytics: analytics, preference: palettePref),
+      ),
       ChangeNotifierProvider<LocaleController>(
-        create: (_) => LocaleController(),
+        create: (_) =>
+            LocaleController(analytics: analytics, preference: localePref),
       ),
     ],
     child: MaterialApp(

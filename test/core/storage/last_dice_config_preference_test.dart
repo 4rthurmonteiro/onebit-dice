@@ -25,20 +25,6 @@ void main() {
     });
   });
 
-  group('InMemoryLastDiceConfigPreference', () {
-    test('read() returns null initially', () {
-      final pref = InMemoryLastDiceConfigPreference();
-      expect(pref.read(), isNull);
-    });
-
-    test('write() persists the value in memory', () async {
-      final pref = InMemoryLastDiceConfigPreference();
-      const config = LastDiceConfig(diceType: DiceType.d8, count: 5);
-      await pref.write(config);
-      expect(pref.read(), config);
-    });
-  });
-
   group('SharedPreferencesLastDiceConfigPreference', () {
     setUp(() {
       SharedPreferences.setMockInitialValues({});

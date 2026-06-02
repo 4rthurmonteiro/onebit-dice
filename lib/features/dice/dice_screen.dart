@@ -12,9 +12,17 @@ import 'package:provider/provider.dart';
 /// Top-level dice rolling screen (Design C).
 ///
 /// The dice canvas is the hero **and** the roll control: tapping anywhere on
-/// it fires [DiceController.roll] (ignored while a roll is in flight). A thin
-/// control bar below it holds the compact [TypeSelector] field and the
-/// [QuantitySelector] stepper. The dedicated roll button is gone.
+/// it fires [DiceController.roll]. A thin control bar below it holds the
+/// compact [TypeSelector] field and the [QuantitySelector] stepper. The
+/// dedicated roll button is gone.
+///
+/// `onTap` is wired unconditionally — reentrancy is handled inside
+/// [DiceController.roll] itself, which early-returns while a roll is in
+/// flight. Gating `onTap` on [DiceController.isRolling] here would be unsafe:
+/// `isRolling` flips back to `false` inside `roll`'s `finally` *without* a
+/// `notifyListeners`, so a rebuild that landed while the roll was in flight
+/// would leave `onTap` stuck `null` and the canvas permanently unresponsive
+/// until an unrelated rebuild.
 class DiceScreen extends StatelessWidget {
   /// Creates a [DiceScreen].
   const DiceScreen({super.key});
@@ -47,7 +55,7 @@ class DiceScreen extends StatelessWidget {
                   explicitChildNodes: true,
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: controller.isRolling ? null : controller.roll,
+                    onTap: controller.roll,
                     child: Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,

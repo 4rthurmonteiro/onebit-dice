@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:onebit_dice/app_router.dart';
+import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/app_info.dart';
 import 'package:onebit_dice/core/i18n/l10n_extension.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
@@ -9,6 +10,7 @@ import 'package:onebit_dice/core/theme/app_typography.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
 import 'package:onebit_dice/shared/widgets/pixel_divider.dart';
 import 'package:onebit_dice/shared/widgets/pixel_icon.dart';
+import 'package:provider/provider.dart';
 
 /// The two-stage splash entry point — sits at `/` and navigates to
 /// `/dice` after [splashDuration].
@@ -36,6 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    unawaited(context.read<AnalyticsService>().logScreenView('splash'));
     _timer = Timer(SplashScreen.splashDuration, _navigate);
   }
 

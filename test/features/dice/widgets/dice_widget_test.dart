@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
@@ -9,9 +10,17 @@ import 'package:onebit_dice/features/settings/animation_settings_controller.dart
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import '../../../support/mock_analytics_service.dart';
+
+class _MockAppSettings extends Mock implements AppSettingsPreference {}
+
 Widget _harness(Widget child) {
+  final preference = _MockAppSettings();
+  when(preference.readAnimationStyle).thenReturn(null);
+  when(preference.readAnimationSpeed).thenReturn(null);
   final controller = AnimationSettingsController(
-    preference: InMemoryAppSettingsPreference(),
+    preference: preference,
+    analytics: createStubbedAnalytics(),
   );
   return MaterialApp(
     locale: const Locale('en'),
