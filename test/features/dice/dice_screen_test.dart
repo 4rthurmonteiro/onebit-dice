@@ -366,6 +366,39 @@ void main() {
       expect(history.appendCount, 1);
     });
 
+    testWidgets('canvas stays tappable after an in-flight roll settles', (
+      tester,
+    ) async {
+      // Regression: a rebuild that lands while `isRolling` is true must not
+      // leave the canvas permanently dead. `roll` flips `isRolling` back to
+      // false in its `finally` without notifying, so `onTap` is wired
+      // unconditionally — the canvas must keep rolling on every tap.
+      final history = _BlockingHistory();
+      await _pump(
+        tester,
+        _harness(
+          history: history,
+          audio: _RecordingAudio(),
+          haptic: _RecordingHaptic(),
+          lastDicePref: _buildLastDice(),
+          rng: Random(0),
+        ),
+      );
+
+      // First tap starts a roll; the pump rebuilds the screen while the roll
+      // is still in flight (gate closed, `isRolling` true).
+      await tester.tap(find.byType(DiceWidget));
+      await tester.pump();
+      history.release();
+      await tester.pumpAndSettle();
+      expect(history.appendCount, 1);
+
+      // The canvas must still respond once the first roll has settled.
+      await tester.tap(find.byType(DiceWidget));
+      await tester.pumpAndSettle();
+      expect(history.appendCount, 2);
+    });
+
     testWidgets('selecting the current type closes the sheet, keeps result', (
       tester,
     ) async {
