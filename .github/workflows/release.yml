@@ -1,0 +1,126 @@
+name: Release
+
+# Runs only when commits land on `main` (i.e. a PR merge). `ci.yml` keeps
+# running on every branch/PR; this workflow owns the test-build distribution.
+on:
+  push:
+    branches: [main]
+
+# Serialize releases so two merges never race on the version bump / push.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+# Needed to push the version-bump commit back to `main`.
+permissions:
+  contents: write
+
+jobs:
+  release:
+    # Skip the bot's own version-bump commit to avoid an infinite release loop.
+    # (`[skip ci]` in that message also stops GitHub Actions natively; this is
+    # belt-and-suspenders.)
+    if: ${{ !startsWith(github.event.head_commit.message, 'chore(release):') }}
+    runs-on: ubuntu-latest
+    env:
+      # Public App ID (also present in android/app/google-services.json).
+      FIREBASE_ANDROID_APP_ID: '1:590407408363:android:9dd0c4e47f9c2f664b7cae'
+      # Surfaced as an env var so steps can guard on its presence. When unset,
+      # the release build falls back to the debug key (fine for test builds).
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # A PAT (RELEASE_TOKEN) is required when branch protection blocks the
+          # github-actions bot from pushing to `main`; falls back to the
+          # default token otherwise.
+          token: ${{ secrets.RELEASE_TOKEN || github.token }}
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.0'
+          channel: stable
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-pub-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # --- Gates: never distribute a broken build ---
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Test
+        run: flutter test --coverage
+
+      - name: Check 100% coverage
+        uses: VeryGoodOpenSource/very_good_coverage@v3
+        with:
+          min_coverage: 100
+          exclude: 'lib/main.dart **/*.g.dart lib/l10n/app_localizations*.dart'
+
+      # --- Bump the semantic version (Conventional Commits) ---
+      - name: Determine bump level
+        id: bump
+        run: |
+          msg="$(git log -1 --pretty=%B)"
+          if printf '%s' "$msg" | grep -qE '^[a-z]+(\([^)]*\))?!:' \
+            || printf '%s' "$msg" | grep -q 'BREAKING CHANGE'; then
+            level=major
+          elif printf '%s' "$msg" | grep -qE '^feat(\([^)]*\))?:'; then
+            level=minor
+          else
+            level=patch
+          fi
+          echo "level=$level" >> "$GITHUB_OUTPUT"
+          echo "Bump level: $level"
+
+      - name: Bump version in pubspec.yaml
+        id: version
+        run: |
+          new="$(tools/release/bump_version.sh '${{ steps.bump.outputs.level }}')"
+          echo "version=$new" >> "$GITHUB_OUTPUT"
+          echo "New version: $new"
+
+      # --- Android release build (signed when keystore secrets are present) ---
+      - name: Configure Android signing
+        if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
+        env:
+          STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storePassword=$STORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=upload-keystore.jks
+          EOF
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      # --- Distribute to testers via Firebase App Distribution ---
+      - name: Distribute to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ env.FIREBASE_ANDROID_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          groups: qa
+          file: build/app/outputs/flutter-apk/app-release.apk
+          releaseNotes: ${{ github.event.head_commit.message }}
+
+      # --- Commit the bumped version back to main (no CI loop) ---
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit pubspec.yaml -m "chore(release): bump version to ${{ steps.version.outputs.version }} [skip ci]"
+          git push
