@@ -44,15 +44,23 @@ firebase login
 Then release:
 
 ```bash
-# build current version and distribute (no version bump)
+# distribute to the `qa` group (must exist in the console — see step 1)
 tools/release/distribute.sh --notes "smoke test"
 
-# or bump the version first, then distribute
+# distribute to individual e-mails — no group needed
+tools/release/distribute.sh --testers you@example.com --notes "smoke test"
+
+# bump the version first, then distribute
 tools/release/distribute.sh --bump patch --notes "release candidate"
 ```
 
-Flags: `--bump major|minor|patch` (default: none), `--groups qa,beta`
-(default `qa`), `--notes "..."` (default `1-Bit Dice <version>`).
+Flags: `--bump major|minor|patch` (default: none), `--groups qa,beta`,
+`--testers a@x.com,b@x.com`, `--notes "..."` (default `1-Bit Dice <version>`).
+If you pass neither `--groups` nor `--testers`, it defaults to the `qa` group.
+
+> The APK uploads fine even if the audience step fails. A **404 on
+> "distributing to testers/groups"** means the group alias doesn't exist yet —
+> create it in the console (step 1) or use `--testers` with e-mails instead.
 
 Confirm a tester receives the invite and can install the build. A local run
 modifies `pubspec.yaml` only if you pass `--bump`; revert with

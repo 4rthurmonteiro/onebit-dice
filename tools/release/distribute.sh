@@ -13,11 +13,16 @@
 #
 # Usage:
 #   tools/release/distribute.sh [--bump major|minor|patch] [--groups qa,beta] \
-#                               [--notes "release notes"]
+#                               [--testers a@x.com,b@x.com] [--notes "notes"]
+#
+# --groups aliases must already exist in the Firebase console (App Distribution
+# -> Testers & groups). --testers distributes to individual e-mails directly,
+# which needs no group. If neither is given, it defaults to the `qa` group.
 #
 # Examples (local):
 #   firebase login                       # one-time
-#   tools/release/distribute.sh --notes "smoke test"        # no version bump
+#   tools/release/distribute.sh --notes "smoke test"        # -> qa group
+#   tools/release/distribute.sh --testers you@example.com   # -> just you
 #   tools/release/distribute.sh --bump patch --notes "RC"   # bump + distribute
 #
 # Environment variables (used by CI; optional locally):
@@ -31,7 +36,8 @@
 set -euo pipefail
 
 BUMP="none"
-GROUPS="${FIREBASE_GROUPS:-qa}"
+GROUPS="${FIREBASE_GROUPS:-}"
+TESTERS="${FIREBASE_TESTERS:-}"
 NOTES=""
 APP_ID="${FIREBASE_ANDROID_APP_ID:-1:590407408363:android:9dd0c4e47f9c2f664b7cae}"
 
@@ -43,6 +49,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --bump) BUMP="${2:?--bump needs a value}"; shift 2 ;;
     --groups) GROUPS="${2:?--groups needs a value}"; shift 2 ;;
+    --testers) TESTERS="${2:?--testers needs a value}"; shift 2 ;;
     --notes) NOTES="${2:?--notes needs a value}"; shift 2 ;;
     -h | --help) usage; exit 0 ;;
     *) echo "error: unknown argument '$1'" >&2; usage >&2; exit 1 ;;
@@ -109,10 +116,25 @@ apk="build/app/outputs/flutter-apk/app-release.apk"
 [[ -f "$apk" ]] || { echo "error: APK not found at $apk" >&2; exit 1; }
 
 # --- Distribute -------------------------------------------------------------
-echo "==> Distributing $apk to Firebase App Distribution (groups: $GROUPS)"
-"${FIREBASE[@]}" appdistribution:distribute "$apk" \
-  --app "$APP_ID" \
-  --groups "$GROUPS" \
-  --release-notes "$NOTES"
+# Default to the `qa` group only when no audience was specified at all.
+if [[ -z "$GROUPS" && -z "$TESTERS" ]]; then
+  GROUPS="qa"
+fi
 
-echo "==> Done: $version distributed to [$GROUPS]"
+dist_args=(--app "$APP_ID" --release-notes "$NOTES")
+[[ -n "$GROUPS" ]] && dist_args+=(--groups "$GROUPS")
+[[ -n "$TESTERS" ]] && dist_args+=(--testers "$TESTERS")
+
+echo "==> Distributing $apk (groups: ${GROUPS:-none}, testers: ${TESTERS:-none})"
+if ! "${FIREBASE[@]}" appdistribution:distribute "$apk" "${dist_args[@]}"; then
+  echo "" >&2
+  echo "error: distribution failed." >&2
+  echo "  If the upload succeeded but it failed on 'distributing to testers/groups'" >&2
+  echo "  with a 404, the group alias does not exist yet. Either:" >&2
+  echo "    - create the group in the Firebase console (App Distribution ->" >&2
+  echo "      Testers & groups) and use its alias with --groups, or" >&2
+  echo "    - distribute to individual e-mails with --testers a@x.com,b@x.com" >&2
+  exit 1
+fi
+
+echo "==> Done: $version distributed (groups: ${GROUPS:-none}, testers: ${TESTERS:-none})"
