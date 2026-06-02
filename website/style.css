@@ -1,0 +1,278 @@
+/* =========================================================================
+   1-Bit Dice — AM2 Studio
+   Strict 1-bit aesthetic: two colors only, hard edges, pixel fonts.
+   No gradients. No shadows. No anti-aliasing. No border-radius.
+   ========================================================================= */
+
+/* ----- Pixel fonts (same TTFs the app ships) ----- */
+@font-face {
+  font-family: "PressStart2P";
+  src: url("assets/fonts/PressStart2P-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Silkscreen";
+  src: url("assets/fonts/Silkscreen-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Silkscreen";
+  src: url("assets/fonts/Silkscreen-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "VT323";
+  src: url("assets/fonts/VT323-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+
+/* ----- Two-color palette (Mac Classic: ink on paper) ----- */
+:root {
+  --ink: #000000;
+  --paper: #ffffff;
+  --border: 4px solid var(--ink);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* kill smoothing — pixels stay crisp */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  image-rendering: pixelated;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "VT323", monospace;
+  font-size: 22px;
+  line-height: 1.4;
+  text-rendering: optimizeSpeed;
+}
+
+img {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+}
+
+a {
+  color: var(--ink);
+  text-decoration: none;
+}
+a:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ----- Headings in true pixel font ----- */
+h1, h2, h3, .pixel {
+  font-family: "PressStart2P", monospace;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+/* ===== Top bar ===== */
+.topbar {
+  border-bottom: var(--border);
+}
+.topbar .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+.brand {
+  font-family: "Silkscreen", monospace;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+.topnav a {
+  font-family: "Silkscreen", monospace;
+  font-size: 14px;
+  margin-left: 18px;
+  padding: 4px 6px;
+}
+
+/* ===== Hero ===== */
+.hero {
+  border-bottom: var(--border);
+  padding: 56px 0;
+  text-align: center;
+}
+.hero .icon {
+  width: 128px;
+  height: 128px;
+  border: var(--border);
+  margin: 0 auto 28px;
+}
+.hero h1 {
+  font-size: 38px;
+  letter-spacing: 2px;
+}
+.hero .tag {
+  font-family: "Silkscreen", monospace;
+  font-size: 20px;
+  margin-top: 18px;
+}
+.hero .sub {
+  max-width: 540px;
+  margin: 18px auto 0;
+  font-size: 24px;
+}
+
+/* ----- Store badges ----- */
+.badges {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+.badge {
+  border: var(--border);
+  padding: 12px 18px;
+  font-family: "Silkscreen", monospace;
+  font-weight: 700;
+  font-size: 15px;
+  text-align: left;
+  min-width: 210px;
+}
+.badge small {
+  display: block;
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.badge.soon {
+  border-style: dashed;
+}
+
+/* ===== Section scaffolding ===== */
+section {
+  border-bottom: var(--border);
+  padding: 48px 0;
+}
+section > .wrap > h2 {
+  font-size: 22px;
+  margin-bottom: 28px;
+}
+
+/* ===== Features ===== */
+.features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border: var(--border);
+}
+.feature {
+  padding: 22px;
+  border-right: var(--border);
+  border-bottom: var(--border);
+}
+.feature:nth-child(2n) { border-right: 0; }
+.feature:nth-last-child(-n+2):nth-child(2n+1) { border-bottom: 0; }
+.feature:last-child { border-bottom: 0; }
+.feature h3 {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.feature p { font-size: 22px; }
+
+/* ===== Palette strip ===== */
+.palettes {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+  border: var(--border);
+}
+.pal {
+  aspect-ratio: 1 / 1;
+  border-right: var(--border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.pal:last-child { border-right: 0; }
+.pal .die {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  font-family: "PressStart2P", monospace;
+  font-size: 26px;
+}
+.pal .name {
+  font-family: "Silkscreen", monospace;
+  font-size: 9px;
+  text-align: center;
+  padding: 3px 2px;
+  width: 100%;
+  border-top: 2px solid currentColor;
+}
+@media (max-width: 720px) {
+  .palettes { grid-template-columns: repeat(4, 1fr); }
+  .pal:nth-child(4n) { border-right: 0; }
+}
+
+/* ===== Screenshots ===== */
+.shots {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+.shots img {
+  height: 460px;
+  border: var(--border);
+  flex: 0 0 auto;
+}
+
+/* ===== About ===== */
+.about p { font-size: 24px; max-width: 620px; }
+.about p + p { margin-top: 16px; }
+
+/* ===== Footer ===== */
+footer {
+  padding: 36px 0;
+  text-align: center;
+}
+footer .links a {
+  font-family: "Silkscreen", monospace;
+  font-size: 14px;
+  margin: 0 10px;
+  padding: 4px 6px;
+}
+footer .copy {
+  font-family: "Silkscreen", monospace;
+  font-size: 12px;
+  margin-top: 20px;
+  letter-spacing: 1px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 560px) {
+  .hero h1 { font-size: 26px; }
+  .features { grid-template-columns: 1fr; }
+  .feature { border-right: 0 !important; border-bottom: var(--border) !important; }
+  .feature:last-child { border-bottom: 0 !important; }
+  .topnav { display: none; }
+}
