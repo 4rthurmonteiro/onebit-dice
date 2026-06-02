@@ -203,6 +203,32 @@ void main() {
       handle.dispose();
     });
 
+    testWidgets(
+      'extends background through bottom inset, keeps content above it',
+      (tester) async {
+        const bottomInset = 48.0;
+        await tester.binding.setSurfaceSize(const Size(800, 1200));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+
+        await tester.pumpWidget(
+          MediaQuery(
+            data: const MediaQueryData(
+              padding: EdgeInsets.only(bottom: bottomInset),
+            ),
+            child: _harness(_router()),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final barSize = tester.getSize(find.byType(RetroTabBar));
+        expect(barSize.height, RetroTabBar.height + bottomInset);
+
+        final rowBottom = tester.getBottomLeft(find.byType(Row).last).dy;
+        final barBottom = tester.getBottomLeft(find.byType(RetroTabBar)).dy;
+        expect(barBottom - rowBottom, bottomInset);
+      },
+    );
+
     testWidgets('top border uses palette ink', (tester) async {
       await _pump(tester, _harness(_router()));
       final palette = Palette.of(PaletteId.macClassic);
