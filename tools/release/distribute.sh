@@ -109,10 +109,13 @@ fi
 [[ -n "$NOTES" ]] || NOTES="1-Bit Dice $version"
 
 # --- Build the signed release APK -------------------------------------------
-echo "==> Building release APK"
+# Split per ABI so the distributed artifact stays small (the universal APK is
+# ~60MB; a single-ABI APK is ~20MB). arm64-v8a covers virtually all current
+# Android devices.
+echo "==> Building release APK (arm64-v8a)"
 flutter pub get
-flutter build apk --release
-apk="build/app/outputs/flutter-apk/app-release.apk"
+flutter build apk --release --split-per-abi
+apk="build/app/outputs/flutter-apk/app-arm64-v8a-release.apk"
 [[ -f "$apk" ]] || { echo "error: APK not found at $apk" >&2; exit 1; }
 
 # --- Distribute -------------------------------------------------------------

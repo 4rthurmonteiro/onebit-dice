@@ -88,9 +88,10 @@ every branch and PR. The release job runs in order:
    [`tools/release/distribute.sh`](../../tools/release/distribute.sh) you run
    locally. It bumps the version (via
    [`bump_version.sh`](../../tools/release/bump_version.sh)), builds a release
-   APK (upload-key signed when the keystore secrets are set; debug-key fallback
-   otherwise), and distributes it to App Distribution group `qa` with the merge
-   commit message as the release notes.
+   APK (`--split-per-abi`, distributing the **arm64-v8a** APK so the artifact is
+   ~20MB instead of ~60MB; upload-key signed when the keystore secrets are set,
+   debug-key fallback otherwise), and distributes it to App Distribution group
+   `qa` with the merge commit message as the release notes.
 4. **Commit the bump** — pushes `chore(release): bump version to <v> [skip ci]`
    back to `main`. The `chore(release):` prefix (`if:` guard) **and** `[skip
    ci]` both prevent this commit from re-triggering the workflow.
