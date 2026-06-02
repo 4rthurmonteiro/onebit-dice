@@ -226,7 +226,7 @@
 - [x] 15.4 iOS `PRODUCT_BUNDLE_IDENTIFIER = com.am2.onebitdice`, `CFBundleDisplayName/Name = "1-Bit Dice"`, `IPHONEOS_DEPLOYMENT_TARGET = 13.0` + Podfile `platform :ios, '13.0'`
 - [x] 15.5 `flutter build appbundle --release` OK → `app-release.aab` (57 MB) assinado com a upload key (SHA1 confere; `jarsigner` verified). Exigiu subir `google-services` 4.3.15 → 4.4.2 p/ compat com Crashlytics plugin v3
 - [ ] 15.6 `flutter build ipa --release` — verificar build sem erros
-- [!] 15.7 Capturar screenshots nas resoluções corretas (intervenção humana — device físico)
+- [x] 15.7 Capturar screenshots nas resoluções corretas — 350 PNGs (10 idiomas × 7 paletas × 5 telas) capturados em device Android real (Galaxy S20 FE, 1080×2256) via harness `integration_test/store_screenshots_test.dart` em profile mode (sem banner debug). Ícone 512×512 + feature graphic 1024×500 em [docs/store/android/](../store/android/) ([README](../store/android/README.md))
 - [!] 15.8 Criar app records no Play Console + App Store Connect (intervenção humana)
 - [x] 15.9 Política de privacidade redigida em PT-BR + EN ([docs/privacy/index.html](../privacy/index.html) + [en.html](../privacy/en.html)) — falta habilitar GH Pages no GitHub: Settings → Pages → Source: `main` / `/docs`. URL final: `https://4rthurmonteiro.github.io/onebit-dice/privacy/`
 - [ ] 15.10 Upload AAB no Play Console (faixa de testes internos)

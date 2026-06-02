@@ -87,7 +87,17 @@
       "Bash(awk '/^SF:/{f=$0; sub\\(\"SF:\",\"\",f\\)} /^DA:/{split\\($0,a,\",\"\\); sub\\(\"DA:\",\"\",a[1]\\); if\\(a[2]==0\\) print f}' coverage/lcov.info)",
       "Bash(awk '/^SF:.*dice_screen.dart/{p=1} p&&/^DA:/{split\\($0,a,\",\"\\);sub\\(\"DA:\",\"\",a[1]\\); if\\(a[2]==0\\) print \"UNCOVERED \"a[1]} /^end_of_record/{p=0}' coverage/lcov.info)",
       "Bash(awk '/^SF:.*\\\\/dice_screen.dart/{p=1} p&&/^LH:/{print \"lines hit \"$0} p&&/^LF:/{print \"lines found \"$0; p=0}' coverage/lcov.info)",
-      "mcp__plugin_vgv-ai-flutter-plugin_dart__pub"
+      "mcp__plugin_vgv-ai-flutter-plugin_dart__pub",
+      "Bash(sed -n '/dev_dependencies:/,/^[a-z]/p' pubspec.yaml)",
+      "Bash(sed -n '1,60p' lib/core/models/dice_type.dart)",
+      "Bash(flutter emulators *)",
+      "Bash(xcrun simctl *)",
+      "Bash(flutter devices *)",
+      "Bash(awk '/\\\\/$/{print $4\" livres\"}')",
+      "Bash(awk '/\\\\/$/{print \"Livre agora: \"$4}')",
+      "Bash(git -C /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice status --short)",
+      "Bash(echo \"clean iniciado \\(pid $!\\)\")",
+      "Bash(python3 -c \"import PIL; print\\('PIL', PIL.__version__\\)\")"
     ]
   }
 }

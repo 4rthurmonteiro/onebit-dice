@@ -53,6 +53,8 @@ dev_dependencies:
     sdk: flutter
   go_router_builder: ^4.3.0
   hive_ce_generator: ^1.11.2
+  integration_test:
+    sdk: flutter
   mocktail: ^1.0.5
   very_good_analysis: ^7.0.0
 

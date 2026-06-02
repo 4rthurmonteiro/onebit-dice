@@ -49,3 +49,8 @@ app.*.map.json
 
 # VGV review agent reports (transient, generated per Ralph iteration / /build run)
 docs/reviews/
+
+# Store screenshots — regenerable from integration_test/store_screenshots_test.dart.
+# Kept out of git (14 MB of PNGs); archived externally. Harness + icon +
+# feature graphic + README stay versioned.
+docs/store/android/screenshots/
