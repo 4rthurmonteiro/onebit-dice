@@ -1,10 +1,12 @@
 name: Release
 
-# Runs only when commits land on `main` (i.e. a PR merge). `ci.yml` keeps
-# running on every branch/PR; this workflow owns the test-build distribution.
+# TEMPORARILY manual-only: releases are being done locally via
+# `tools/release/distribute.sh` for now. Re-enable the auto-release by
+# uncommenting the `push` trigger below.
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+  # push:
+  #   branches: [main]
 
 # Serialize releases so two merges never race on the version bump / push.
 concurrency:
