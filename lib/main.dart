@@ -8,7 +8,13 @@ import 'package:onebit_dice/app.dart';
 import 'package:onebit_dice/core/analytics/firebase_analytics_service.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
+import 'package:onebit_dice/core/i18n/locale_preference.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
+import 'package:onebit_dice/core/storage/history_repository.dart';
+import 'package:onebit_dice/core/storage/hive_init.dart';
+import 'package:onebit_dice/core/storage/last_dice_config_preference.dart';
+import 'package:onebit_dice/core/storage/presets_repository.dart';
+import 'package:onebit_dice/core/theme/palette_preference.dart';
 import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 import 'package:onebit_dice/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,8 +40,17 @@ Future<void> main() async {
     crashlytics: crashlytics,
   );
 
+  final boxes = await HiveInit.init();
+  final historyRepository = HiveHistoryRepository(boxes.rollHistory);
+  final presetsRepository = HivePresetsRepository(boxes.customPresets);
+
   final prefs = await SharedPreferences.getInstance();
   final appSettings = SharedPreferencesAppSettingsPreference(prefs);
+  final lastDiceConfigPreference = SharedPreferencesLastDiceConfigPreference(
+    prefs,
+  );
+  final palettePreference = SharedPreferencesPalettePreference(prefs);
+  final localePreference = SharedPreferencesLocalePreference(prefs);
   final audioController = AudioController(
     preference: appSettings,
     analytics: analyticsService,
@@ -55,6 +70,11 @@ Future<void> main() async {
       hapticController: hapticController,
       animationSettingsController: animationSettingsController,
       analyticsService: analyticsService,
+      historyRepository: historyRepository,
+      presetsRepository: presetsRepository,
+      lastDiceConfigPreference: lastDiceConfigPreference,
+      palettePreference: palettePreference,
+      localePreference: localePreference,
     ),
   );
 }

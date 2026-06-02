@@ -1,134 +1,90 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:onebit_dice/core/analytics/analytics_service.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
-import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
 import 'package:onebit_dice/core/models/dice_type.dart';
 import 'package:onebit_dice/core/models/roll_result.dart';
-import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/storage/history_repository.dart';
 import 'package:onebit_dice/core/storage/last_dice_config_preference.dart';
-import 'package:onebit_dice/core/storage/models/roll_entry.dart';
 import 'package:onebit_dice/features/dice/dice_controller.dart';
 
-import '../../support/recording_analytics_service.dart';
+import '../../support/mock_analytics_service.dart';
 
-class _RecordingHistory implements HistoryRepository {
-  _RecordingHistory(this.events);
+class _MockHistory extends Mock implements HistoryRepository {}
 
-  final List<String> events;
-  final List<RollResult> appended = [];
+class _MockAudio extends Mock implements AudioController {}
 
-  @override
-  Future<void> append(RollResult result) async {
-    appended.add(result);
-    events.add('history.append');
-  }
+class _MockHaptic extends Mock implements HapticController {}
 
-  @override
-  Future<void> clear() async {}
-
-  @override
-  List<RollEntry> snapshot() => const [];
-
-  @override
-  Stream<List<RollEntry>> watch() => const Stream.empty();
-}
-
-class _RecordingAudio extends AudioController {
-  _RecordingAudio(this.events)
-    : super(
-        preference: InMemoryAppSettingsPreference(),
-        player: _NoopSoundPlayer(),
-      );
-
-  final List<String> events;
-  int sequencesPlayed = 0;
-
-  @override
-  Future<void> playRollSequence() async {
-    sequencesPlayed++;
-    events.add('audio.playRollSequence');
-  }
-}
-
-class _NoopSoundPlayer implements SoundPlayer {
-  @override
-  Future<void> init() async {}
-
-  @override
-  void play(SoundEvent event) {}
-
-  @override
-  Future<void> stopAll() async {}
-
-  @override
-  Future<void> dispose() async {}
-}
-
-class _RecordingHaptic extends HapticController {
-  _RecordingHaptic(this.events)
-    : super(preference: InMemoryAppSettingsPreference(), trigger: () async {});
-
-  final List<String> events;
-  int triggers = 0;
-
-  @override
-  void trigger() {
-    triggers++;
-    events.add('haptic.trigger');
-  }
-}
-
-class _RecordingLastDice implements LastDiceConfigPreference {
-  _RecordingLastDice(this.events, [this._seed]);
-
-  final List<String> events;
-  LastDiceConfig? _seed;
-  final List<LastDiceConfig> writes = [];
-
-  @override
-  LastDiceConfig? read() => _seed;
-
-  @override
-  Future<void> write(LastDiceConfig config) async {
-    writes.add(config);
-    _seed = config;
-    events.add('lastDice.write(${config.diceType.name},${config.count})');
-  }
-}
-
-DiceController _build({
-  required List<String> events,
-  LastDiceConfig? seed,
-  Random? rng,
-  AnalyticsService analytics = const NoOpAnalyticsService(),
-}) {
-  return DiceController(
-    history: _RecordingHistory(events),
-    audio: _RecordingAudio(events),
-    haptic: _RecordingHaptic(events),
-    lastDiceConfig: _RecordingLastDice(events, seed),
-    analytics: analytics,
-    rng: rng,
-  );
-}
+class _MockLastDice extends Mock implements LastDiceConfigPreference {}
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(
+      RollResult(
+        timestamp: DateTime.utc(2026),
+        diceType: DiceType.d6,
+        diceCount: 1,
+        values: const [1],
+      ),
+    );
+    registerFallbackValue(
+      const LastDiceConfig(diceType: DiceType.d6, count: 1),
+    );
+  });
+
+  /// Builds a [DiceController] whose dependencies are mocktail mocks. Each
+  /// mutating dependency call appends a marker to [events] so tests can assert
+  /// the order of side effects. Pass [analytics] to verify analytics calls.
+  DiceController build({
+    required List<String> events,
+    LastDiceConfig? seed,
+    Random? rng,
+    MockAnalyticsService? analytics,
+  }) {
+    final history = _MockHistory();
+    final audio = _MockAudio();
+    final haptic = _MockHaptic();
+    final lastDice = _MockLastDice();
+
+    when(() => history.append(any())).thenAnswer((_) async {
+      events.add('history.append');
+    });
+    when(audio.playRollSequence).thenAnswer((_) async {
+      events.add('audio.playRollSequence');
+    });
+    when(haptic.trigger).thenAnswer((_) {
+      events.add('haptic.trigger');
+    });
+    when(lastDice.read).thenReturn(seed);
+    when(() => lastDice.write(any())).thenAnswer((invocation) async {
+      final config = invocation.positionalArguments.first as LastDiceConfig;
+      events.add('lastDice.write(${config.diceType.name},${config.count})');
+    });
+
+    return DiceController(
+      history: history,
+      audio: audio,
+      haptic: haptic,
+      lastDiceConfig: lastDice,
+      analytics: analytics ?? createStubbedAnalytics(),
+      rng: rng,
+    );
+  }
+
   group('DiceController', () {
     test('defaults to d6 / count 1 when LastDiceConfigPreference is empty', () {
-      final controller = _build(events: <String>[]);
+      final controller = build(events: <String>[]);
       expect(controller.selectedType, DiceType.d6);
       expect(controller.count, 1);
       expect(controller.lastResult, isNull);
     });
 
     test('hydrates from LastDiceConfigPreference when present', () {
-      final controller = _build(
+      final controller = build(
         events: <String>[],
         seed: const LastDiceConfig(diceType: DiceType.d20, count: 5),
       );
@@ -138,7 +94,7 @@ void main() {
 
     test('setType to the same value is a no-op', () async {
       final events = <String>[];
-      final controller = _build(events: events)
+      final controller = build(events: events)
         ..addListener(() => events.add('notify'));
 
       await controller.setType(DiceType.d6);
@@ -150,7 +106,7 @@ void main() {
       'setType to a new value clears lastResult, notifies, persists',
       () async {
         final events = <String>[];
-        final controller = _build(events: events, rng: Random(0))
+        final controller = build(events: events, rng: Random(0))
           ..addListener(() => events.add('notify'));
         await controller.roll();
         events.clear();
@@ -164,9 +120,8 @@ void main() {
     );
 
     test('setCount clamps below 1 to 1', () async {
-      final events = <String>[];
-      final controller = _build(
-        events: events,
+      final controller = build(
+        events: <String>[],
         seed: const LastDiceConfig(diceType: DiceType.d6, count: 5),
       );
 
@@ -176,8 +131,7 @@ void main() {
     });
 
     test('setCount clamps above 10 to 10', () async {
-      final events = <String>[];
-      final controller = _build(events: events);
+      final controller = build(events: <String>[]);
 
       await controller.setCount(11);
 
@@ -186,7 +140,7 @@ void main() {
 
     test('setCount to the same clamped value is a no-op', () async {
       final events = <String>[];
-      final controller = _build(events: events)
+      final controller = build(events: events)
         ..addListener(() => events.add('notify'));
 
       await controller.setCount(1);
@@ -198,7 +152,7 @@ void main() {
       'setCount different value clears lastResult, notifies, persists',
       () async {
         final events = <String>[];
-        final controller = _build(events: events, rng: Random(0))
+        final controller = build(events: events, rng: Random(0))
           ..addListener(() => events.add('notify'));
         await controller.roll();
         events.clear();
@@ -212,7 +166,7 @@ void main() {
     );
 
     test('roll() with injected Random is deterministic', () async {
-      final controller = _build(events: <String>[], rng: Random(42));
+      final controller = build(events: <String>[], rng: Random(42));
       await controller.setCount(3);
       await controller.roll();
 
@@ -228,7 +182,7 @@ void main() {
       'roll() invokes deps in order: notify, append, audio, haptic, write',
       () async {
         final events = <String>[];
-        final controller = _build(events: events, rng: Random(0))
+        final controller = build(events: events, rng: Random(0))
           ..addListener(() => events.add('notify'));
 
         await controller.roll();
@@ -246,7 +200,7 @@ void main() {
     test(
       'roll() sets lastResult with correct diceCount, type, values',
       () async {
-        final controller = _build(events: <String>[], rng: Random(7));
+        final controller = build(events: <String>[], rng: Random(7));
         await controller.setType(DiceType.d20);
         await controller.setCount(4);
 
@@ -268,7 +222,7 @@ void main() {
     );
 
     test('default rng uses Random.secure when no rng injected', () async {
-      final controller = _build(events: <String>[]);
+      final controller = build(events: <String>[]);
 
       // Roll a few times — values should be in range, indicating a working rng.
       for (var i = 0; i < 5; i++) {
@@ -279,7 +233,7 @@ void main() {
 
     test('applyConfig with matching type and count is a no-op', () async {
       final events = <String>[];
-      final controller = _build(events: events)
+      final controller = build(events: events)
         ..addListener(() => events.add('notify'));
 
       await controller.applyConfig(diceType: DiceType.d6, count: 1);
@@ -291,7 +245,7 @@ void main() {
       'applyConfig with a new type and count notifies once and persists once',
       () async {
         final events = <String>[];
-        final controller = _build(events: events, rng: Random(0))
+        final controller = build(events: events, rng: Random(0))
           ..addListener(() => events.add('notify'));
         await controller.roll();
         events.clear();
@@ -306,8 +260,7 @@ void main() {
     );
 
     test('applyConfig clamps count below 1 to 1', () async {
-      final events = <String>[];
-      final controller = _build(events: events);
+      final controller = build(events: <String>[]);
 
       await controller.applyConfig(diceType: DiceType.d20, count: 0);
 
@@ -316,8 +269,7 @@ void main() {
     });
 
     test('applyConfig clamps count above 10 to 10', () async {
-      final events = <String>[];
-      final controller = _build(events: events);
+      final controller = build(events: <String>[]);
 
       await controller.applyConfig(diceType: DiceType.d12, count: 99);
 
@@ -329,7 +281,7 @@ void main() {
       'applyConfig with only count changing still applies the new count',
       () async {
         final events = <String>[];
-        final controller = _build(events: events)
+        final controller = build(events: events)
           ..addListener(() => events.add('notify'));
 
         await controller.applyConfig(diceType: DiceType.d6, count: 5);
@@ -341,7 +293,7 @@ void main() {
     );
 
     test('notifies once per setType call', () async {
-      final controller = _build(events: <String>[]);
+      final controller = build(events: <String>[]);
       var notifies = 0;
       controller.addListener(() => notifies++);
 
@@ -351,24 +303,24 @@ void main() {
     });
 
     test('extends ChangeNotifier so listeners can be added', () {
-      final controller = _build(events: <String>[]);
+      final controller = build(events: <String>[]);
       expect(controller, isA<ChangeNotifier>());
     });
 
     group('hasRolled', () {
       test('is false before any roll', () {
-        final controller = _build(events: <String>[]);
+        final controller = build(events: <String>[]);
         expect(controller.hasRolled, isFalse);
       });
 
       test('becomes true after roll()', () async {
-        final controller = _build(events: <String>[], rng: Random(0));
+        final controller = build(events: <String>[], rng: Random(0));
         await controller.roll();
         expect(controller.hasRolled, isTrue);
       });
 
       test('stays true after setType / setCount / applyConfig', () async {
-        final controller = _build(events: <String>[], rng: Random(0));
+        final controller = build(events: <String>[], rng: Random(0));
         await controller.roll();
 
         await controller.setType(DiceType.d20);
@@ -384,7 +336,7 @@ void main() {
 
     group('isRolling', () {
       test('is false before and after a completed roll', () async {
-        final controller = _build(events: <String>[], rng: Random(0));
+        final controller = build(events: <String>[], rng: Random(0));
         expect(controller.isRolling, isFalse);
         await controller.roll();
         expect(controller.isRolling, isFalse);
@@ -394,7 +346,7 @@ void main() {
         'a second roll() started before the first settles is a no-op',
         () async {
           final events = <String>[];
-          final controller = _build(events: events, rng: Random(0));
+          final controller = build(events: events, rng: Random(0));
 
           // Start the first roll but do not await it: it suspends at the
           // awaited history.append with _isRolling already true.
@@ -415,15 +367,14 @@ void main() {
 
     group('analytics', () {
       test('roll() logs dice_rolled with type, count, and total', () async {
-        final analytics = RecordingAnalyticsService();
-        final controller = _build(
+        final analytics = createStubbedAnalytics();
+        final controller = build(
           events: <String>[],
           rng: Random(0),
           analytics: analytics,
         );
         await controller.setType(DiceType.d20);
         await controller.setCount(3);
-        analytics.events.clear();
 
         await controller.roll();
 
@@ -431,32 +382,37 @@ void main() {
           0,
           (sum, value) => sum + value,
         );
-        expect(analytics.events, hasLength(1));
-        expect(analytics.events.single.name, 'dice_rolled');
-        expect(analytics.events.single.parameters, {
-          'dice_type': 'd20',
-          'count': 3,
-          'total': total,
-        });
+        verify(
+          () => analytics.logEvent(
+            'dice_rolled',
+            parameters: {'dice_type': 'd20', 'count': 3, 'total': total},
+          ),
+        ).called(1);
       });
 
       test('setType logs dice_type_changed with the new type', () async {
-        final analytics = RecordingAnalyticsService();
-        final controller = _build(events: <String>[], analytics: analytics);
+        final analytics = createStubbedAnalytics();
+        final controller = build(events: <String>[], analytics: analytics);
 
         await controller.setType(DiceType.d12);
 
-        expect(analytics.eventNames, ['dice_type_changed']);
-        expect(analytics.events.single.parameters, {'dice_type': 'd12'});
+        verify(
+          () => analytics.logEvent(
+            'dice_type_changed',
+            parameters: {'dice_type': 'd12'},
+          ),
+        ).called(1);
       });
 
       test('a no-op setType does not log', () async {
-        final analytics = RecordingAnalyticsService();
-        final controller = _build(events: <String>[], analytics: analytics);
+        final analytics = createStubbedAnalytics();
+        final controller = build(events: <String>[], analytics: analytics);
 
         await controller.setType(DiceType.d6);
 
-        expect(analytics.events, isEmpty);
+        verifyNever(
+          () => analytics.logEvent(any(), parameters: any(named: 'parameters')),
+        );
       });
     });
   });

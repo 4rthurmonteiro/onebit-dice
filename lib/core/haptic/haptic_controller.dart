@@ -25,8 +25,8 @@ class HapticController extends ChangeNotifier {
   /// [defaultHapticTrigger].
   HapticController({
     required AppSettingsPreference preference,
+    required this._analytics,
     HapticTrigger? trigger,
-    this._analytics = const NoOpAnalyticsService(),
   }) : _preference = preference,
        _trigger = trigger ?? defaultHapticTrigger,
        _hapticEnabled = preference.readHapticEnabled() ?? true;

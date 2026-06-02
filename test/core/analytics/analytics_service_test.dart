@@ -2,7 +2,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/analytics/firebase_analytics_service.dart';
 
 class _MockFirebaseAnalytics extends Mock implements FirebaseAnalytics {}
@@ -10,28 +9,6 @@ class _MockFirebaseAnalytics extends Mock implements FirebaseAnalytics {}
 class _MockFirebaseCrashlytics extends Mock implements FirebaseCrashlytics {}
 
 void main() {
-  group('NoOpAnalyticsService', () {
-    const service = NoOpAnalyticsService();
-
-    test('logEvent completes without error', () async {
-      await expectLater(
-        service.logEvent('dice_rolled', parameters: const {'type': 'd20'}),
-        completes,
-      );
-    });
-
-    test('logScreenView completes without error', () async {
-      await expectLater(service.logScreenView('dice'), completes);
-    });
-
-    test('recordError completes without error', () async {
-      await expectLater(
-        service.recordError(Exception('boom'), StackTrace.current, fatal: true),
-        completes,
-      );
-    });
-  });
-
   group('FirebaseAnalyticsService', () {
     late _MockFirebaseAnalytics analytics;
     late _MockFirebaseCrashlytics crashlytics;

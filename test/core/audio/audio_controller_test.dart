@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 
-import '../../support/recording_analytics_service.dart';
+import '../../support/mock_analytics_service.dart';
 
 class _FakeSoundPlayer implements SoundPlayer {
   _FakeSoundPlayer([this.events]);
@@ -46,54 +47,67 @@ class _FakeSoundPlayer implements SoundPlayer {
   }
 }
 
-class _RecordingAppSettings extends InMemoryAppSettingsPreference {
-  _RecordingAppSettings(this.events);
-
-  final List<String> events;
-
-  @override
-  Future<void> writeSoundEnabled({required bool value}) async {
-    events.add('writeSoundEnabled($value)');
-    await super.writeSoundEnabled(value: value);
-  }
-}
+class _MockAppSettings extends Mock implements AppSettingsPreference {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  late _MockAppSettings preference;
+  late MockAnalyticsService analytics;
+
+  setUp(() {
+    preference = _MockAppSettings();
+    analytics = createStubbedAnalytics();
+    when(() => preference.readSoundEnabled()).thenReturn(null);
+    when(
+      () => preference.writeSoundEnabled(value: any(named: 'value')),
+    ).thenAnswer((_) async {});
+  });
+
+  /// Re-stubs `writeSoundEnabled` to append a marker to [events] so tests can
+  /// assert the ordering of the write against other side effects.
+  void recordWritesTo(List<String> events) {
+    when(
+      () => preference.writeSoundEnabled(value: any(named: 'value')),
+    ).thenAnswer((invocation) async {
+      events.add('writeSoundEnabled(${invocation.namedArguments[#value]})');
+    });
+  }
+
   group('AudioController', () {
     test('default constructor falls back to a SoLoudSoundPlayer', () {
       expect(
-        () => AudioController(preference: InMemoryAppSettingsPreference()),
+        () => AudioController(preference: preference, analytics: analytics),
         returnsNormally,
       );
     });
 
     test('defaults soundEnabled to true when nothing is stored', () {
       final controller = AudioController(
-        preference: InMemoryAppSettingsPreference(),
+        preference: preference,
+        analytics: analytics,
         player: _FakeSoundPlayer(),
       );
 
       expect(controller.soundEnabled, isTrue);
     });
 
-    test('hydrates soundEnabled from preference (false)', () async {
-      final pref = InMemoryAppSettingsPreference();
-      await pref.writeSoundEnabled(value: false);
+    test('hydrates soundEnabled from preference (false)', () {
+      when(() => preference.readSoundEnabled()).thenReturn(false);
       final controller = AudioController(
-        preference: pref,
+        preference: preference,
+        analytics: analytics,
         player: _FakeSoundPlayer(),
       );
 
       expect(controller.soundEnabled, isFalse);
     });
 
-    test('hydrates soundEnabled from preference (true)', () async {
-      final pref = InMemoryAppSettingsPreference();
-      await pref.writeSoundEnabled(value: true);
+    test('hydrates soundEnabled from preference (true)', () {
+      when(() => preference.readSoundEnabled()).thenReturn(true);
       final controller = AudioController(
-        preference: pref,
+        preference: preference,
+        analytics: analytics,
         player: _FakeSoundPlayer(),
       );
 
@@ -103,7 +117,8 @@ void main() {
     test('init boots the player once', () async {
       final player = _FakeSoundPlayer();
       final controller = AudioController(
-        preference: InMemoryAppSettingsPreference(),
+        preference: preference,
+        analytics: analytics,
         player: player,
       );
       addTearDown(controller.dispose);
@@ -119,7 +134,8 @@ void main() {
       () async {
         final player = _FakeSoundPlayer();
         final controller = AudioController(
-          preference: InMemoryAppSettingsPreference(),
+          preference: preference,
+          analytics: analytics,
           player: player,
         );
         addTearDown(controller.dispose);
@@ -141,7 +157,8 @@ void main() {
         fakeAsync((async) {
           final player = _FakeSoundPlayer();
           final controller = AudioController(
-            preference: InMemoryAppSettingsPreference(),
+            preference: preference,
+            analytics: analytics,
             player: player,
           );
 
@@ -162,10 +179,13 @@ void main() {
       });
 
       test('is a no-op when sound is disabled at the start', () async {
-        final pref = InMemoryAppSettingsPreference();
-        await pref.writeSoundEnabled(value: false);
+        when(() => preference.readSoundEnabled()).thenReturn(false);
         final player = _FakeSoundPlayer();
-        final controller = AudioController(preference: pref, player: player);
+        final controller = AudioController(
+          preference: preference,
+          analytics: analytics,
+          player: player,
+        );
 
         await controller.playRollSequence();
 
@@ -176,7 +196,8 @@ void main() {
         fakeAsync((async) {
           final player = _FakeSoundPlayer();
           final controller = AudioController(
-            preference: InMemoryAppSettingsPreference(),
+            preference: preference,
+            analytics: analytics,
             player: player,
           );
 
@@ -196,28 +217,32 @@ void main() {
     test('setSoundEnabled(true→false) notifies, then stops, then persists '
         '— in that order', () async {
       final events = <String>[];
-      final pref = _RecordingAppSettings(events);
+      recordWritesTo(events);
       final player = _FakeSoundPlayer(events);
-      final controller = AudioController(preference: pref, player: player)
-        ..addListener(() => events.add('notify'));
+      final controller = AudioController(
+        preference: preference,
+        analytics: analytics,
+        player: player,
+      )..addListener(() => events.add('notify'));
 
       await controller.setSoundEnabled(value: false);
 
       expect(controller.soundEnabled, isFalse);
       expect(events, ['notify', 'stopAll', 'writeSoundEnabled(false)']);
-      expect(pref.readSoundEnabled(), isFalse);
     });
 
     test(
       'setSoundEnabled(false→true) notifies and persists without stopping',
       () async {
+        when(() => preference.readSoundEnabled()).thenReturn(false);
         final events = <String>[];
-        final pref = _RecordingAppSettings(events);
-        await pref.writeSoundEnabled(value: false);
-        events.clear();
+        recordWritesTo(events);
         final player = _FakeSoundPlayer(events);
-        final controller = AudioController(preference: pref, player: player)
-          ..addListener(() => events.add('notify'));
+        final controller = AudioController(
+          preference: preference,
+          analytics: analytics,
+          player: player,
+        )..addListener(() => events.add('notify'));
 
         await controller.setSoundEnabled(value: true);
 
@@ -228,9 +253,12 @@ void main() {
     );
 
     test('setSoundEnabled with the same value is a no-op', () async {
-      final pref = InMemoryAppSettingsPreference();
       final player = _FakeSoundPlayer();
-      final controller = AudioController(preference: pref, player: player);
+      final controller = AudioController(
+        preference: preference,
+        analytics: analytics,
+        player: player,
+      );
       var notifications = 0;
       controller.addListener(() => notifications++);
 
@@ -238,7 +266,9 @@ void main() {
 
       expect(notifications, 0);
       expect(player.stopAllCalls, 0);
-      expect(pref.readSoundEnabled(), isNull);
+      verifyNever(
+        () => preference.writeSoundEnabled(value: any(named: 'value')),
+      );
     });
 
     for (final state in const [
@@ -250,7 +280,8 @@ void main() {
       test('didChangeAppLifecycleState($state) stops the player', () async {
         final player = _FakeSoundPlayer();
         final controller = AudioController(
-          preference: InMemoryAppSettingsPreference(),
+          preference: preference,
+          analytics: analytics,
           player: player,
         );
         await controller.init();
@@ -266,7 +297,8 @@ void main() {
     test('didChangeAppLifecycleState(resumed) does nothing', () async {
       final player = _FakeSoundPlayer();
       final controller = AudioController(
-        preference: InMemoryAppSettingsPreference(),
+        preference: preference,
+        analytics: analytics,
         player: player,
       );
       await controller.init();
@@ -283,7 +315,8 @@ void main() {
       () async {
         final player = _FakeSoundPlayer();
         final controller = AudioController(
-          preference: InMemoryAppSettingsPreference(),
+          preference: preference,
+          analytics: analytics,
           player: player,
         );
         await controller.init();
@@ -305,7 +338,8 @@ void main() {
     test('dispose without init does not touch the player', () {
       final player = _FakeSoundPlayer();
       AudioController(
-        preference: InMemoryAppSettingsPreference(),
+        preference: preference,
+        analytics: analytics,
         player: player,
       ).dispose();
 
@@ -313,31 +347,33 @@ void main() {
     });
 
     test('setSoundEnabled logs sound_toggled with the new flag', () async {
-      final analytics = RecordingAnalyticsService();
       final controller = AudioController(
-        preference: InMemoryAppSettingsPreference(),
-        player: _FakeSoundPlayer(),
+        preference: preference,
         analytics: analytics,
+        player: _FakeSoundPlayer(),
       );
 
       await controller.setSoundEnabled(value: false);
 
-      expect(analytics.eventNames, ['sound_toggled']);
-      expect(analytics.events.single.parameters, {'enabled': false});
+      verify(
+        () =>
+            analytics.logEvent('sound_toggled', parameters: {'enabled': false}),
+      ).called(1);
     });
 
     test('a no-op sound toggle does not log', () async {
-      final analytics = RecordingAnalyticsService();
       final controller = AudioController(
-        preference: InMemoryAppSettingsPreference(),
-        player: _FakeSoundPlayer(),
+        preference: preference,
         analytics: analytics,
+        player: _FakeSoundPlayer(),
       );
 
       // Default soundEnabled is true; setting true again is a no-op.
       await controller.setSoundEnabled(value: true);
 
-      expect(analytics.events, isEmpty);
+      verifyNever(
+        () => analytics.logEvent(any(), parameters: any(named: 'parameters')),
+      );
     });
   });
 }

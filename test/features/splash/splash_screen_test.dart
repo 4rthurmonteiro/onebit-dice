@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/app_router.dart';
 import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
+import 'package:onebit_dice/core/models/dice_type.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
 import 'package:onebit_dice/core/storage/history_repository.dart';
 import 'package:onebit_dice/core/storage/last_dice_config_preference.dart';
@@ -20,7 +22,8 @@ import 'package:onebit_dice/shared/widgets/pixel_divider.dart';
 import 'package:onebit_dice/shared/widgets/pixel_icon.dart';
 import 'package:provider/provider.dart';
 
-import '../../support/recording_analytics_service.dart';
+import '../../support/mock_analytics_service.dart';
+import '../../support/mock_history_repository.dart';
 
 class _NoopSoundPlayer implements SoundPlayer {
   @override
@@ -33,30 +36,59 @@ class _NoopSoundPlayer implements SoundPlayer {
   Future<void> dispose() async {}
 }
 
+class _MockAppSettings extends Mock implements AppSettingsPreference {}
+
+class _MockLastDice extends Mock implements LastDiceConfigPreference {}
+
+AppSettingsPreference _stubAppSettings() {
+  final preference = _MockAppSettings();
+  when(preference.readSoundEnabled).thenReturn(null);
+  when(preference.readHapticEnabled).thenReturn(null);
+  when(preference.readAnimationStyle).thenReturn(null);
+  when(preference.readAnimationSpeed).thenReturn(null);
+  return preference;
+}
+
+LastDiceConfigPreference _stubLastDice() {
+  registerFallbackValue(const LastDiceConfig(diceType: DiceType.d6, count: 1));
+  final mock = _MockLastDice();
+  when(mock.read).thenReturn(null);
+  when(() => mock.write(any())).thenAnswer((_) async {});
+  return mock;
+}
+
 Widget _harness({
   Locale locale = const Locale('en'),
-  AnalyticsService analytics = const NoOpAnalyticsService(),
+  MockAnalyticsService? analytics,
 }) {
   // Wire just enough providers for `/dice` to mount when the splash navigates.
-  final settings = InMemoryAppSettingsPreference();
+  final settings = _stubAppSettings();
+  final analyticsService = analytics ?? createStubbedAnalytics();
   return MultiProvider(
     providers: [
-      Provider<AnalyticsService>.value(value: analytics),
-      Provider<HistoryRepository>(create: (_) => InMemoryHistoryRepository()),
-      Provider<LastDiceConfigPreference>(
-        create: (_) => InMemoryLastDiceConfigPreference(),
-      ),
+      Provider<AnalyticsService>.value(value: analyticsService),
+      Provider<HistoryRepository>.value(value: createFakeHistory()),
+      Provider<LastDiceConfigPreference>.value(value: _stubLastDice()),
       Provider<AppSettingsPreference>.value(value: settings),
       ChangeNotifierProvider<AudioController>(
-        create: (_) =>
-            AudioController(preference: settings, player: _NoopSoundPlayer()),
+        create: (_) => AudioController(
+          preference: settings,
+          analytics: analyticsService,
+          player: _NoopSoundPlayer(),
+        ),
       ),
       ChangeNotifierProvider<HapticController>(
-        create: (_) =>
-            HapticController(preference: settings, trigger: () async {}),
+        create: (_) => HapticController(
+          preference: settings,
+          analytics: analyticsService,
+          trigger: () async {},
+        ),
       ),
       ChangeNotifierProvider<AnimationSettingsController>(
-        create: (_) => AnimationSettingsController(preference: settings),
+        create: (_) => AnimationSettingsController(
+          preference: settings,
+          analytics: analyticsService,
+        ),
       ),
       ChangeNotifierProvider<DiceController>(
         create: (ctx) => DiceController(
@@ -64,6 +96,7 @@ Widget _harness({
           audio: ctx.read(),
           haptic: ctx.read(),
           lastDiceConfig: ctx.read(),
+          analytics: ctx.read(),
         ),
       ),
     ],
@@ -173,11 +206,11 @@ void main() {
     });
 
     testWidgets('logs a splash screen_view on mount', (tester) async {
-      final analytics = RecordingAnalyticsService();
+      final analytics = createStubbedAnalytics();
       await _pump(tester, _harness(analytics: analytics));
       await tester.pump();
 
-      expect(analytics.screenViews.first, 'splash');
+      verify(() => analytics.logScreenView('splash')).called(1);
     });
   });
 
@@ -193,12 +226,8 @@ void main() {
         tester,
         MultiProvider(
           providers: [
-            Provider<AnalyticsService>.value(
-              value: const NoOpAnalyticsService(),
-            ),
-            Provider<HistoryRepository>(
-              create: (_) => InMemoryHistoryRepository(),
-            ),
+            Provider<AnalyticsService>.value(value: createStubbedAnalytics()),
+            Provider<HistoryRepository>.value(value: createFakeHistory()),
           ],
           child: MaterialApp.router(
             locale: const Locale('en'),

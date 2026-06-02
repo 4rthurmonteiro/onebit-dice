@@ -15,13 +15,9 @@ import 'package:onebit_dice/core/i18n/supported_locales.dart';
 /// When [override] is `null`, the app follows the system locale via
 /// Flutter's `MaterialApp.localeResolutionCallback`.
 class LocaleController extends ChangeNotifier {
-  /// Creates a [LocaleController] backed by [preference] (defaults to an
-  /// in-memory store). The initial override is read synchronously from
-  /// `preference.read()`.
-  LocaleController({
-    LocalePreference? preference,
-    this._analytics = const NoOpAnalyticsService(),
-  }) : _preference = preference ?? InMemoryLocalePreference() {
+  /// Creates a [LocaleController] backed by the given locale preference. The
+  /// initial override is read synchronously from `preference.read()`.
+  LocaleController({required this._analytics, required this._preference}) {
     _override = _preference.read();
   }
 
@@ -67,10 +63,7 @@ class LocaleController extends ChangeNotifier {
     _override = null;
     notifyListeners();
     unawaited(
-      _analytics.logEvent(
-        'language_changed',
-        parameters: {'locale': 'system'},
-      ),
+      _analytics.logEvent('language_changed', parameters: {'locale': 'system'}),
     );
     await _preference.write(null);
   }

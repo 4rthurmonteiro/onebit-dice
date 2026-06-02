@@ -25,48 +25,6 @@ abstract interface class HistoryRepository {
   Future<void> clear();
 }
 
-/// In-memory [HistoryRepository] used as a test double and as the default
-/// before the splash screen wires the Hive-backed implementation.
-class InMemoryHistoryRepository implements HistoryRepository {
-  /// Creates an empty in-memory history repository.
-  InMemoryHistoryRepository();
-
-  final List<RollEntry> _entries = [];
-  final StreamController<List<RollEntry>> _controller =
-      StreamController<List<RollEntry>>.broadcast();
-
-  @override
-  List<RollEntry> snapshot() => List<RollEntry>.unmodifiable(_entries);
-
-  @override
-  Stream<List<RollEntry>> watch() {
-    late final StreamController<List<RollEntry>> output;
-    StreamSubscription<List<RollEntry>>? sub;
-    output = StreamController<List<RollEntry>>(
-      onListen: () {
-        sub = _controller.stream.listen(output.add);
-        output.add(snapshot());
-      },
-      onCancel: () async {
-        await sub?.cancel();
-      },
-    );
-    return output.stream;
-  }
-
-  @override
-  Future<void> append(RollResult result) async {
-    _entries.add(RollEntry.fromResult(result));
-    _controller.add(snapshot());
-  }
-
-  @override
-  Future<void> clear() async {
-    _entries.clear();
-    _controller.add(snapshot());
-  }
-}
-
 /// [HistoryRepository] backed by a Hive box of [RollEntry] values.
 class HiveHistoryRepository implements HistoryRepository {
   /// Creates a repository over an already-opened Hive `box`.

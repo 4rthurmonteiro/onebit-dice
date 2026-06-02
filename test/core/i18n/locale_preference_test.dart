@@ -5,29 +5,6 @@ import 'package:onebit_dice/core/i18n/supported_locales.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  group('InMemoryLocalePreference', () {
-    test('read() returns null initially', () {
-      final pref = InMemoryLocalePreference();
-      expect(pref.read(), isNull);
-    });
-
-    test('write() persists the value in memory', () async {
-      final pref = InMemoryLocalePreference();
-      await pref.write(const Locale('en'));
-      expect(pref.read(), const Locale('en'));
-
-      await pref.write(const Locale('ja'));
-      expect(pref.read(), const Locale('ja'));
-    });
-
-    test('write(null) clears the stored value', () async {
-      final pref = InMemoryLocalePreference();
-      await pref.write(const Locale('en'));
-      await pref.write(null);
-      expect(pref.read(), isNull);
-    });
-  });
-
   group('SharedPreferencesLocalePreference', () {
     setUp(() {
       SharedPreferences.setMockInitialValues({});

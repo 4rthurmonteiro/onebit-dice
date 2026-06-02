@@ -231,3 +231,4 @@
 - [x] 15.9 Política de privacidade redigida em PT-BR + EN ([docs/privacy/index.html](../privacy/index.html) + [en.html](../privacy/en.html)) — falta habilitar GH Pages no GitHub: Settings → Pages → Source: `main` / `/docs`. URL final: `https://4rthurmonteiro.github.io/onebit-dice/privacy/`
 - [ ] 15.10 Upload AAB no Play Console (faixa de testes internos)
 - [ ] 15.11 Upload IPA no App Store Connect
+- [ ] 15.12 Firebase App Distribution ("App Tester") + esteira de release no merge para `main` (gates → bump semver → build → distribui aos testadores → commita nova versão no `pubspec.yaml`, sem loop de CI) — projeto `onebit-dice-am2` já existe ([issue #24](https://github.com/4rthurmonteiro/onebit-dice/issues/24))

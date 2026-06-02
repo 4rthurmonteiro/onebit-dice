@@ -13,22 +13,3 @@ abstract class AnalyticsService {
   /// Records an error. [fatal] marks the report as a crash on the backend.
   Future<void> recordError(Object error, StackTrace? stack, {bool fatal});
 }
-
-/// No-op implementation used in tests and when analytics is unavailable.
-class NoOpAnalyticsService implements AnalyticsService {
-  /// Creates a no-op analytics service.
-  const NoOpAnalyticsService();
-
-  @override
-  Future<void> logEvent(String name, {Map<String, Object>? parameters}) async {}
-
-  @override
-  Future<void> logScreenView(String screenName) async {}
-
-  @override
-  Future<void> recordError(
-    Object error,
-    StackTrace? stack, {
-    bool fatal = false,
-  }) async {}
-}

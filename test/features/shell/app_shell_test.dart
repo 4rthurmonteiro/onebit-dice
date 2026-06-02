@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
@@ -9,7 +10,7 @@ import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:onebit_dice/shared/widgets/retro_tab_bar.dart';
 import 'package:provider/provider.dart';
 
-import '../../support/recording_analytics_service.dart';
+import '../../support/mock_analytics_service.dart';
 
 class _Counter extends StatefulWidget {
   const _Counter();
@@ -68,12 +69,9 @@ GoRouter _router() => GoRouter(
   ],
 );
 
-Widget _harness(
-  GoRouter router, {
-  AnalyticsService analytics = const NoOpAnalyticsService(),
-}) {
+Widget _harness(GoRouter router, {MockAnalyticsService? analytics}) {
   return Provider<AnalyticsService>.value(
-    value: analytics,
+    value: analytics ?? createStubbedAnalytics(),
     child: MaterialApp.router(
       locale: const Locale('en'),
       supportedLocales: AppLocalizations.supportedLocales,
@@ -169,11 +167,11 @@ void main() {
 
     testWidgets('logs a screen_view for the initial branch and on each '
         'tab switch', (tester) async {
-      final analytics = RecordingAnalyticsService();
+      final analytics = createStubbedAnalytics();
       await _pump(tester, _harness(_router(), analytics: analytics));
 
       // Initial mount lands on the dice branch.
-      expect(analytics.screenViews, ['dice']);
+      verify(() => analytics.logScreenView('dice')).called(1);
 
       await tester.tap(find.text('HISTORY'));
       await tester.pumpAndSettle();
@@ -182,24 +180,24 @@ void main() {
       await tester.tap(find.text('SETTINGS'));
       await tester.pumpAndSettle();
 
-      expect(analytics.screenViews, [
-        'dice',
-        'history',
-        'presets',
-        'settings',
+      verifyInOrder([
+        () => analytics.logScreenView('history'),
+        () => analytics.logScreenView('presets'),
+        () => analytics.logScreenView('settings'),
       ]);
     });
 
     testWidgets('re-tapping the active tab does not re-log a screen_view', (
       tester,
     ) async {
-      final analytics = RecordingAnalyticsService();
+      final analytics = createStubbedAnalytics();
       await _pump(tester, _harness(_router(), analytics: analytics));
 
       await tester.tap(find.text('ROLL'));
       await tester.pumpAndSettle();
 
-      expect(analytics.screenViews, ['dice']);
+      // Re-tapping the active tab must not re-log the dice screen view.
+      verify(() => analytics.logScreenView('dice')).called(1);
     });
   });
 }

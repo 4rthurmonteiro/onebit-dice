@@ -45,7 +45,7 @@ class DiceController extends ChangeNotifier {
     required AudioController audio,
     required HapticController haptic,
     required LastDiceConfigPreference lastDiceConfig,
-    AnalyticsService analytics = const NoOpAnalyticsService(),
+    required AnalyticsService analytics,
     Random? rng,
   }) {
     final stored = lastDiceConfig.read();

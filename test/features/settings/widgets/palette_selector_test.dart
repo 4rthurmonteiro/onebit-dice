@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
+import 'package:onebit_dice/core/theme/palette_preference.dart';
 import 'package:onebit_dice/core/theme/theme_provider.dart';
 import 'package:onebit_dice/features/settings/widgets/palette_selector.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+
+import '../../../support/mock_analytics_service.dart';
+
+class _MockPalettePreference extends Mock implements PalettePreference {}
+
+ThemeProvider _buildProvider() {
+  registerFallbackValue(PaletteId.macClassic);
+  final preference = _MockPalettePreference();
+  when(preference.read).thenReturn(null);
+  when(() => preference.write(any())).thenAnswer((_) async {});
+  return ThemeProvider(
+    analytics: createStubbedAnalytics(),
+    preference: preference,
+  );
+}
 
 Widget _harness(ThemeProvider provider) {
   return ChangeNotifierProvider<ThemeProvider>.value(
@@ -23,7 +40,7 @@ Widget _harness(ThemeProvider provider) {
 void main() {
   group('PaletteSelector', () {
     testWidgets('renders one swatch per PaletteId', (tester) async {
-      await tester.pumpWidget(_harness(ThemeProvider()));
+      await tester.pumpWidget(_harness(_buildProvider()));
       await tester.pumpAndSettle();
 
       expect(
@@ -33,7 +50,7 @@ void main() {
     });
 
     testWidgets('marks the active swatch by id', (tester) async {
-      await tester.pumpWidget(_harness(ThemeProvider()));
+      await tester.pumpWidget(_harness(_buildProvider()));
       await tester.pumpAndSettle();
 
       final swatches = tester
@@ -47,7 +64,7 @@ void main() {
     testWidgets('tapping a swatch calls setPalette on the provider', (
       tester,
     ) async {
-      final provider = ThemeProvider();
+      final provider = _buildProvider();
       await tester.pumpWidget(_harness(provider));
       await tester.pumpAndSettle();
 
@@ -63,7 +80,7 @@ void main() {
 
     for (final id in PaletteId.values) {
       testWidgets('exposes a swatch for $id', (tester) async {
-        await tester.pumpWidget(_harness(ThemeProvider()));
+        await tester.pumpWidget(_harness(_buildProvider()));
         await tester.pumpAndSettle();
         expect(
           find.byWidgetPredicate((w) => w is PaletteSwatch && w.id == id),

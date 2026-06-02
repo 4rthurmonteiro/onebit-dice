@@ -15,46 +15,6 @@ RollResult _result({required int seed}) => RollResult(
 );
 
 void main() {
-  group('InMemoryHistoryRepository', () {
-    test('snapshot is empty initially', () {
-      final repo = InMemoryHistoryRepository();
-      expect(repo.snapshot(), isEmpty);
-    });
-
-    test('append adds entries in order and clear empties them', () async {
-      final repo = InMemoryHistoryRepository();
-      await repo.append(_result(seed: 1));
-      await repo.append(_result(seed: 2));
-
-      final snapshot = repo.snapshot();
-      expect(snapshot, hasLength(2));
-      expect(snapshot[0].values, [1]);
-      expect(snapshot[1].values, [2]);
-
-      await repo.clear();
-      expect(repo.snapshot(), isEmpty);
-    });
-
-    test(
-      'watch emits the current snapshot, then after every mutation',
-      () async {
-        final repo = InMemoryHistoryRepository();
-        await repo.append(_result(seed: 1));
-
-        final emissions = <int>[];
-        final sub = repo.watch().listen((snap) => emissions.add(snap.length));
-
-        await Future<void>.value();
-        await repo.append(_result(seed: 2));
-        await repo.clear();
-        await Future<void>.value();
-        await sub.cancel();
-
-        expect(emissions, [1, 2, 0]);
-      },
-    );
-  });
-
   group('HiveHistoryRepository', () {
     late Directory tempDir;
     late Box<RollEntry> box;

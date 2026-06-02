@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/app.dart';
-import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/audio/audio_controller.dart';
 import 'package:onebit_dice/core/audio/sound_player.dart';
 import 'package:onebit_dice/core/haptic/haptic_controller.dart';
+import 'package:onebit_dice/core/i18n/locale_preference.dart';
 import 'package:onebit_dice/core/i18n/supported_locales.dart';
 import 'package:onebit_dice/core/storage/app_settings_preference.dart';
+import 'package:onebit_dice/core/storage/last_dice_config_preference.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
+import 'package:onebit_dice/core/theme/palette_preference.dart';
 import 'package:onebit_dice/core/theme/theme_provider.dart';
 import 'package:onebit_dice/features/dice/dice_screen.dart';
 import 'package:onebit_dice/features/settings/animation_settings_controller.dart';
 import 'package:onebit_dice/features/splash/splash_screen.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+
+import 'support/mock_analytics_service.dart';
+import 'support/mock_history_repository.dart';
+import 'support/mock_presets_repository.dart';
 
 class _NoopSoundPlayer implements SoundPlayer {
   @override
@@ -29,21 +36,55 @@ class _NoopSoundPlayer implements SoundPlayer {
   Future<void> dispose() async {}
 }
 
+class _MockAppSettings extends Mock implements AppSettingsPreference {}
+
+class _MockLastDice extends Mock implements LastDiceConfigPreference {}
+
+class _MockPalettePreference extends Mock implements PalettePreference {}
+
+class _MockLocalePreference extends Mock implements LocalePreference {}
+
 App _buildApp() {
-  final settings = InMemoryAppSettingsPreference();
+  registerFallbackValue(PaletteId.macClassic);
+
+  final analytics = createStubbedAnalytics();
+  final settings = _MockAppSettings();
+  when(settings.readSoundEnabled).thenReturn(null);
+  when(settings.readHapticEnabled).thenReturn(null);
+  when(settings.readAnimationStyle).thenReturn(null);
+  when(settings.readAnimationSpeed).thenReturn(null);
+
+  final lastDice = _MockLastDice();
+  when(lastDice.read).thenReturn(null);
+
+  final palettePref = _MockPalettePreference();
+  when(palettePref.read).thenReturn(null);
+  when(() => palettePref.write(any())).thenAnswer((_) async {});
+
+  final localePref = _MockLocalePreference();
+  when(localePref.read).thenReturn(null);
+
   return App(
     audioController: AudioController(
       preference: settings,
+      analytics: analytics,
       player: _NoopSoundPlayer(),
     ),
     hapticController: HapticController(
       preference: settings,
+      analytics: analytics,
       trigger: () async {},
     ),
     animationSettingsController: AnimationSettingsController(
       preference: settings,
+      analytics: analytics,
     ),
-    analyticsService: const NoOpAnalyticsService(),
+    analyticsService: analytics,
+    historyRepository: createFakeHistory(),
+    presetsRepository: createFakePresets(),
+    lastDiceConfigPreference: lastDice,
+    palettePreference: palettePref,
+    localePreference: localePref,
   );
 }
 

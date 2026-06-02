@@ -16,20 +16,6 @@ abstract interface class LocalePreference {
   Future<void> write(Locale? value);
 }
 
-/// In-memory [LocalePreference] used as the default for tests and pre-init
-/// scenarios. Holds the value for the lifetime of the process only.
-class InMemoryLocalePreference implements LocalePreference {
-  Locale? _stored;
-
-  @override
-  Locale? read() => _stored;
-
-  @override
-  Future<void> write(Locale? value) async {
-    _stored = value;
-  }
-}
-
 /// [LocalePreference] backed by `SharedPreferences`.
 ///
 /// The locale override is stored as a BCP-47 language tag via

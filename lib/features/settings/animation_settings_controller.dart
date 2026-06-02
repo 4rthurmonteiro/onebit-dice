@@ -15,7 +15,7 @@ class AnimationSettingsController extends ChangeNotifier {
   /// Creates an [AnimationSettingsController] backed by [preference].
   AnimationSettingsController({
     required AppSettingsPreference preference,
-    this._analytics = const NoOpAnalyticsService(),
+    required this._analytics,
   }) : _preference = preference,
        _style = preference.readAnimationStyle() ?? AnimationStyle.drum,
        _speed = preference.readAnimationSpeed() ?? AnimationSpeed.medium;

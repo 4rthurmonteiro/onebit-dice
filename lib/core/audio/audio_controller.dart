@@ -18,8 +18,8 @@ class AudioController extends ChangeNotifier with WidgetsBindingObserver {
   /// [SoLoudSoundPlayer].
   AudioController({
     required AppSettingsPreference preference,
+    required this._analytics,
     SoundPlayer? player,
-    this._analytics = const NoOpAnalyticsService(),
   }) : _preference = preference,
        _player = player ?? SoLoudSoundPlayer(),
        _soundEnabled = preference.readSoundEnabled() ?? true;

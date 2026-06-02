@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/core/analytics/analytics_service.dart';
 import 'package:onebit_dice/core/models/dice_type.dart';
 import 'package:onebit_dice/core/storage/presets_repository.dart';
@@ -12,15 +13,16 @@ import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:onebit_dice/shared/widgets/mac_button.dart';
 import 'package:provider/provider.dart';
 
-import '../../../support/recording_analytics_service.dart';
+import '../../../support/mock_analytics_service.dart';
+import '../../../support/mock_presets_repository.dart';
 
 Widget _harness(
   PresetsRepository repository, {
   Locale locale = const Locale('en'),
-  AnalyticsService analytics = const NoOpAnalyticsService(),
+  MockAnalyticsService? analytics,
 }) {
   return Provider<AnalyticsService>.value(
-    value: analytics,
+    value: analytics ?? createStubbedAnalytics(),
     child: MaterialApp(
       locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -45,7 +47,7 @@ Future<void> _pumpAndOpen(
   WidgetTester tester,
   PresetsRepository repo, {
   Locale locale = const Locale('en'),
-  AnalyticsService analytics = const NoOpAnalyticsService(),
+  MockAnalyticsService? analytics,
 }) async {
   await tester.binding.setSurfaceSize(const Size(600, 1200));
   addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -59,7 +61,7 @@ void main() {
     testWidgets('renders the localized title, field labels, and save action', (
       tester,
     ) async {
-      final repo = InMemoryPresetsRepository();
+      final repo = createFakePresets();
       await _pumpAndOpen(tester, repo);
 
       expect(find.text('New preset'), findsOneWidget);
@@ -72,7 +74,7 @@ void main() {
     testWidgets('save button is disabled (no MacButton) when name is empty', (
       tester,
     ) async {
-      final repo = InMemoryPresetsRepository();
+      final repo = createFakePresets();
       await _pumpAndOpen(tester, repo);
 
       expect(find.byType(MacButton), findsNothing);
@@ -81,7 +83,7 @@ void main() {
     testWidgets(
       'typing a name swaps the disabled stub for an enabled MacButton',
       (tester) async {
-        final repo = InMemoryPresetsRepository();
+        final repo = createFakePresets();
         await _pumpAndOpen(tester, repo);
 
         await tester.enterText(find.byType(TextField), 'My preset');
@@ -94,7 +96,7 @@ void main() {
     testWidgets('typing only whitespace leaves the save action disabled', (
       tester,
     ) async {
-      final repo = InMemoryPresetsRepository();
+      final repo = createFakePresets();
       await _pumpAndOpen(tester, repo);
 
       await tester.enterText(find.byType(TextField), '   ');
@@ -106,8 +108,8 @@ void main() {
     testWidgets(
       'tapping Save adds the preset to the repository and pops the sheet',
       (tester) async {
-        final repo = InMemoryPresetsRepository();
-        final analytics = RecordingAnalyticsService();
+        final repo = createFakePresets();
+        final analytics = createStubbedAnalytics();
         await _pumpAndOpen(tester, repo, analytics: analytics);
 
         await tester.enterText(find.byType(TextField), 'Custom 1');
@@ -130,18 +132,19 @@ void main() {
         expect(saved.diceType, DiceType.d20);
         expect(saved.diceCount, 2);
         expect(find.byType(CreatePresetSheet), findsNothing);
-        expect(analytics.eventNames, ['preset_created']);
-        expect(analytics.events.single.parameters, {
-          'dice_type': 'd20',
-          'count': 2,
-        });
+        verify(
+          () => analytics.logEvent(
+            'preset_created',
+            parameters: {'dice_type': 'd20', 'count': 2},
+          ),
+        ).called(1);
       },
     );
 
     testWidgets('trims surrounding whitespace from the saved name', (
       tester,
     ) async {
-      final repo = InMemoryPresetsRepository();
+      final repo = createFakePresets();
       await _pumpAndOpen(tester, repo);
 
       await tester.enterText(find.byType(TextField), '  My preset  ');
@@ -153,7 +156,7 @@ void main() {
     });
 
     testWidgets('TextField refuses input past 24 characters', (tester) async {
-      final repo = InMemoryPresetsRepository();
+      final repo = createFakePresets();
       await _pumpAndOpen(tester, repo);
 
       final long = 'a' * 30;
@@ -166,7 +169,7 @@ void main() {
     });
 
     testWidgets('renders pt-BR copy under pt-BR locale', (tester) async {
-      final repo = InMemoryPresetsRepository();
+      final repo = createFakePresets();
       await _pumpAndOpen(tester, repo, locale: const Locale('pt', 'BR'));
 
       expect(find.text('Novo preset'), findsOneWidget);

@@ -4,30 +4,6 @@ import 'package:onebit_dice/core/storage/models/animation_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  group('InMemoryAppSettingsPreference', () {
-    test('every field reads null initially', () {
-      final pref = InMemoryAppSettingsPreference();
-      expect(pref.readSoundEnabled(), isNull);
-      expect(pref.readHapticEnabled(), isNull);
-      expect(pref.readAnimationStyle(), isNull);
-      expect(pref.readAnimationSpeed(), isNull);
-    });
-
-    test('round-trip preserves every field independently', () async {
-      final pref = InMemoryAppSettingsPreference();
-
-      await pref.writeSoundEnabled(value: true);
-      await pref.writeHapticEnabled(value: false);
-      await pref.writeAnimationStyle(AnimationStyle.drum);
-      await pref.writeAnimationSpeed(AnimationSpeed.slow);
-
-      expect(pref.readSoundEnabled(), isTrue);
-      expect(pref.readHapticEnabled(), isFalse);
-      expect(pref.readAnimationStyle(), AnimationStyle.drum);
-      expect(pref.readAnimationSpeed(), AnimationSpeed.slow);
-    });
-  });
-
   group('SharedPreferencesAppSettingsPreference', () {
     setUp(() {
       SharedPreferences.setMockInitialValues({});

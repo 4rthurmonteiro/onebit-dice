@@ -36,48 +36,6 @@ abstract interface class AppSettingsPreference {
   Future<void> writeAnimationSpeed(AnimationSpeed speed);
 }
 
-/// In-memory [AppSettingsPreference]: holds values for the lifetime of the
-/// process only. Useful as a test double and as the default until E06 wires
-/// the shared-preferences-backed implementation.
-class InMemoryAppSettingsPreference implements AppSettingsPreference {
-  bool? _soundEnabled;
-  bool? _hapticEnabled;
-  AnimationStyle? _animationStyle;
-  AnimationSpeed? _animationSpeed;
-
-  @override
-  bool? readSoundEnabled() => _soundEnabled;
-
-  @override
-  Future<void> writeSoundEnabled({required bool value}) async {
-    _soundEnabled = value;
-  }
-
-  @override
-  bool? readHapticEnabled() => _hapticEnabled;
-
-  @override
-  Future<void> writeHapticEnabled({required bool value}) async {
-    _hapticEnabled = value;
-  }
-
-  @override
-  AnimationStyle? readAnimationStyle() => _animationStyle;
-
-  @override
-  Future<void> writeAnimationStyle(AnimationStyle style) async {
-    _animationStyle = style;
-  }
-
-  @override
-  AnimationSpeed? readAnimationSpeed() => _animationSpeed;
-
-  @override
-  Future<void> writeAnimationSpeed(AnimationSpeed speed) async {
-    _animationSpeed = speed;
-  }
-}
-
 /// [AppSettingsPreference] backed by `SharedPreferences`.
 ///
 /// Enums are persisted as `index`. Out-of-range or otherwise corrupt values

@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:onebit_dice/core/i18n/locale_controller.dart';
+import 'package:onebit_dice/core/i18n/locale_preference.dart';
 import 'package:onebit_dice/core/i18n/supported_locales.dart';
 import 'package:onebit_dice/core/theme/app_theme.dart';
 import 'package:onebit_dice/core/theme/palette.dart';
 import 'package:onebit_dice/features/settings/widgets/language_picker.dart';
 import 'package:onebit_dice/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+
+import '../../../support/mock_analytics_service.dart';
+
+class _MockLocalePreference extends Mock implements LocalePreference {}
+
+LocaleController _buildController() {
+  registerFallbackValue(const Locale('en'));
+  final preference = _MockLocalePreference();
+  when(preference.read).thenReturn(null);
+  when(() => preference.write(any())).thenAnswer((_) async {});
+  return LocaleController(
+    analytics: createStubbedAnalytics(),
+    preference: preference,
+  );
+}
 
 Widget _harness(LocaleController controller) {
   return ChangeNotifierProvider<LocaleController>.value(
@@ -29,7 +46,7 @@ void main() {
     testWidgets('renders Follow system + every supported locale', (
       tester,
     ) async {
-      await tester.pumpWidget(_harness(LocaleController()));
+      await tester.pumpWidget(_harness(_buildController()));
       await tester.pumpAndSettle();
 
       expect(
@@ -41,7 +58,7 @@ void main() {
     testWidgets('marks Follow system as selected when no override', (
       tester,
     ) async {
-      await tester.pumpWidget(_harness(LocaleController()));
+      await tester.pumpWidget(_harness(_buildController()));
       await tester.pumpAndSettle();
 
       final rows = tester
@@ -52,7 +69,7 @@ void main() {
     });
 
     testWidgets('tapping a locale row calls setOverride', (tester) async {
-      final controller = LocaleController();
+      final controller = _buildController();
       await tester.pumpWidget(_harness(controller));
       await tester.pumpAndSettle();
 
@@ -63,7 +80,7 @@ void main() {
     });
 
     testWidgets('tapping Follow system clears the override', (tester) async {
-      final controller = LocaleController();
+      final controller = _buildController();
       await controller.setOverride(const Locale('de'));
       await tester.pumpWidget(_harness(controller));
       await tester.pumpAndSettle();
@@ -75,7 +92,7 @@ void main() {
     });
 
     testWidgets('marks the active override row as selected', (tester) async {
-      final controller = LocaleController();
+      final controller = _buildController();
       await controller.setOverride(const Locale('de'));
       await tester.pumpWidget(_harness(controller));
       await tester.pumpAndSettle();
