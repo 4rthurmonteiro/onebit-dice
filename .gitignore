@@ -54,3 +54,6 @@ docs/reviews/
 # Kept out of git (14 MB of PNGs); archived externally. Harness + icon +
 # feature graphic + README stay versioned.
 docs/store/android/screenshots/
+
+# Firebase deploy cache
+.firebase/
