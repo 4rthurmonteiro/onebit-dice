@@ -1,0 +1,10 @@
+Bienvenue dans 1-Bit Dice, un lanceur de dés rétro au style pixel 1-bit pur.
+
+• Touchez pour lancer n'importe quel dé, du d4 au d20 et plus
+• Préréglages prêts pour les jeux populaires
+• Enregistrez vos propres configurations de dés
+• Historique complet des lancers
+• Réglez le son, le retour haptique et l'animation
+• Plusieurs thèmes et langues
+
+Bons lancers !

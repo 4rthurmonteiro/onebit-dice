@@ -1,0 +1,10 @@
+Bem-vindo ao 1-Bit Dice — um rolador de dados retrô em puro estilo pixel 1-bit.
+
+• Toque para rolar qualquer dado, do d4 ao d20 e além
+• Configurações prontas para jogos populares
+• Salve seus próprios presets de dados
+• Histórico completo de rolagens
+• Ajuste som, vibração e animação
+• Vários temas e idiomas
+
+Boas rolagens!

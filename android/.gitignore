@@ -12,3 +12,12 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# Play Store service-account key — never commit. See android/fastlane/Fastfile.
+play-service-account.json
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/test_output
+.fastlane/

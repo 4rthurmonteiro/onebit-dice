@@ -1,0 +1,10 @@
+Te damos la bienvenida a 1-Bit Dice, un lanzador de dados retro con estilo pixel 1-bit puro.
+
+• Toca para lanzar cualquier dado, de d4 a d20 y más
+• Configuraciones listas para juegos populares
+• Guarda tus propios ajustes de dados
+• Historial completo de tiradas
+• Ajusta sonido, vibración y animación
+• Varios temas e idiomas
+
+¡A tirar los dados!

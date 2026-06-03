@@ -1,0 +1,10 @@
+Benvenuto in 1-Bit Dice, un lanciatore di dadi retrò in puro stile pixel 1-bit.
+
+• Tocca per lanciare qualsiasi dado, dal d4 al d20 e oltre
+• Configurazioni pronte per i giochi più popolari
+• Salva i tuoi set di dadi personalizzati
+• Cronologia completa dei lanci
+• Regola suono, vibrazione e animazione
+• Più temi e lingue
+
+Buon lancio!

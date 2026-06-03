@@ -97,7 +97,11 @@
       "Bash(awk '/\\\\/$/{print \"Livre agora: \"$4}')",
       "Bash(git -C /Users/arthurmonteiroalvesmelo/Contrib/am2-studio/onebit_dice status --short)",
       "Bash(echo \"clean iniciado \\(pid $!\\)\")",
-      "Bash(python3 -c \"import PIL; print\\('PIL', PIL.__version__\\)\")"
+      "Bash(python3 -c \"import PIL; print\\('PIL', PIL.__version__\\)\")",
+      "Bash(open file://__TRACKED_VAR__/index.html)",
+      "Bash(firebase projects:list)",
+      "Bash(ruby -v)",
+      "Bash(bundle -v)"
     ]
   }
 }

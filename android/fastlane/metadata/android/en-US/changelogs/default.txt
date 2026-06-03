@@ -1,0 +1,10 @@
+Welcome to 1-Bit Dice — a retro dice roller in pure 1-bit pixel style.
+
+• Tap to roll any die, from d4 to d20 and beyond
+• Ready-made setups for popular games
+• Save your own custom dice presets
+• Full roll history
+• Tweak sound, haptics and animation
+• Multiple themes and languages
+
+Roll on!

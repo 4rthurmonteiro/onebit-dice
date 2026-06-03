@@ -1,0 +1,10 @@
+Willkommen bei 1-Bit Dice — ein Retro-Würfler im reinen 1-Bit-Pixel-Stil.
+
+• Tippe, um jeden Würfel zu werfen, von W4 bis W20 und mehr
+• Fertige Vorlagen für beliebte Spiele
+• Speichere eigene Würfel-Presets
+• Vollständiger Wurfverlauf
+• Sound, Haptik und Animation anpassen
+• Mehrere Themes und Sprachen
+
+Viel Spaß beim Würfeln!

@@ -1,0 +1,63 @@
+# Uploads the signed Flutter AAB to Google Play via the Play Developer API.
+#
+# This does NOT build the app — the AAB must already exist. Build it first from
+# the repo root with:
+#
+#   flutter build appbundle --release
+#
+# Then run a lane from the android/ directory:
+#
+#   bundle exec fastlane internal      # -> internal testing track
+#   bundle exec fastlane production     # -> production (staged rollout)
+#
+# Auth: a Google Cloud service account with "Release manager" access to the app,
+# linked under Play Console -> Setup -> API access. Point PLAY_JSON_KEY_FILE at
+# its JSON key, or drop the file at android/play-service-account.json (gitignored).
+#
+# NOTE: the FIRST release of a brand-new app cannot be uploaded by the API.
+# Upload one AAB manually in the Play Console first; every release after that
+# can use these lanes.
+
+default_platform(:android)
+
+# Resolve the AAB built by `flutter build appbundle --release`. Override with
+# AAB=/path/to/app-release.aab on the command line if needed.
+def aab_path
+  path = ENV["AAB"] || File.expand_path("../../build/app/outputs/bundle/release/app-release.aab", __dir__)
+  UI.user_error!("AAB not found at #{path}. Run `flutter build appbundle --release` first.") unless File.exist?(path)
+  path
+end
+
+platform :android do
+  desc "Upload the release AAB to the internal testing track"
+  lane :internal do
+    upload_to_play_store(
+      track: "internal",
+      aab: aab_path,
+      release_status: "completed",
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+
+  desc "Upload the release AAB to production with a staged rollout"
+  lane :production do |options|
+    upload_to_play_store(
+      track: "production",
+      aab: aab_path,
+      release_status: "inProgress",
+      rollout: (options[:rollout] || "0.1").to_s,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+
+  desc "Verify the service-account credentials can reach this app"
+  lane :validate do
+    validate_play_store_json_key
+  end
+end
