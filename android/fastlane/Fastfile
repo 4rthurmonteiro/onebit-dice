@@ -56,6 +56,20 @@ platform :android do
     )
   end
 
+  desc "Upload only the store listing (texts + images) for all locales — no binary"
+  lane :metadata do
+    upload_to_play_store(
+      skip_upload_aab: true,
+      skip_upload_apk: true,
+      skip_upload_metadata: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+      # Changelogs ("what's new") are tied to a release/version, not the listing,
+      # so they ship with the `internal`/`production` lanes — not here.
+      skip_upload_changelogs: true,
+    )
+  end
+
   desc "Verify the service-account credentials can reach this app"
   lane :validate do
     validate_play_store_json_key

@@ -1,0 +1,1 @@
+Lanzador de dados retro 1-bit para juegos de mesa y rol. Toca, tira y juega.

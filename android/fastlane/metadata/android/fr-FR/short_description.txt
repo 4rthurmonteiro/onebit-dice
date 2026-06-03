@@ -1,0 +1,1 @@
+Un lanceur de dés rétro 1-bit pour jeux de société et JDR. Touchez et jouez.

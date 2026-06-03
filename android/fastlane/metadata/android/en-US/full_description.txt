@@ -1,0 +1,29 @@
+Roll the dice in pure 1-bit pixel style.
+
+1-Bit Dice is a fast, no-frills dice roller for board games and tabletop RPGs, wrapped in a strict retro aesthetic — two colors, sharp pixels, zero clutter. No accounts, no ads getting in the way of the roll.
+
+TAP TO ROLL
+Roll anything from a d4 to a d20 and beyond. Add modifiers, roll multiple dice at once, and read the result instantly.
+
+READY-MADE SETUPS
+Jump straight into popular games with built-in presets, or skip the menus and get to playing.
+
+SAVE YOUR OWN PRESETS
+Build the exact dice pool your table needs and save it. Your favorite roll is always one tap away.
+
+FULL ROLL HISTORY
+Every roll is logged so you can settle any "what did you get?" without re-rolling.
+
+MAKE IT YOURS
+- Multiple 1-bit themes
+- Sound effects you can toggle
+- Haptic feedback
+- Adjustable roll animation
+- Available in many languages
+
+BUILT FOR THE TABLE
+Whether you're running a dungeon, playing a board game, or just need an honest random number, 1-Bit Dice keeps it simple and keeps it fast.
+
+Roll on!
+
+— Made by AM2 Studio

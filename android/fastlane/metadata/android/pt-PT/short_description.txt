@@ -1,0 +1,1 @@
+Um lançador de dados retro 1-bit para jogos de tabuleiro e RPG. Toca e joga.

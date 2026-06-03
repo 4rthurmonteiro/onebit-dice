@@ -1,0 +1,1 @@
+Um rolador de dados retrô 1-bit para jogos de tabuleiro e RPG. Toque e jogue.
