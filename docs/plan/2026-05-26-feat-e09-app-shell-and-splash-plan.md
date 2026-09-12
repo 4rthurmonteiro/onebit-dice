@@ -25,7 +25,7 @@ Hoje o app sobe direto em `DiceScreen` — não há splash (o usuário vê o fla
 - **O flash branco do native splash padrão quebra a estética 1-bit.** Splash nativo + splash Flutter em sequência elimina o gap visual no cold start ("liga e já está no universo do app").
 - **O `home: DiceScreen()` provisório está marcado para remoção em E09** (ver `docs/plan/progress.md:33`).
 
-A escolha por `go_router` + `StatefulShellRoute` é doutrinária pela memória de projeto [feedback_no_indexed_stack_use_go_router](../../../../.claude/projects/-Users-arthurmonteiroalvesmelo-Contrib-am2-studio-onebit-dice/memory/feedback_no_indexed_stack_use_go_router.md): `IndexedStack` manual é proibido neste repositório. `StatefulShellRoute.indexedStack` é a API canônica do `go_router` para shells com bottom nav (per-branch Navigator, state preservation, deep linking) e funde a feature sem reinventar a roda.
+A escolha por `go_router` + `StatefulShellRoute` é doutrinária pela memória de projeto `feedback_no_indexed_stack_use_go_router` (project memory): `IndexedStack` manual é proibido neste repositório. `StatefulShellRoute.indexedStack` é a API canônica do `go_router` para shells com bottom nav (per-branch Navigator, state preservation, deep linking) e funde a feature sem reinventar a roda.
 
 A escolha por `go_router_builder` (codegen via `build_runner` já presente no projeto) garante rotas type-safe — erro de compilação em vez de runtime se um path muda.
 
@@ -345,8 +345,8 @@ sequenceDiagram
 - CI coverage exclude: [.github/workflows/ci.yml:43](../../.github/workflows/ci.yml#L43)
 
 ### Memórias de projeto
-- [feedback_no_indexed_stack_use_go_router](../../../../.claude/projects/-Users-arthurmonteiroalvesmelo-Contrib-am2-studio-onebit-dice/memory/feedback_no_indexed_stack_use_go_router.md) — **regra dura**: este projeto usa `go_router` + `StatefulShellRoute`, NÃO `IndexedStack`.
-- [feedback_no_underscore_prefixed_folders](../../../../.claude/projects/-Users-arthurmonteiroalvesmelo-Contrib-am2-studio-onebit-dice/memory/feedback_no_underscore_prefixed_folders.md) — não inventar `_internal`/`_dev`.
+- `feedback_no_indexed_stack_use_go_router` (project memory) — **regra dura**: este projeto usa `go_router` + `StatefulShellRoute`, NÃO `IndexedStack`.
+- `feedback_no_underscore_prefixed_folders` (project memory) — não inventar `_internal`/`_dev`.
 
 ### Pacotes externos
 - [go_router ^17.2.3](https://pub.dev/packages/go_router) — declarative router, deep linking, `StatefulShellRoute.indexedStack`.
