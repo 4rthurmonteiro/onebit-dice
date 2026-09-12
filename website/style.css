@@ -163,6 +163,15 @@ h1, h2, h3, .pixel {
 .badge.soon {
   border-style: dashed;
 }
+a.badge.live {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+a.badge.live:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
 
 /* ===== Section scaffolding ===== */
 section {
